@@ -1,0 +1,874 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stock Market Fundamentals | Quiz</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(100px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        
+        @keyframes slideOut {
+            from {
+                opacity: 1;
+                transform: translateX(0);
+            }
+            to {
+                opacity: 0;
+                transform: translateX(-100px);
+            }
+        }
+        
+        @keyframes bounce {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+        
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.05);
+            }
+        }
+        
+        .slide-in {
+            animation: slideIn 0.5s ease-out forwards;
+        }
+        
+        .slide-out {
+            animation: slideOut 0.3s ease-in forwards;
+        }
+        
+        .bounce {
+            animation: bounce 2s infinite;
+        }
+        
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+        
+        .question-card {
+            transition: all 0.3s ease;
+        }
+        
+        .option-button {
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .option-button:hover {
+            transform: translateX(10px);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.15);
+        }
+        
+        .option-button.selected {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            transform: scale(1.02);
+        }
+        
+        .progress-ring {
+            transition: stroke-dasharray 0.5s ease;
+        }
+        
+        .floating-icons {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            pointer-events: none;
+            z-index: 1;
+        }
+        
+        .floating-icon {
+            position: absolute;
+            font-size: 24px;
+            animation: float 8s ease-in-out infinite;
+            opacity: 0.1;
+        }
+        
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0px) rotate(0deg);
+            }
+            33% {
+                transform: translateY(-30px) rotate(5deg);
+            }
+            66% {
+                transform: translateY(-15px) rotate(-5deg);
+            }
+        }
+        
+        .timer-circle {
+            animation: countdown 30s linear;
+        }
+        
+        @keyframes countdown {
+            from {
+                stroke-dasharray: 0 100;
+            }
+            to {
+                stroke-dasharray: 100 0;
+            }
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-blue-50 via-purple-50 to-indigo-100 min-h-screen relative">
+    <div class="floating-icons">
+        <div class="floating-icon" style="top: 10%; left: 5%;">📊</div>
+        <div class="floating-icon" style="top: 20%; right: 10%;">💰</div>
+        <div class="floating-icon" style="top: 40%; left: 15%;">📈</div>
+        <div class="floating-icon" style="top: 60%; right: 5%;">🎯</div>
+        <div class="floating-icon" style="bottom: 30%; left: 8%;">💡</div>
+        <div class="floating-icon" style="bottom: 15%; right: 15%;">🚀</div>
+    </div>
+
+    <section class="py-8 px-4 relative z-10">
+        <div class="max-w-4xl mx-auto">
+            <!-- Header with Progress -->
+            <div class="bg-white rounded-2xl shadow-xl p-6 mb-8 border border-gray-100">
+                <div class="flex items-center justify-between mb-6">
+                    <div>
+                        <h1 class="text-3xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                            Stock Market Fundamentals - Quiz
+                        </h1>
+                        <p class="text-gray-600 mt-2">Test your knowledge and track your progress! 🎓</p>
+                    </div>
+                    
+                    <!-- Circular Progress -->
+                    <div class="relative w-20 h-20">
+                        <svg class="transform -rotate-90 w-20 h-20">
+                            <circle cx="40" cy="40" r="30" stroke="#e5e7eb" stroke-width="6" fill="none"/>
+                            <circle 
+                                id="progressCircle" 
+                                cx="40" cy="40" r="30" 
+                                stroke="url(#gradient)" 
+                                stroke-width="6" 
+                                fill="none"
+                                stroke-dasharray="0 188.4"
+                                stroke-linecap="round"
+                                class="progress-ring"
+                            />
+                            <defs>
+                                <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                                    <stop offset="0%" style="stop-color:#667eea"/>
+                                    <stop offset="100%" style="stop-color:#764ba2"/>
+                                </linearGradient>
+                            </defs>
+                        </svg>
+                        <div class="absolute inset-0 flex items-center justify-center">
+                            <span id="progressText" class="text-sm font-bold text-gray-700">0/5</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Linear Progress Bar -->
+                <div class="w-full bg-gray-200 rounded-full h-3">
+                    <div id="linearProgress" class="bg-gradient-to-r from-blue-500 to-purple-600 h-3 rounded-full transition-all duration-500" style="width: 0%"></div>
+                </div>
+                
+                <!-- Stats -->
+                <div class="grid grid-cols-3 gap-4 mt-6">
+                    <div class="text-center p-3 bg-blue-50 rounded-xl">
+                        <div class="text-2xl font-bold text-blue-600" id="currentQuestion">1</div>
+                        <div class="text-sm text-blue-700">Current</div>
+                    </div>
+                    <div class="text-center p-3 bg-green-50 rounded-xl">
+                        <div class="text-2xl font-bold text-green-600" id="correctAnswers">0</div>
+                        <div class="text-sm text-green-700">Correct</div>
+                    </div>
+                    <div class="text-center p-3 bg-purple-50 rounded-xl">
+                        <div class="text-2xl font-bold text-purple-600" id="totalQuestions">5</div>
+                        <div class="text-sm text-purple-700">Total</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quiz Container -->
+            <div id="quizContainer" class="bg-white rounded-2xl shadow-xl overflow-hidden border border-gray-100">
+                <!-- Question Cards -->
+                <div id="question1" class="question-card p-8">
+                    <div class="flex items-start space-x-4">
+                        <div class="flex-shrink-0 w-12 h-12 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white font-bold text-lg">
+                            1
+                        </div>
+                        <div class="flex-1">
+                            <h2 class="text-xl font-bold text-gray-800 mb-6">
+                                What is the primary purpose of the stock market?
+                            </h2>
+                            
+                            <div class="space-y-3">
+                                <button class="option-button w-full p-4 text-left border-2 border-gray-200 rounded-xl hover:border-blue-300" 
+                                        onclick="selectOption(this, 1, 'A')">
+                                    <div class="flex items-center space-x-3">
+                                        <span class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center text-blue-600 font-bold">A</span>
+                                        <span>To facilitate gambling and speculation</span>
+                                    </div>
+                                </button>
+                                
+                                <button class="option-button w-full p-4 text-left border-2 border-gray-200 rounded-xl hover:border-blue-300" 
+                                        onclick="selectOption(this, 1, 'B')">
+                                    <div class="flex items-center space-x-3">
+                                        <span class="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center text-green-600 font-bold">B</span>
+                                        <span>To enable companies to raise capital and investors to buy ownership stakes</span>
+                                    </div>
+                                </button>
+                                
+                                <button class="option-button w-full p-4 text-left border-2 border-gray-200 rounded-xl hover:border-blue-300" 
+                                        onclick="selectOption(this, 1, 'C')">
+                                    <div class="flex items-center space-x-3">
+                                        <span class="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center text-purple-600 font-bold">C</span>
+                                        <span>To control government monetary policy</span>
+                                    </div>
+                                </button>
+                                
+                                <button class="option-button w-full p-4 text-left border-2 border-gray-200 rounded-xl hover:border-blue-300" 
+                                        onclick="selectOption(this, 1, 'D')">
+                                    <div class="flex items-center space-x-3">
+                                        <span class="w-8 h-8 bg-orange-100 rounded-full flex items-center justify-center text-orange-600 font-bold">D</span>
+                                        <span>To replace traditional banking systems</span>
+                                    </div>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="question2" class="question-card p-8 hidden">
+                    <div class="flex items-start space-x-4">
+                        <div class="flex-shrink-0 w-12 h-12 bg-gradient-to-r from-green-500 to-blue-600 rounded-full flex items-center justify-center text-white font-bold text-lg">
+                            2
+                        </div>
+                        <div class="flex-1">
+                            <h2 class="text-xl font-bold text-gray-800 mb-6">
+                                What does "P/E ratio" stand for in stock analysis?
+                            </h2>
+                            
+                            <div class="space-y-3">
+                                <button class="option-button w-full p-4 text-left border-2 border-gray-200 rounded-xl hover:border-blue-300" 
+                                        onclick="selectOption(this, 2, 'A')">
+                                    <div class="flex items-center space-x-3">
+                                        <span class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center text-blue-600 font-bold">A</span>
+                                        <span>Profit to Expense ratio</span>
+                                    </div>
+                                </button>
+                                
+                                <button class="option-button w-full p-4 text-left border-2 border-gray-200 rounded-xl hover:border-blue-300" 
+                                        onclick="selectOption(this, 2, 'B')">
+                                    <div class="flex items-center space-x-3">
+                                        <span class="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center text-green-600 font-bold">B</span>
+                                        <span>Price to Earnings ratio</span>
+                                    </div>
+                                </button>
+                                
+                                <button class="option-button w-full p-4 text-left border-2 border-gray-200 rounded-xl hover:border-blue-300" 
+                                        onclick="selectOption(this, 2, 'C')">
+                                    <div class="flex items-center space-x-3">
+                                        <span class="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center text-purple-600 font-bold">C</span>
+                                        <span>Performance to Efficiency ratio</span>
+                                    </div>
+                                </button>
+                                
+                                <button class="option-button w-full p-4 text-left border-2 border-gray-200 rounded-xl hover:border-blue-300" 
+                                        onclick="selectOption(this, 2, 'D')">
+                                    <div class="flex items-center space-x-3">
+                                        <span class="w-8 h-8 bg-orange-100 rounded-full flex items-center justify-center text-orange-600 font-bold">D</span>
+                                        <span>Projected to Estimated ratio</span>
+                                    </div>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="question3" class="question-card p-8 hidden">
+                    <div class="flex items-start space-x-4">
+                        <div class="flex-shrink-0 w-12 h-12 bg-gradient-to-r from-purple-500 to-pink-600 rounded-full flex items-center justify-center text-white font-bold text-lg">
+                            3
+                        </div>
+                        <div class="flex-1">
+                            <h2 class="text-xl font-bold text-gray-800 mb-6">
+                                Which of the following is considered a defensive stock?
+                            </h2>
+                            
+                            <div class="space-y-3">
+                                <button class="option-button w-full p-4 text-left border-2 border-gray-200 rounded-xl hover:border-blue-300" 
+                                        onclick="selectOption(this, 3, 'A')">
+                                    <div class="flex items-center space-x-3">
+                                        <span class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center text-blue-600 font-bold">A</span>
+                                        <span>Technology startup stock</span>
+                                    </div>
+                                </button>
+                                
+                                <button class="option-button w-full p-4 text-left border-2 border-gray-200 rounded-xl hover:border-blue-300" 
+                                        onclick="selectOption(this, 3, 'B')">
+                                    <div class="flex items-center space-x-3">
+                                        <span class="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center text-green-600 font-bold">B</span>
+                                        <span>Utility company stock</span>
+                                    </div>
+                                </button>
+                                
+                                <button class="option-button w-full p-4 text-left border-2 border-gray-200 rounded-xl hover:border-blue-300" 
+                                        onclick="selectOption(this, 3, 'C')">
+                                    <div class="flex items-center space-x-3">
+                                        <span class="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center text-purple-600 font-bold">C</span>
+                                        <span>Cryptocurrency exchange stock</span>
+                                    </div>
+                                </button>
+                                
+                                <button class="option-button w-full p-4 text-left border-2 border-gray-200 rounded-xl hover:border-blue-300" 
+                                        onclick="selectOption(this, 3, 'D')">
+                                    <div class="flex items-center space-x-3">
+                                        <span class="w-8 h-8 bg-orange-100 rounded-full flex items-center justify-center text-orange-600 font-bold">D</span>
+                                        <span>Airline company stock</span>
+                                    </div>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="question4" class="question-card p-8 hidden">
+                    <div class="flex items-start space-x-4">
+                        <div class="flex-shrink-0 w-12 h-12 bg-gradient-to-r from-orange-500 to-red-600 rounded-full flex items-center justify-center text-white font-bold text-lg">
+                            4
+                        </div>
+                        <div class="flex-1">
+                            <h2 class="text-xl font-bold text-gray-800 mb-6">
+                                What is diversification in investment?
+                            </h2>
+                            
+                            <div class="space-y-3">
+                                <button class="option-button w-full p-4 text-left border-2 border-gray-200 rounded-xl hover:border-blue-300" 
+                                        onclick="selectOption(this, 4, 'A')">
+                                    <div class="flex items-center space-x-3">
+                                        <span class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center text-blue-600 font-bold">A</span>
+                                        <span>Investing all money in one high-performing stock</span>
+                                    </div>
+                                </button>
+                                
+                                <button class="option-button w-full p-4 text-left border-2 border-gray-200 rounded-xl hover:border-blue-300" 
+                                        onclick="selectOption(this, 4, 'B')">
+                                    <div class="flex items-center space-x-3">
+                                        <span class="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center text-green-600 font-bold">B</span>
+                                        <span>Spreading investments across different assets to reduce risk</span>
+                                    </div>
+                                </button>
+                                
+                                <button class="option-button w-full p-4 text-left border-2 border-gray-200 rounded-xl hover:border-blue-300" 
+                                        onclick="selectOption(this, 4, 'C')">
+                                    <div class="flex items-center space-x-3">
+                                        <span class="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center text-purple-600 font-bold">C</span>
+                                        <span>Only investing in international markets</span>
+                                    </div>
+                                </button>
+                                
+                                <button class="option-button w-full p-4 text-left border-2 border-gray-200 rounded-xl hover:border-blue-300" 
+                                        onclick="selectOption(this, 4, 'D')">
+                                    <div class="flex items-center space-x-3">
+                                        <span class="w-8 h-8 bg-orange-100 rounded-full flex items-center justify-center text-orange-600 font-bold">D</span>
+                                        <span>Buying stocks only from the same industry</span>
+                                    </div>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="question5" class="question-card p-8 hidden">
+                    <div class="flex items-start space-x-4">
+                        <div class="flex-shrink-0 w-12 h-12 bg-gradient-to-r from-pink-500 to-violet-600 rounded-full flex items-center justify-center text-white font-bold text-lg">
+                            5
+                        </div>
+                        <div class="flex-1">
+                            <h2 class="text-xl font-bold text-gray-800 mb-6">
+                                What is a dividend?
+                            </h2>
+                            
+                            <div class="space-y-3">
+                                <button class="option-button w-full p-4 text-left border-2 border-gray-200 rounded-xl hover:border-blue-300" 
+                                        onclick="selectOption(this, 5, 'A')">
+                                    <div class="flex items-center space-x-3">
+                                        <span class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center text-blue-600 font-bold">A</span>
+                                        <span>A fee charged by brokers for trading</span>
+                                    </div>
+                                </button>
+                                
+                                <button class="option-button w-full p-4 text-left border-2 border-gray-200 rounded-xl hover:border-blue-300" 
+                                        onclick="selectOption(this, 5, 'B')">
+                                    <div class="flex items-center space-x-3">
+                                        <span class="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center text-green-600 font-bold">B</span>
+                                        <span>A payment made by companies to shareholders from profits</span>
+                                    </div>
+                                </button>
+                                
+                                <button class="option-button w-full p-4 text-left border-2 border-gray-200 rounded-xl hover:border-blue-300" 
+                                        onclick="selectOption(this, 5, 'C')">
+                                    <div class="flex items-center space-x-3">
+                                        <span class="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center text-purple-600 font-bold">C</span>
+                                        <span>The difference between buy and sell prices</span>
+                                    </div>
+                                </button>
+                                
+                                <button class="option-button w-full p-4 text-left border-2 border-gray-200 rounded-xl hover:border-blue-300" 
+                                        onclick="selectOption(this, 5, 'D')">
+                                    <div class="flex items-center space-x-3">
+                                        <span class="w-8 h-8 bg-orange-100 rounded-full flex items-center justify-center text-orange-600 font-bold">D</span>
+                                        <span>A penalty for early withdrawal of investments</span>
+                                    </div>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Navigation Buttons -->
+                <div class="flex justify-between items-center p-6 bg-gray-50 border-t">
+                    <button id="prevBtn" onclick="previousQuestion()" 
+                            class="px-6 py-3 bg-gray-300 text-gray-600 rounded-lg font-medium transition-all hover:bg-gray-400 disabled:opacity-50" 
+                            disabled>
+                        ← Previous
+                    </button>
+                    
+                    <div class="flex space-x-2">
+                        <div class="w-3 h-3 bg-blue-500 rounded-full question-dot active" data-question="1"></div>
+                        <div class="w-3 h-3 bg-gray-300 rounded-full question-dot" data-question="2"></div>
+                        <div class="w-3 h-3 bg-gray-300 rounded-full question-dot" data-question="3"></div>
+                        <div class="w-3 h-3 bg-gray-300 rounded-full question-dot" data-question="4"></div>
+                        <div class="w-3 h-3 bg-gray-300 rounded-full question-dot" data-question="5"></div>
+                    </div>
+                    
+                    <div class="flex items-center gap-3">
+                        <button id="nextBtn" onclick="nextQuestion()" 
+                                class="px-6 py-3 bg-blue-600 text-white rounded-lg font-medium transition-all hover:bg-blue-700 disabled:opacity-50" 
+                                disabled>
+                            Next →
+                        </button>
+
+                        <!-- Added Submit button (hidden by default, enabled when all answered) -->
+                        <button id="submitBtn" onclick="submitQuiz()" 
+                                class="px-6 py-3 bg-green-500 text-white rounded-lg font-medium transition-all hover:bg-green-600 hidden" 
+                                disabled>
+                            Submit ✅
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Submit Button (initially hidden) -->
+            <div id="submitSection" class="mt-8 text-center hidden">
+                <div class="bg-white rounded-2xl shadow-xl p-8 border border-gray-100">
+                    <div class="mb-6">
+                        <h3 class="text-2xl font-bold text-gray-800 mb-2">Ready to Submit? 🎯</h3>
+                        <p class="text-gray-600">You've answered all questions. Click submit to see your results!</p>
+                    </div>
+                    
+                    <button onclick="submitQuiz()" 
+                            class="bg-gradient-to-r from-green-500 to-blue-600 hover:from-green-600 hover:to-blue-700 text-white font-bold px-8 py-4 rounded-xl text-lg transition-all transform hover:scale-105 pulse">
+                        Submit Quiz 🚀
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Results Modal -->
+    <div id="resultsModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+        <div class="bg-white rounded-2xl p-8 max-w-md mx-4 text-center">
+            <div id="resultsContent">
+                <!-- Results will be populated here -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentQuestionNum = 1;
+        let totalQuestions = 5;
+        let answers = {};
+        let correctAnswers = ['B', 'B', 'B', 'B', 'B']; // Correct answers for demo
+
+        // Initialize floating icons animation
+        document.querySelectorAll('.floating-icon').forEach((icon, index) => {
+            icon.style.animationDelay = `${index * 1.2}s`;
+        });
+
+        function selectOption(element, questionNum, option) {
+            // Remove selection from all options in this question
+            const questionCard = document.getElementById(`question${questionNum}`);
+            questionCard.querySelectorAll('.option-button').forEach(btn => {
+                btn.classList.remove('selected');
+            });
+            
+            // Add selection to clicked option
+            element.classList.add('selected');
+            
+            // Store answer
+            answers[questionNum] = option;
+            
+            // Enable next button
+            document.getElementById('nextBtn').disabled = false;
+            document.getElementById('nextBtn').classList.remove('opacity-50');
+            
+            // If on last question, enable submit button when all answered
+            if (currentQuestionNum === totalQuestions) {
+                const submitBtn = document.getElementById('submitBtn');
+                if (submitBtn) {
+                    const answeredQuestions = Object.keys(answers).length;
+                    if (answeredQuestions === totalQuestions) {
+                        submitBtn.disabled = false;
+                        submitBtn.classList.remove('opacity-50');
+                    }
+                }
+            }
+            
+            // Add a small celebration animation
+            element.style.transform = 'scale(0.95)';
+            setTimeout(() => {
+                element.style.transform = '';
+            }, 150);
+        }
+
+        function nextQuestion() {
+            if (currentQuestionNum < totalQuestions) {
+                // Hide current question
+                document.getElementById(`question${currentQuestionNum}`).classList.add('hidden');
+                
+                // Show next question
+                currentQuestionNum++;
+                document.getElementById(`question${currentQuestionNum}`).classList.remove('hidden');
+                document.getElementById(`question${currentQuestionNum}`).classList.add('slide-in');
+                
+                updateProgress();
+                updateNavigation();
+            }
+        }
+
+        function previousQuestion() {
+            if (currentQuestionNum > 1) {
+                // Hide current question
+                document.getElementById(`question${currentQuestionNum}`).classList.add('hidden');
+                
+                // Show previous question
+                currentQuestionNum--;
+                document.getElementById(`question${currentQuestionNum}`).classList.remove('hidden');
+                
+                updateProgress();
+                updateNavigation();
+            }
+        }
+
+        function updateProgress() {
+            const progress = (currentQuestionNum / totalQuestions) * 100;
+            const circumference = 188.4;
+            const strokeDasharray = (progress / 100) * circumference;
+            
+            // Update circular progress
+            document.getElementById('progressCircle').style.strokeDasharray = `${strokeDasharray} ${circumference}`;
+            document.getElementById('progressText').textContent = `${currentQuestionNum}/${totalQuestions}`;
+            
+            // Update linear progress
+            document.getElementById('linearProgress').style.width = `${progress}%`;
+            
+            // Update current question display
+            document.getElementById('currentQuestion').textContent = currentQuestionNum;
+            
+            // Update question dots
+            document.querySelectorAll('.question-dot').forEach((dot, index) => {
+                if (index + 1 === currentQuestionNum) {
+                    dot.classList.add('active');
+                    dot.classList.remove('bg-gray-300');
+                    dot.classList.add('bg-blue-500');
+                } else if (index + 1 < currentQuestionNum) {
+                    dot.classList.remove('bg-gray-300', 'bg-blue-500');
+                    dot.classList.add('bg-green-500');
+                } else {
+                    dot.classList.remove('active', 'bg-blue-500', 'bg-green-500');
+                    dot.classList.add('bg-gray-300');
+                }
+            });
+        }
+
+        function updateNavigation() {
+            const prevBtn = document.getElementById('prevBtn');
+            const nextBtn = document.getElementById('nextBtn');
+            const submitBtn = document.getElementById('submitBtn');
+            
+            // Previous button
+            prevBtn.disabled = currentQuestionNum === 1;
+            if (prevBtn.disabled) {
+                prevBtn.classList.add('opacity-50');
+            } else {
+                prevBtn.classList.remove('opacity-50');
+            }
+            
+            // Next / Submit logic
+            if (currentQuestionNum === totalQuestions) {
+                // hide next, show submit
+                nextBtn.style.display = 'none';
+                if (submitBtn) {
+                    submitBtn.style.display = 'inline-block';
+                    // enable only if all questions answered
+                    const answeredQuestions = Object.keys(answers).length;
+                    submitBtn.disabled = answeredQuestions !== totalQuestions;
+                    if (submitBtn.disabled) submitBtn.classList.add('opacity-50'); else submitBtn.classList.remove('opacity-50');
+                }
+                // Show submitSection as fallback
+                const answeredQuestions = Object.keys(answers).length;
+                if (answeredQuestions === totalQuestions) {
+                    document.getElementById('submitSection').classList.remove('hidden');
+                    document.getElementById('submitSection').classList.add('slide-in');
+                }
+            } else {
+                // show next, hide submit
+                nextBtn.style.display = 'inline-block';
+                nextBtn.disabled = !answers[currentQuestionNum];
+                if (nextBtn.disabled) {
+                    nextBtn.classList.add('opacity-50');
+                } else {
+                    nextBtn.classList.remove('opacity-50');
+                }
+                if (submitBtn) submitBtn.style.display = 'none';
+                // hide submitSection
+                document.getElementById('submitSection').classList.add('hidden');
+            }
+        }
+
+        function submitQuiz() {
+            // Calculate score
+            let score = 0;
+            for (let i = 1; i <= totalQuestions; i++) {
+                if (answers[i] === correctAnswers[i - 1]) {
+                    score++;
+                }
+            }
+            
+            const percentage = Math.round((score / totalQuestions) * 100);
+            
+            // Show results modal
+            showResults(score, percentage);
+        }
+
+        function showResults(score, percentage) {
+            const modal = document.getElementById('resultsModal');
+            const content = document.getElementById('resultsContent');
+            
+            let emoji = '🎉';
+            let message = 'Excellent work!';
+            let color = 'green';
+            
+            if (percentage < 60) {
+                emoji = '📚';
+                message = 'Keep learning!';
+                color = 'orange';
+            } else if (percentage < 80) {
+                emoji = '👍';
+                message = 'Good job!';
+                color = 'blue';
+            }
+            
+            content.innerHTML = `
+                <div class="text-6xl mb-4 bounce">${emoji}</div>
+                <h3 class="text-2xl font-bold text-gray-800 mb-2">${message}</h3>
+                <div class="text-4xl font-bold text-${color}-600 mb-4">${score}/${totalQuestions}</div>
+                <div class="text-lg text-gray-600 mb-6">${percentage}% Score</div>
+                
+                <div class="space-y-4">
+                    <div class="p-4 bg-${color}-50 rounded-lg">
+                        <h4 class="font-semibold text-${color}-800 mb-2">Performance Breakdown:</h4>
+                        <div class="grid grid-cols-2 gap-4 text-sm">
+                            <div>
+                                <span class="text-green-600">✓ Correct:</span> ${score}
+                            </div>
+                            <div>
+                                <span class="text-red-600">✗ Incorrect:</span> ${totalQuestions - score}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="flex space-x-3">
+                        <button onclick="retakeQuiz()" 
+                                class="flex-1 px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors">
+                            Retake Quiz 🔄
+                        </button>
+                        <button onclick="closeResults()" 
+                                class="flex-1 px-4 py-2 bg-${color}-600 text-white rounded-lg hover:bg-${color}-700 transition-colors">
+                            Continue Learning 📚
+                        </button>
+                    </div>
+                </div>
+            `;
+            
+            modal.classList.remove('hidden');
+            
+            // Confetti effect for high scores
+            if (percentage >= 80) {
+                createConfetti();
+            }
+        }
+
+        function createConfetti() {
+            const colors = ['#667eea', '#764ba2', '#f093fb', '#f5576c', '#4facfe', '#00f2fe'];
+            
+            for (let i = 0; i < 50; i++) {
+                setTimeout(() => {
+                    const confetti = document.createElement('div');
+                    confetti.style.position = 'fixed';
+                    confetti.style.left = Math.random() * window.innerWidth + 'px';
+                    confetti.style.top = '-10px';
+                    confetti.style.width = '10px';
+                    confetti.style.height = '10px';
+                    confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                    confetti.style.borderRadius = '50%';
+                    confetti.style.pointerEvents = 'none';
+                    confetti.style.zIndex = '1000';
+                    confetti.style.animation = 'fall 3s linear forwards';
+                    
+                    document.body.appendChild(confetti);
+                    
+                    setTimeout(() => {
+                        confetti.remove();
+                    }, 3000);
+                }, i * 20);
+            }
+        }
+
+        function retakeQuiz() {
+            // Reset quiz state
+            currentQuestionNum = 1;
+            answers = {};
+            
+            // Hide all questions
+            for (let i = 1; i <= totalQuestions; i++) {
+                document.getElementById(`question${i}`).classList.add('hidden');
+                
+                // Reset all option selections
+                const questionCard = document.getElementById(`question${i}`);
+                questionCard.querySelectorAll('.option-button').forEach(btn => {
+                    btn.classList.remove('selected');
+                });
+            }
+            
+            // Show first question
+            document.getElementById('question1').classList.remove('hidden');
+            
+            // Hide submit section and modal
+            document.getElementById('submitSection').classList.add('hidden');
+            document.getElementById('resultsModal').classList.add('hidden');
+            
+            // Reset progress and navigation
+            updateProgress();
+            updateNavigation();
+            
+            // Scroll to top
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function closeResults() {
+            document.getElementById('resultsModal').classList.add('hidden');
+        }
+
+        // Add CSS for confetti animation
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes fall {
+                to {
+                    transform: translateY(100vh) rotate(360deg);
+                }
+            }
+        `;
+        document.head.appendChild(style);
+
+        // Auto-save functionality (simulate)
+        setInterval(() => {
+            if (Object.keys(answers).length > 0) {
+                // Visual indicator of auto-save
+                const indicator = document.createElement('div');
+                indicator.className = 'fixed top-4 right-4 bg-green-500 text-white px-3 py-1 rounded text-sm z-50';
+                indicator.textContent = '💾 Progress saved';
+                document.body.appendChild(indicator);
+                
+                setTimeout(() => {
+                    indicator.remove();
+                }, 2000);
+            }
+        }, 10000);
+
+        // Initialize progress on page load
+        updateProgress();
+        
+        // Add keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowLeft' && !document.getElementById('prevBtn').disabled) {
+                previousQuestion();
+            } else if (e.key === 'ArrowRight' && !document.getElementById('nextBtn').disabled) {
+                nextQuestion();
+            } else if (e.key >= '1' && e.key <= '4') {
+                // Select option A, B, C, or D with keyboard
+                const optionIndex = parseInt(e.key) - 1;
+                const currentQuestion = document.getElementById(`question${currentQuestionNum}`);
+                const options = currentQuestion.querySelectorAll('.option-button');
+                if (options[optionIndex]) {
+                    const optionLetter = ['A', 'B', 'C', 'D'][optionIndex];
+                    selectOption(options[optionIndex], currentQuestionNum, optionLetter);
+                }
+            }
+        });
+
+        // Add question timer (optional feature)
+        let questionStartTime = Date.now();
+        
+        function startQuestionTimer() {
+            questionStartTime = Date.now();
+        }
+        
+        // Track time spent on each question
+        const originalNextQuestion = nextQuestion;
+        nextQuestion = function() {
+            const timeSpent = Date.now() - questionStartTime;
+            console.log(`Time spent on question ${currentQuestionNum}: ${timeSpent}ms`);
+            originalNextQuestion();
+            startQuestionTimer();
+        };
+        
+        startQuestionTimer();
+
+        // Wire submit button (in case it's shown)
+        document.addEventListener('DOMContentLoaded', () => {
+            const submitBtn = document.getElementById('submitBtn');
+            if (submitBtn) {
+                submitBtn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    // ensure all questions answered before submitting
+                    if (Object.keys(answers).length === totalQuestions) {
+                        submitQuiz();
+                    } else {
+                        // small feedback
+                        submitBtn.classList.add('animate-pulse');
+                        setTimeout(()=> submitBtn.classList.remove('animate-pulse'), 600);
+                    }
+                });
+            }
+
+            // ensure navigation state correct on load
+            updateProgress();
+            updateNavigation();
+        });
+    </script>
+</body>
+</html>

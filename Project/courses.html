@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Courses | StockTrainer - Master the Markets</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+
+    /* background for hero */
+    .gradient-bg {
+      background: linear-gradient(135deg, #0b1220 0%, #0f1724 40%, #111827 100%);
+    }
+
+    .glass-effect {
+      background: rgba(255, 255, 255, 0.03);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.03);
+    }
+
+    /* High-contrast gradient text + stroke + shadow for legibility */
+    .gradient-text {
+      background: linear-gradient(90deg, #ffffff 0%, #fff7b2 30%, #ffd6a5 60%, #ffaf7b 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      -webkit-text-stroke: 0.7px rgba(0,0,0,0.22);
+      text-shadow: 0 8px 28px rgba(0,0,0,0.55);
+      display: inline-block;
+      font-weight: 900;
+    }
+
+    /* Hero title ensuring visibility on busy/dark backgrounds */
+    .hero-title {
+      color: #ffffff;
+      font-weight: 900;
+      line-height: 1.02;
+      display: inline-block;
+      text-shadow: 0 10px 36px rgba(0,0,0,0.75), 0 2px 0 rgba(255,255,255,0.02);
+    }
+
+    .course-card {
+      background: linear-gradient(145deg, #0b1220, #111827);
+      border: 1px solid rgba(255, 255, 255, 0.04);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .course-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.03), transparent);
+      transition: left 0.5s;
+      pointer-events: none;
+    }
+
+    .course-card:hover::before { left: 100%; }
+
+    .course-badge { background: linear-gradient(135deg,#10b981,#06b6d4); animation: pulse 2s infinite; }
+    .course-badge.intermediate { background: linear-gradient(135deg,#f59e0b,#f97316); }
+    .course-badge.advanced { background: linear-gradient(135deg,#8b5cf6,#ec4899); }
+
+    @keyframes pulse {
+      0% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.03); opacity: 0.9; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    .skill-bar { background: linear-gradient(90deg,#3b82f6,#8b5cf6); height: 6px; border-radius: 3px; transition: width 2s ease-in-out; }
+    .learning-path { position: relative; }
+    .learning-path::before {
+      content: '';
+      position: absolute;
+      left: 50%;
+      top: 0;
+      bottom: 0;
+      width: 2px;
+      background: linear-gradient(to bottom,#3b82f6,#8b5cf6,#ec4899);
+      transform: translateX(-50%);
+    }
+    .path-node {
+      background: radial-gradient(circle,#0b1220 40%, #3b82f6 100%);
+      width: 20px; height: 20px; border-radius: 50%;
+      position: absolute; left: 50%; transform: translateX(-50%);
+      border: 3px solid #0b1220; animation: glow 2s ease-in-out infinite alternate;
+    }
+    @keyframes glow { from { box-shadow: 0 0 10px #3b82f6; } to { box-shadow: 0 0 20px #8b5cf6; } }
+
+    .floating-icon { animation: float 3s ease-in-out infinite; }
+    @keyframes float { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-10px); } }
+
+    .progress-ring { transform: rotate(-90deg); }
+    .progress-ring-circle { transition: stroke-dashoffset 2s ease-in-out; }
+
+    .shimmer {
+      background: linear-gradient(45deg, transparent 30%, rgba(255, 255, 255, 0.03) 50%, transparent 70%);
+      background-size: 200% 200%;
+      animation: shimmer 3s ease-in-out infinite;
+    }
+    @keyframes shimmer { 0% { background-position: -200% -200%; } 50% { background-position: 200% 200%; } 100% { background-position: -200% -200%; } }
+
+    #particles-canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: -1;
+      pointer-events: none;
+      width: 100%;
+      height: 100%;
+    }
+
+    .course-stats {
+      background: rgba(0, 0, 0, 0.35);
+      border-radius: 15px;
+      backdrop-filter: blur(6px);
+      padding: 1rem;
+    }
+
+    .difficulty-meter { height: 8px; background: #0f1724; border-radius: 4px; overflow: hidden; }
+    .difficulty-fill { height: 100%; border-radius: 4px; transition: width 1s ease-out; }
+
+    @media (max-width: 640px) {
+      .hero-title { font-size: 2.25rem; text-shadow: 0 10px 36px rgba(0,0,0,0.85); }
+      .gradient-text { -webkit-text-stroke: 0.6px rgba(0,0,0,0.25); }
+    }
+  </style>
+</head>
+<body class="bg-gray-900 text-white overflow-x-hidden">
+
+  <!-- Animated Background -->
+  <canvas id="particles-canvas"></canvas>
+
+  <!-- Navbar with glass effect -->
+  <header class="fixed top-0 w-full z-50 glass-effect">
+    <div class="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
+      <a href="index.html" class="text-2xl font-bold text-white tracking-wide flex items-center">
+        <span class="text-3xl mr-2 animate-pulse">📈</span>
+        StockTrainer
+      </a>
+      <nav class="space-x-6 hidden md:flex items-center">
+        <a href="{{ url_for('home') }}" class="hover:text-blue-400 font-medium transition-colors duration-300">Home</a>
+        <a href="#courses" class="text-blue-400 font-medium">Courses</a>
+        <a href="{{ url_for('dashboard') }}" class="hover:text-blue-400 font-medium transition-colors duration-300">Dashboard</a>
+        <a href="{{ url_for('stock_market') }}" class="hover:text-blue-400 font-medium transition-colors duration-300">Live Market</a>
+        <button class="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-6 py-2 rounded-full hover:from-blue-700 hover:to-purple-700 transform hover:scale-105 transition-all duration-300">
+          Get Started
+        </button>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Hero Section for Courses -->
+  <section class="pt-24 pb-16 gradient-bg relative overflow-hidden">
+    <div class="max-w-7xl mx-auto px-4 text-center relative z-10">
+      <div class="floating-icon text-8xl mb-6">🎓</div>
+
+      <h1 class="text-6xl md:text-7xl hero-title mb-6">
+        Master Your
+        <span class="gradient-text">Trading Skills</span>
+      </h1>
+
+      <p class="text-xl md:text-2xl mb-8 text-gray-300 max-w-3xl mx-auto">
+        From beginner to expert - our comprehensive courses will transform you into a confident, profitable trader
+      </p>
+
+      <!-- Course Stats -->
+      <div class="flex flex-wrap justify-center gap-8 mb-12">
+        <div class="course-stats p-6 rounded-2xl text-center min-w-[150px]">
+          <div class="text-3xl font-bold text-green-400 counter" data-target="15000">0</div>
+          <div class="text-sm text-gray-300">Students Enrolled</div>
+        </div>
+        <div class="course-stats p-6 rounded-2xl text-center min-w-[150px]">
+          <div class="text-3xl font-bold text-blue-400 counter" data-target="97">0</div>
+          <div class="text-sm text-gray-300">Completion Rate %</div>
+        </div>
+        <div class="course-stats p-6 rounded-2xl text-center min-w-[150px]">
+          <div class="text-3xl font-bold text-purple-400 counter" data-target="4.9">0</div>
+          <div class="text-sm text-gray-300">Average Rating</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Learning Path Overview -->
+  <section class="py-16 bg-gray-900">
+    <div class="max-w-6xl mx-auto px-4">
+      <h2 class="text-4xl font-bold text-center mb-12">
+        Your <span class="gradient-text">Learning Journey</span>
+      </h2>
+
+      <div class="learning-path relative py-12">
+        <div class="path-node" style="top: 10%"></div>
+        <div class="path-node" style="top: 50%"></div>
+        <div class="path-node" style="top: 90%"></div>
+
+        <div class="grid md:grid-cols-3 gap-8 relative z-10">
+          <div class="text-center">
+            <div class="bg-gradient-to-br from-blue-600 to-blue-800 p-8 rounded-2xl mb-4 transform hover:scale-105 transition-all duration-300">
+              <div class="text-4xl mb-4">📚</div>
+              <h3 
+                class="text-xl font-bold">Foundation</h3>
+            
+              <p class="text-blue-200 text-sm mt-2">Build your trading knowledge base</p>
+            </div>
+          </div>
+
+          <div class="text-center">
+            <div class="bg-gradient-to-br from-orange-600 to-orange-800 p-8 rounded-2xl mb-4 transform hover:scale-105 transition-all duration-300">
+              <div class="text-4xl mb-4">📊</div>
+              <h3 class="text-xl font-bold">Analysis</h3>
+              <p class="text-orange-200 text-sm mt-2">Master technical & fundamental analysis</p>
+            </div>
+          </div>
+
+          <div class="text-center">
+            <div class="bg-gradient-to-br from-purple-600 to-purple-800 p-8 rounded-2xl mb-4 transform hover:scale-105 transition-all duration-300">
+              <div class="text-4xl mb-4">💰</div>
+              <h3 class="text-xl font-bold">Strategy</h3>
+              <p class="text-purple-200 text-sm mt-2">Develop advanced trading strategies</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Main Courses Section -->
+  <section id="courses" class="py-20 bg-black">
+    <div class="max-w-7xl mx-auto px-4">
+      <div class="text-center mb-16">
+        <h2 class="text-5xl font-bold mb-4 gradient-text">Explore Our Courses</h2>
+        <p class="text-xl text-gray-400 max-w-2xl mx-auto">Choose your path to trading mastery with our expertly crafted curriculum</p>
+      </div>
+
+      <div class="grid lg:grid-cols-3 md:grid-cols-2 gap-8">
+        <!-- Course 1 -->
+        <div class="course-card rounded-2xl overflow-hidden transform hover:scale-105 transition-all duration-500 group">
+          <div class="relative overflow-hidden">
+            <img src="https://digitycoonacademy.com/wp-content/uploads/2023/04/Course-Images-8.png" alt="Stock Market Basics" class="w-full h-64 object-cover transform group-hover:scale-110 transition duration-700">
+            <div class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+              <div class="absolute bottom-4 left-4 right-4">
+                <div class="flex items-center justify-between mb-2">
+                  <span class="course-badge text-white px-3 py-1 rounded-full text-sm font-semibold">Beginner</span>
+                  <div class="flex items-center text-yellow-400">
+                    <span class="text-sm mr-1">4.8</span>
+                    <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                  </div>
+                </div>
+                <div class="text-white text-sm">12 Lessons • 6 Hours • Certificate</div>
+              </div>
+            </div>
+            <div class="absolute top-4 right-4">
+              <svg class="progress-ring w-16 h-16" viewBox="0 0 36 36">
+                <circle class="progress-ring-circle" cx="18" cy="18" r="16" stroke="#374151" stroke-width="2" fill="none" stroke-dasharray="100" stroke-dashoffset="75"></circle>
+                <circle class="progress-ring-circle" cx="18" cy="18" r="16" stroke="#10b981" stroke-width="2" fill="none" stroke-dasharray="100" stroke-dashoffset="75"></circle>
+                <text x="18" y="22" class="text-xs fill-white text-center" text-anchor="middle">25%</text>
+              </svg>
+            </div>
+          </div>
+          <div class="p-8">
+            <h3 class="text-2xl font-bold mb-4 text-white group-hover:text-blue-400 transition-colors">Stock Market Basics</h3>
+            <p class="text-gray-300 mb-6 leading-relaxed">Perfect foundation for beginners. Learn how the stock market works, essential trading terms, market mechanics, and build your first portfolio.</p>
+            <div class="mb-6">
+              <div class="flex justify-between items-center mb-2">
+                <span class="text-sm text-gray-400">Difficulty Level</span>
+                <span class="text-sm text-green-400">Beginner</span>
+              </div>
+              <div class="difficulty-meter">
+                <div class="difficulty-fill bg-gradient-to-r from-green-400 to-green-600" style="width: 25%"></div>
+              </div>
+            </div>
+            <div class="grid grid-cols-2 gap-4 mb-6 text-sm text-gray-400">
+              <div class="flex items-center"><span class="text-blue-400 mr-2">📱</span>Mobile Friendly</div>
+              <div class="flex items-center"><span class="text-green-400 mr-2">🏆</span>Certificate</div>
+              <div class="flex items-center"><span class="text-purple-400 mr-2">👥</span>Community Access</div>
+              <div class="flex items-center"><span class="text-orange-400 mr-2">📊</span>Practice Tools</div>
+            </div>
+            <button onclick="enrollCourse('basic')" class="w-full bg-gradient-to-r from-orange-600 to-red-600 text-white py-3 rounded-full font-semibold hover:from-orange-700 hover:to-red-700 transform hover:scale-105 transition-all duration-300 group"></button>
+            <a href="{{ url_for('basics') }}" class="w-full inline-flex items-center justify-center bg-gradient-to-r from-purple-600 to-pink-600 text-white py-3 rounded-full font-semibold hover:from-purple-700 hover:to-pink-700 transform hover:scale-105 transition-all duration-300">Basic Learning</a>
+              <svg class="ml-2 w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 01-1.414 1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd"/></svg>
+            </a>
+
+
+            <button onclick="enrollCourse('fundamentals')" class="w-full bg-gradient-to-r from-orange-600 to-red-600 text-white py-3 rounded-full font-semibold hover:from-orange-700 hover:to-red-700 transform hover:scale-105 transition-all duration-300 group"></button>
+            <a href="{{ url_for('fundamentals') }}" class="w-full inline-flex items-center justify-center bg-gradient-to-r from-purple-600 to-pink-600 text-white py-3 rounded-full font-semibold hover:from-purple-700 hover:to-pink-700 transform hover:scale-105 transition-all duration-300">Learning Fundamentals</a>
+              <svg class="ml-2 w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 01-1.414 1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd"/></svg>
+            </a>
+          </div>
+        </div>
+
+        <!-- Course 2 -->
+        <div class="course-card rounded-2xl overflow-hidden transform hover:scale-105 transition-all duration-500 group">
+          <div class="relative overflow-hidden">
+            <img src="https://static.ifxdb.com/static-content/305/d--Zx_800.jpg" alt="Technical Analysis" class="w-full h-64 object-cover transform group-hover:scale-110 transition duration-700">
+            <div class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+              <div class="absolute bottom-4 left-4 right-4">
+                <div class="flex items-center justify-between mb-2">
+                  <span class="course-badge intermediate text-white px-3 py-1 rounded-full text-sm font-semibold">Intermediate</span>
+                  <div class="flex items-center text-yellow-400"><span class="text-sm mr-1">4.9</span><svg class="w-4 h-4 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg></div>
+                </div>
+                <div class="text-white text-sm">18 Lessons • 12 Hours • Advanced Certificate</div>
+              </div>
+            </div>
+            <div class="absolute top-4 right-4">
+              <svg class="progress-ring w-16 h-16" viewBox="0 0 36 36">
+                <circle class="progress-ring-circle" cx="18" cy="18" r="16" stroke="#374151" stroke-width="2" fill="none" stroke-dasharray="100" stroke-dashoffset="40"></circle>
+                <circle class="progress-ring-circle" cx="18" cy="18" r="16" stroke="#f59e0b" stroke-width="2" fill="none" stroke-dasharray="100" stroke-dashoffset="40"></circle>
+                <text x="18" y="22" class="text-xs fill-white text-center" text-anchor="middle">60%</text>
+              </svg>
+            </div>
+          </div>
+          <div class="p-8">
+            <h3 class="text-2xl font-bold mb-4 text-white group-hover:text-orange-400 transition-colors">Technical Analysis</h3>
+            <p class="text-gray-300 mb-6 leading-relaxed">Master chart patterns, indicators, RSI, MACD, support/resistance levels, and advanced technical analysis techniques used by professional traders.</p>
+            <div class="mb-6">
+              <div class="flex justify-between items-center mb-2"><span class="text-sm text-gray-400">Difficulty Level</span><span class="text-sm text-orange-400">Intermediate</span></div>
+              <div class="difficulty-meter"><div class="difficulty-fill bg-gradient-to-r from-orange-400 to-orange-600" style="width: 60%"></div></div>
+            </div>
+            <div class="grid grid-cols-2 gap-4 mb-6 text-sm text-gray-400">
+              <div class="flex items-center"><span class="text-blue-400 mr-2">📈</span>Live Charts</div>
+              <div class="flex items-center"><span class="text-green-400 mr-2">🎯</span>Trading Signals</div>
+              <div class="flex items-center"><span class="text-purple-400 mr-2">🔬</span>Pattern Recognition</div>
+              <div class="flex items-center"><span class="text-orange-400 mr-2">⚡</span>Real-time Data</div>
+            </div>
+            <button onclick="enrollCourse('technical')" class="w-full bg-gradient-to-r from-orange-600 to-red-600 text-white py-3 rounded-full font-semibold hover:from-orange-700 hover:to-red-700 transform hover:scale-105 transition-all duration-300 group"></button>
+            <a href="{{ url_for('technical') }}" class="w-full inline-flex items-center justify-center bg-gradient-to-r from-purple-600 to-pink-600 text-white py-3 rounded-full font-semibold hover:from-purple-700 hover:to-pink-700 transform hover:scale-105 transition-all duration-300">Start Learning</a>
+            
+          </div>
+        </div>
+
+        <!-- Course 3 -->
+        <div class="course-card rounded-2xl overflow-hidden transform hover:scale-105 transition-all duration-500 group">
+          <div class="relative overflow-hidden">
+            <img src="https://tradepa.in/img/343-long-term-short-term-investing-strategies-20240111104546.webp" alt="Investment Strategies" class="w-full h-64 object-cover transform group-hover:scale-110 transition duration-700">
+            <div class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+              <div class="absolute bottom-4 left-4 right-4">
+                <div class="flex items-center justify-between mb-2">
+                  <span class="course-badge advanced text-white px-3 py-1 rounded-full text-sm font-semibold">Advanced</span>
+                  <div class="flex items-center text-yellow-400"><span class="text-sm mr-1">4.7</span><svg class="w-4 h-4 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg></div>
+                </div>
+                <div class="text-white text-sm">24 Lessons • 20 Hours • Expert Certificate</div>
+              </div>
+            </div>
+            <div class="absolute top-4 right-4">
+              <svg class="progress-ring w-16 h-16" viewBox="0 0 36 36">
+                <circle class="progress-ring-circle" cx="18" cy="18" r="16" stroke="#374151" stroke-width="2" fill="none" stroke-dasharray="100" stroke-dashoffset="85"></circle>
+                <circle class="progress-ring-circle" cx="18" cy="18" r="16" stroke="#8b5cf6" stroke-width="2" fill="none" stroke-dasharray="100" stroke-dashoffset="85"></circle>
+                <text x="18" y="22" class="text-xs fill-white text-center" text-anchor="middle">15%</text>
+              </svg>
+            </div>
+          </div>
+          <div class="p-8">
+            <h3 class="text-2xl font-bold mb-4 text-white group-hover:text-purple-400 transition-colors">Investment Strategies</h3>
+            <p class="text-gray-300 mb-6 leading-relaxed">Advanced long-term investing, value investing strategies, SIPs, mutual funds, portfolio diversification, and comprehensive risk management.</p>
+            <div class="mb-6">
+              <div class="flex justify-between items-center mb-2"><span class="text-sm text-gray-400">Difficulty Level</span><span class="text-sm text-purple-400">Advanced</span></div>
+              <div class="difficulty-meter"><div class="difficulty-fill bg-gradient-to-r from-purple-400 to-pink-600" style="width: 90%"></div></div>
+            </div>
+            <div class="grid grid-cols-2 gap-4 mb-6 text-sm text-gray-400">
+              <div class="flex items-center"><span class="text-blue-400 mr-2">💼</span>Portfolio Mgmt</div>
+              <div class="flex items-center"><span class="text-green-400 mr-2">🛡️</span>Risk Control</div>
+              <div class="flex items-center"><span class="text-purple-400 mr-2">📊</span>Value Investing</div>
+              <div class="flex items-center"><span class="text-orange-400 mr-2">🎯</span>Expert Mentoring</div>
+            </div>
+            <button onclick="enrollCourse('technical')" class="w-full bg-gradient-to-r from-orange-600 to-red-600 text-white py-3 rounded-full font-semibold hover:from-orange-700 hover:to-red-700 transform hover:scale-105 transition-all duration-300 group"></button>
+            <a href="{{ url_for('technical') }}" class="w-full inline-flex items-center justify-center bg-gradient-to-r from-purple-600 to-pink-600 text-white py-3 rounded-full font-semibold hover:from-purple-700 hover:to-pink-700 transform hover:scale-105 transition-all duration-300">
+              Start Learning
+            </a>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- Special Features Section -->
+  <section class="py-20 gradient-bg">
+    <div class="max-w-7xl mx-auto px-4">
+      <div class="text-center mb-16">
+        <h2 class="text-5xl font-bold mb-4">What Makes Our Courses Special?</h2>
+        <p class="text-xl text-gray-200">Experience learning like never before</p>
+      </div>
+
+      <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div class="glass-effect p-6 rounded-2xl text-center transform hover:scale-105 transition-all duration-300"><div class="text-5xl mb-4 floating-icon">🎯</div><h3 class="text-xl font-bold mb-2">Interactive Simulations</h3><p class="text-gray-200 text-sm">Practice with real market data in a risk-free environment</p></div>
+        <div class="glass-effect p-6 rounded-2xl text-center transform hover:scale-105 transition-all duration-300"><div class="text-5xl mb-4 floating-icon">🤖</div><h3 class="text-xl font-bold mb-2">AI-Powered Learning</h3><p class="text-gray-200 text-sm">Personalized curriculum that adapts to your progress</p></div>
+        <div class="glass-effect p-6 rounded-2xl text-center transform hover:scale-105 transition-all duration-300"><div class="text-5xl mb-4 floating-icon">👨‍🏫</div><h3 class="text-xl font-bold mb-2">Expert Mentors</h3><p class="text-gray-200 text-sm">Learn from professional traders with years of experience</p></div>
+        <div class="glass-effect p-6 rounded-2xl text-center transform hover:scale-105 transition-all duration-300"><div class="text-5xl mb-4 floating-icon">🏆</div><h3 class="text-xl font-bold mb-2">Certification</h3><p class="text-gray-200 text-sm">Get industry-recognized certificates upon completion</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Student Success Stories -->
+  <section class="py-20 bg-gray-900">
+    <div class="max-w-7xl mx-auto px-4">
+      <div class="text-center mb-16">
+        <h2 class="text-5xl font-bold mb-4">Success <span class="gradient-text">Stories</span></h2>
+        <p class="text-xl text-gray-400">Real results from real students</p>
+      </div>
+
+      <div class="grid md:grid-cols-3 gap-8">
+        <div class="bg-gradient-to-br from-gray-800 to-gray-900 p-8 rounded-2xl border border-gray-700 transform hover:scale-105 transition-all duration-300">
+          <div class="flex items-center mb-6">
+            <div class="w-16 h-16 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-2xl font-bold mr-4">S</div>
+            <div><h4 class="text-xl font-bold text-white">Sarah Johnson</h4><p class="text-gray-400">Beginner Course Graduate</p></div>
+          </div>
+          <p class="text-gray-300 mb-4 italic">"Started with zero knowledge and now I'm confidently trading with 15% annual returns. The course structure is amazing!"</p>
+          <div class="flex items-center text-yellow-400"><span class="mr-2">★★★★★</span><span class="text-sm text-gray-400">5.0 rating</span></div>
+        </div>
+
+        <div class="bg-gradient-to-br from-gray-800 to-gray-900 p-8 rounded-2xl border border-gray-700 transform hover:scale-105 transition-all duration-300">
+          <div class="flex items-center mb-6">
+            <div class="w-16 h-16 bg-gradient-to-r from-green-500 to-teal-600 rounded-full flex items-center justify-center text-2xl font-bold mr-4">M</div>
+            <div><h4 class="text-xl font-bold text-white">Mike Chen</h4><p class="text-gray-400">Technical Analysis Expert</p></div>
+          </div>
+          <p class="text-gray-300 mb-4 italic">"The technical analysis course took my trading to the next level. Pattern recognition skills are incredibly valuable."</p>
+          <div class="flex items-center text-yellow-400"><span class="mr-2">★★★★★</span><span class="text-sm text-gray-400">5.0 rating</span></div>
+        </div>
+
+        <div class="bg-gradient-to-br from-gray-800 to-gray-900 p-8 rounded-2xl border border-gray-700 transform hover:scale-105 transition-all duration-300">
+          <div class="flex items-center mb-6">
+            <div class="w-16 h-16 bg-gradient-to-r from-orange-500 to-red-600 rounded-full flex items-center justify-center text-2xl font-bold mr-4">A</div>
+            <div><h4 class="text-xl font-bold text-white">Alex Rivera</h4><p class="text-gray-400">Investment Strategist</p></div>
+          </div>
+          <p class="text-gray-300 mb-4 italic">"Built a diversified portfolio worth $500K using strategies learned here. Risk management is everything!"</p>
+          <div class="flex items-center text-yellow-400"><span class="mr-2">★★★★★</span><span class="text-sm text-gray-400">5.0 rating</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Call to Action -->
+  <section class="py-20 gradient-bg text-center">
+    <div class="max-w-4xl mx-auto px-4">
+      <h2 class="text-5xl font-bold mb-6">Ready to Start Your Trading Journey?</h2>
+      <p class="text-xl mb-8 text-gray-200">Join thousands of successful traders who transformed their financial future</p>
+      <div class="flex flex-col md:flex-row gap-4 justify-center mb-8">
+        <a href="{{ url_for('technical') }}" class="bg-white text-gray-900 px-8 py-4 rounded-full text-lg font-bold hover:bg-gray-100 transform hover:scale-110 transition-all duration-300 inline-block">🚀 Start Free Trial</a>
+        <a href="{{ url_for('contact') }}" class="glass-effect text-white px-8 py-4 rounded-full text-lg font-semibold hover:bg-white hover:bg-opacity-20 transform hover:scale-110 transition-all duration-300 inline-block">📞 Talk to Advisor</a>
+      </div>
+      <div class="text-sm text-gray-300">✅ 7-day free trial • ✅ Money-back guarantee • ✅ 24/7 support</div>
+    </div>
+  </section>
+
+  <footer class="bg-black py-10">
+    <div class="max-w-7xl mx-auto px-4">
+      <div class="grid md:grid-cols-4 gap-8 mb-8">
+        <div><h4 class="text-xl font-bold mb-4 text-blue-400">StockTrainer</h4><p class="text-gray-400">Empowering traders worldwide with cutting-edge education and technology.</p></div>
+        <div><h5 class="font-semibold mb-3 text-white">Courses</h5><div class="space-y-2 text-gray-400"><div><a href="{{ url_for('basics') }}" class="hover:text-white transition-colors">Stock Market Basics</a></div><div><a href="{{ url_for('technical') }}" class="hover:text-white transition-colors">Technical Analysis</a></div><div><a href="{{ url_for('technical') }}" class="hover:text-white transition-colors">Investment Strategies</a></div></div></div>
+        <div><h5 class="font-semibold mb-3 text-white">Support</h5><div class="space-y-2 text-gray-400"><div><a href="{{ url_for('terms') }}" class="hover:text-white transition-colors">Terms </a></div><div><a href="{{ url_for('privacy') }}" class="hover:text-white transition-colors">Privacy</a></div><div><a href="{{ url_for('contact') }}" class="hover:text-white transition-colors">Contact</a></div></div></div>
+        <div><h5 class="font-semibold mb-3 text-white">Connect</h5><div class="space-y-2 text-gray-400"><div><a href="#" class="hover:text-white transition-colors">Twitter</a></div><div><a href="#" class="hover:text-white transition-colors">LinkedIn</a></div><div><a href="#" class="hover:text-white transition-colors">YouTube</a></div></div></div>
+      </div>
+      <div class="border-t border-gray-800 pt-6 text-center text-gray-500">© 2025 StockTrainer. Learn. Trade. Grow. 🚀</div>
+    </div>
+  </footer>
+
+  <script>
+    function initParticles() {
+      const canvas = document.getElementById('particles-canvas');
+      const renderer = new THREE.WebGLRenderer({ canvas: canvas, alpha: true });
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      const scene = new THREE.Scene();
+      const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
+      camera.position.z = 1000;
+      const geometry = new THREE.BufferGeometry();
+      const vertices = [];
+      for (let i = 0; i < 2000; i++) {
+        vertices.push(THREE.MathUtils.randFloatSpread(2000), THREE.MathUtils.randFloatSpread(2000), THREE.MathUtils.randFloatSpread(2000));
+      }
+      geometry.setAttribute('position', new THREE.Float32BufferAttribute(vertices, 3));
+      const material = new THREE.PointsMaterial({ color: 0x4f46e5, size: 1.2, transparent: true, opacity: 0.7 });
+      const points = new THREE.Points(geometry, material);
+      scene.add(points);
+      function animate() { requestAnimationFrame(animate); points.rotation.x += 0.0005; points.rotation.y += 0.001; renderer.render(scene, camera); }
+      animate();
+      window.addEventListener('resize', () => { camera.aspect = window.innerWidth/window.innerHeight; camera.updateProjectionMatrix(); renderer.setSize(window.innerWidth, window.innerHeight); });
+    }
+
+    function animateCounters() {
+      const counters = document.querySelectorAll('.counter');
+      counters.forEach(counter => {
+        const target = parseFloat(counter.getAttribute('data-target'));
+        let current = 0;
+        const increment = Math.max( (target / 100) / 10, 1 );
+        const update = () => {
+          if (current < target) {
+            current += increment;
+            counter.textContent = target < 10 ? current.toFixed(1) : Math.floor(current).toLocaleString();
+            setTimeout(update, 20);
+          } else {
+            counter.textContent = target < 10 ? target.toFixed(1) : target.toLocaleString();
+          }
+        };
+        update();
+      });
+    }
+
+    function animateProgressRings() {
+      const rings = document.querySelectorAll('.progress-ring-circle');
+      const circumference = 2 * Math.PI * 16;
+      rings.forEach((ring, idx) => {
+        ring.style.strokeDasharray = circumference;
+        const values = [25,60,15];
+        const progress = values[idx % values.length];
+        const offset = circumference - (progress/100)*circumference;
+        setTimeout(()=> { ring.style.strokeDashoffset = offset; }, idx*200);
+      });
+    }
+
+    function enrollCourse(courseType) {
+      const courseDetails = {
+        basic:{name:"Stock Market Basics",price:"$99",duration:"6 weeks",lessons:12},
+        technical:{name:"Technical Analysis",price:"$199",duration:"8 weeks",lessons:18},
+        investing:{name:"Investment Strategies",price:"$299",duration:"12 weeks",lessons:24}
+      };
+      const course = courseDetails[courseType];
+      if (course) {
+        alert(`🎉 Ready to enroll in ${course.name}?\n\n💰 Price: ${course.price}\n📅 Duration: ${course.duration}\n📚 Lessons: ${course.lessons}`);
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      initParticles();
+      document.querySelectorAll('section').forEach(s => { s.style.opacity='0'; s.style.transform='translateY(50px)'; s.style.transition='opacity 0.8s ease, transform 0.8s ease'; });
+      setTimeout(()=> {
+        document.querySelectorAll('.course-card').forEach((c,i)=>{ c.style.opacity='0'; c.style.transform='translateY(50px) scale(0.98)'; c.style.transition='all 0.8s ease'; setTimeout(()=>{ c.style.opacity='1'; c.style.transform='translateY(0) scale(1)'; }, i*150); });
+        animateProgressRings();
+      }, 400);
+
+      const obs = new IntersectionObserver((entries)=> {
+        entries.forEach(entry=> {
+          if(entry.isIntersecting){
+            entry.target.style.opacity='1';
+            entry.target.style.transform='translateY(0)';
+            if(entry.target.querySelector('.counter')) animateCounters();
+            const difficultyBars = entry.target.querySelectorAll('.difficulty-fill');
+            difficultyBars.forEach(bar => {
+              const width = bar.getAttribute('style') || '';
+              const match = width.match(/width:\s*([\d.]+%)/);
+              const targetWidth = match ? match[1] : '50%';
+              bar.style.width = '0%';
+              setTimeout(() => { bar.style.width = targetWidth; }, 500);
+            });
+          }
+        });
+      }, {threshold:0.1, rootMargin:'0px 0px -50px 0px'});
+
+      document.querySelectorAll('section').forEach(s => obs.observe(s));
+    });
+  </script>
+
+</body>
+</html>

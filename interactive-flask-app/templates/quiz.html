@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+    <script src="{{ url_for('static', filename='js/quiz.js') }}" defer></script>
+</head>
+<body>
+    {% include 'base.html' %}
+
+    <div class="quiz-container">
+        <h1>Quiz</h1>
+        <div id="quiz">
+            <div id="question-container">
+                <h2 id="question"></h2>
+                <div id="answer-buttons" class="btn-container">
+                    <!-- Answer buttons will be dynamically generated here -->
+                </div>
+            </div>
+            <button id="next-button" class="btn" style="display: none;">Next</button>
+        </div>
+        <div id="result-container" style="display: none;">
+            <h2>Your Score: <span id="score"></span></h2>
+            <button id="restart-button" class="btn">Restart Quiz</button>
+        </div>
+    </div>
+
+    <script>
+        const questions = [
+            {
+                question: "What is the capital of France?",
+                answers: [
+                    { text: "Berlin", correct: false },
+                    { text: "Madrid", correct: false },
+                    { text: "Paris", correct: true },
+                    { text: "Lisbon", correct: false }
+                ]
+            },
+            {
+                question: "Which planet is known as the Red Planet?",
+                answers: [
+                    { text: "Earth", correct: false },
+                    { text: "Mars", correct: true },
+                    { text: "Jupiter", correct: false },
+                    { text: "Saturn", correct: false }
+                ]
+            },
+            {
+                question: "Who wrote 'To Kill a Mockingbird'?",
+                answers: [
+                    { text: "Harper Lee", correct: true },
+                    { text: "Mark Twain", correct: false },
+                    { text: "Ernest Hemingway", correct: false },
+                    { text: "F. Scott Fitzgerald", correct: false }
+                ]
+            }
+        ];
+
+        let currentQuestionIndex = 0;
+        let score = 0;
+
+        const questionElement = document.getElementById('question');
+        const answerButtonsElement = document.getElementById('answer-buttons');
+        const nextButton = document.getElementById('next-button');
+        const resultContainer = document.getElementById('result-container');
+        const scoreElement = document.getElementById('score');
+        const restartButton = document.getElementById('restart-button');
+
+        function startQuiz() {
+            currentQuestionIndex = 0;
+            score = 0;
+            nextButton.classList.add('hide');
+            resultContainer.classList.add('hide');
+            questionContainer.classList.remove('hide');
+            showQuestion(questions[currentQuestionIndex]);
+        }
+
+        function showQuestion(question) {
+            questionElement.innerText = question.question;
+            answerButtonsElement.innerHTML = '';
+            question.answers.forEach(answer => {
+                const button = document.createElement('button');
+                button.innerText = answer.text;
+                button.classList.add('btn');
+                button.addEventListener('click', () => selectAnswer(answer));
+                answerButtonsElement.appendChild(button);
+            });
+        }
+
+        function selectAnswer(answer) {
+            const correct = answer.correct;
+            if (correct) {
+                score++;
+            }
+            currentQuestionIndex++;
+            if (currentQuestionIndex < questions.length) {
+                nextButton.classList.remove('hide');
+            } else {
+                showResult();
+            }
+        }
+
+        function showResult() {
+            questionContainer.classList.add('hide');
+            resultContainer.classList.remove('hide');
+            scoreElement.innerText = score;
+        }
+
+        nextButton.addEventListener('click', () => {
+            showQuestion(questions[currentQuestionIndex]);
+            nextButton.classList.add('hide');
+        });
+
+        restartButton.addEventListener('click', startQuiz);
+
+        startQuiz();
+    </script>
+</body>
+</html>

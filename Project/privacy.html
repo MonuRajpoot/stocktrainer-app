@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Privacy Policy | Kalkaji</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            line-height: 1.6;
+            color: #2d3748;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+            color: white;
+            animation: fadeInDown 0.8s ease-out;
+        }
+        
+        .header h1 {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            text-shadow: 0 4px 8px rgba(0,0,0,0.3);
+        }
+        
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+        
+        .privacy-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+            animation: fadeInUp 0.8s ease-out;
+        }
+        
+        .intro-section {
+            text-align: center;
+            padding: 2rem;
+            background: linear-gradient(135deg, #4f46e5, #7c3aed);
+            color: white;
+            border-radius: 15px;
+            margin-bottom: 2rem;
+        }
+        
+        .section {
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            border-radius: 12px;
+            border-left: 4px solid #4f46e5;
+            background: #f8fafc;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .section:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(79, 70, 229, 0.15);
+            background: #f1f5f9;
+        }
+        
+        .section-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+        }
+        
+        .section-title {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: #1e293b;
+        }
+        
+        .section-icon {
+            font-size: 1.5rem;
+            color: #4f46e5;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(79, 70, 229, 0.1);
+            border-radius: 50%;
+        }
+        
+        .toggle-icon {
+            font-size: 1.2rem;
+            color: #64748b;
+            transition: transform 0.3s ease;
+        }
+        
+        .section.expanded .toggle-icon {
+            transform: rotate(180deg);
+        }
+        
+        .section-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease-in-out;
+        }
+        
+        .section.expanded .section-content {
+            max-height: 500px;
+        }
+        
+        .section-content p, .section-content ul {
+            margin-bottom: 1rem;
+            color: #475569;
+            line-height: 1.7;
+        }
+        
+        .section-content ul {
+            list-style: none;
+            padding-left: 0;
+        }
+        
+        .section-content li {
+            padding: 0.5rem 0;
+            padding-left: 2rem;
+            position: relative;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        
+        .section-content li:before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: #10b981;
+            font-weight: bold;
+            width: 1.5rem;
+        }
+        
+        .progress-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 0%;
+            height: 4px;
+            background: linear-gradient(90deg, #4f46e5, #7c3aed);
+            z-index: 1000;
+            transition: width 0.3s ease;
+        }
+        
+        .floating-summary {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: #4f46e5;
+            color: white;
+            padding: 1rem;
+            border-radius: 50px;
+            box-shadow: 0 10px 30px rgba(79, 70, 229, 0.3);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 100;
+        }
+        
+        .floating-summary:hover {
+            transform: scale(1.1);
+            background: #3730a3;
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            z-index: 1000;
+            backdrop-filter: blur(5px);
+        }
+        
+        .modal-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 2rem;
+            border-radius: 20px;
+            max-width: 600px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+            animation: modalSlideIn 0.3s ease-out;
+        }
+        
+        .close-modal {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #64748b;
+        }
+        
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        
+        .summary-item {
+            background: #f8fafc;
+            padding: 1rem;
+            border-radius: 10px;
+            border-left: 3px solid #4f46e5;
+        }
+        
+        .summary-item h4 {
+            color: #1e293b;
+            margin-bottom: 0.5rem;
+        }
+        
+        .contact-section {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+            text-align: center;
+            padding: 2rem;
+            border-radius: 15px;
+            margin-top: 2rem;
+        }
+        
+        .contact-btn {
+            background: white;
+            color: #059669;
+            padding: 0.75rem 2rem;
+            border: none;
+            border-radius: 25px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 1rem;
+        }
+        
+        .contact-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255,255,255,0.3);
+        }
+        
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes modalSlideIn {
+            from {
+                opacity: 0;
+                transform: translate(-50%, -60%);
+            }
+            to {
+                opacity: 1;
+                transform: translate(-50%, -50%);
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .floating-summary {
+                bottom: 20px;
+                right: 20px;
+                padding: 0.75rem;
+            }
+            
+            .section {
+                padding: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="progress-bar" id="progressBar"></div>
+    
+    <div class="container">
+        <div class="header">
+            <h1><i class="fas fa-shield-alt"></i> Privacy Policy</h1>
+            <p>Your privacy matters to us at Kalkaji</p>
+        </div>
+        
+        <div class="privacy-card">
+            <div class="intro-section">
+                <h2>🔒 Protecting Your Digital Journey</h2>
+                <p>We believe in transparency. Click on each section below to learn how we handle your data responsibly and keep your learning experience secure.</p>
+            </div>
+            
+            <div class="section expanded" data-section="intro">
+                <div class="section-header">
+                    <div class="section-title">
+                        <div class="section-icon">
+                            <i class="fas fa-info-circle"></i>
+                        </div>
+                        Introduction
+                    </div>
+                    <i class="fas fa-chevron-down toggle-icon"></i>
+                </div>
+                <div class="section-content">
+                    <p>This Privacy Policy outlines how Kalkaji collects, uses, and protects your personal information when you use our website and services. We're committed to being transparent about our data practices and giving you control over your information.</p>
+                    <p><strong>Last updated:</strong> August 13, 2025</p>
+                </div>
+            </div>
+            
+            <div class="section" data-section="collection">
+                <div class="section-header">
+                    <div class="section-title">
+                        <div class="section-icon">
+                            <i class="fas fa-database"></i>
+                        </div>
+                        Information We Collect
+                    </div>
+                    <i class="fas fa-chevron-down toggle-icon"></i>
+                </div>
+                <div class="section-content">
+                    <p>To provide you with the best learning experience, we collect the following information:</p>
+                    <ul>
+                        <li>Your name, email, and phone number during registration</li>
+                        <li>Payment details when you purchase a course (processed securely)</li>
+                        <li>Course progress and quiz results to track your learning journey</li>
+                        <li>Device information and IP address for security purposes</li>
+                        <li>Cookies and usage data to improve our platform</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="section" data-section="usage">
+                <div class="section-header">
+                    <div class="section-title">
+                        <div class="section-icon">
+                            <i class="fas fa-cogs"></i>
+                        </div>
+                        How We Use Your Data
+                    </div>
+                    <i class="fas fa-chevron-down toggle-icon"></i>
+                </div>
+                <div class="section-content">
+                    <p>Your data helps us create a personalized and effective learning experience:</p>
+                    <ul>
+                        <li>Provide personalized course recommendations and learning paths</li>
+                        <li>Track your progress and provide meaningful insights</li>
+                        <li>Send important course updates and platform notifications</li>
+                        <li>Improve our services based on usage patterns</li>
+                        <li>Prevent fraud and ensure platform security</li>
+                        <li>Provide customer support when you need help</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="section" data-section="security">
+                <div class="section-header">
+                    <div class="section-title">
+                        <div class="section-icon">
+                            <i class="fas fa-lock"></i>
+                        </div>
+                        Data Security
+                    </div>
+                    <i class="fas fa-chevron-down toggle-icon"></i>
+                </div>
+                <div class="section-content">
+                    <p>We take your data security seriously and implement multiple layers of protection:</p>
+                    <ul>
+                        <li>Industry-standard SSL encryption for all data transmission</li>
+                        <li>Secure servers with regular security updates and monitoring</li>
+                        <li>Two-factor authentication options for your account</li>
+                        <li>Regular security audits and vulnerability assessments</li>
+                        <li>Limited access to your data on a need-to-know basis</li>
+                        <li>Automatic logout after periods of inactivity</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="section" data-section="sharing">
+                <div class="section-header">
+                    <div class="section-title">
+                        <div class="section-icon">
+                            <i class="fas fa-share-alt"></i>
+                        </div>
+                        Sharing of Information
+                    </div>
+                    <i class="fas fa-chevron-down toggle-icon"></i>
+                </div>
+                <div class="section-content">
+                    <p>Your trust is important to us. Here's our commitment regarding data sharing:</p>
+                    <ul>
+                        <li>We never sell, rent, or share your personal data for marketing purposes</li>
+                        <li>We only share data with trusted service providers (like payment processors)</li>
+                        <li>We may share anonymized, aggregated data for research and improvement</li>
+                        <li>We comply with legal requirements when required by law</li>
+                        <li>We will notify you of any significant changes to our sharing practices</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="section" data-section="cookies">
+                <div class="section-header">
+                    <div class="section-title">
+                        <div class="section-icon">
+                            <i class="fas fa-cookie-bite"></i>
+                        </div>
+                        Cookies & Tracking
+                    </div>
+                    <i class="fas fa-chevron-down toggle-icon"></i>
+                </div>
+                <div class="section-content">
+                    <p>We use cookies and similar technologies to enhance your experience:</p>
+                    <ul>
+                        <li>Essential cookies for platform functionality and security</li>
+                        <li>Analytics cookies to understand how you use our platform</li>
+                        <li>Preference cookies to remember your settings and choices</li>
+                        <li>You can control cookie settings through your browser</li>
+                        <li>Some features may not work properly if cookies are disabled</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="section" data-section="rights">
+                <div class="section-header">
+                    <div class="section-title">
+                        <div class="section-icon">
+                            <i class="fas fa-user-shield"></i>
+                        </div>
+                        Your Rights & Control
+                    </div>
+                    <i class="fas fa-chevron-down toggle-icon"></i>
+                </div>
+                <div class="section-content">
+                    <p>You have full control over your personal information:</p>
+                    <ul>
+                        <li>Access and download all your stored data</li>
+                        <li>Correct or update your information at any time</li>
+                        <li>Delete your account and associated data</li>
+                        <li>Opt-out of marketing communications</li>
+                        <li>Port your data to another service</li>
+                        <li>File a complaint with relevant data protection authorities</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="contact-section">
+                <h3>Questions About Your Privacy?</h3>
+                <p>We're here to help! Contact our privacy team for any questions or concerns.</p>
+                <button class="contact-btn" onclick="openContactModal()">
+                    <i class="fas fa-envelope"></i> Contact Us
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <div class="floating-summary" onclick="openSummaryModal()">
+        <i class="fas fa-list-ul"></i>
+    </div>
+    
+    <!-- Summary Modal -->
+    <div class="modal" id="summaryModal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeSummaryModal()">&times;</span>
+            <h2>Privacy Policy Summary</h2>
+            <div class="summary-grid">
+                <div class="summary-item">
+                    <h4>📊 What We Collect</h4>
+                    <p>Basic account info, course progress, and usage data</p>
+                </div>
+                <div class="summary-item">
+                    <h4>🎯 How We Use It</h4>
+                    <p>Personalized learning, progress tracking, platform improvement</p>
+                </div>
+                <div class="summary-item">
+                    <h4>🔐 Security</h4>
+                    <p>SSL encryption, secure servers, regular audits</p>
+                </div>
+                <div class="summary-item">
+                    <h4>🚫 No Selling</h4>
+                    <p>We never sell your data to third parties</p>
+                </div>
+                <div class="summary-item">
+                    <h4>🍪 Smart Cookies</h4>
+                    <p>Used for functionality and improvement, controllable by you</p>
+                </div>
+                <div class="summary-item">
+                    <h4>👑 Your Rights</h4>
+                    <p>Access, update, delete, or download your data anytime</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Contact Modal -->
+    <div class="modal" id="contactModal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeContactModal()">&times;</span>
+            <h2>Contact Our Privacy Team</h2>
+            <div style="text-align: center; padding: 2rem;">
+                <div style="margin-bottom: 2rem;">
+                    <i class="fas fa-envelope" style="font-size: 3rem; color: #4f46e5; margin-bottom: 1rem;"></i>
+                    <h3>Get in Touch</h3>
+                    <p>Have questions about your data or privacy? We're here to help!</p>
+                </div>
+                <div style="background: #f8fafc; padding: 1.5rem; border-radius: 10px; margin-bottom: 1rem;">
+                    <p><strong>Email:</strong> privacy@kalkaji.com</p>
+                    <p><strong>Response Time:</strong> Within 24-48 hours</p>
+                    <p><strong>Phone:</strong> +91-XXXX-XXXX-XX</p>
+                </div>
+                <p><small>Our privacy team is committed to addressing your concerns promptly and transparently.</small></p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Progress bar animation
+        window.addEventListener('scroll', () => {
+            const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+            const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            const scrolled = (winScroll / height) * 100;
+            document.getElementById('progressBar').style.width = scrolled + '%';
+        });
+
+        // Section toggle functionality
+        document.querySelectorAll('.section').forEach(section => {
+            section.addEventListener('click', () => {
+                // Don't toggle if clicking on a link or button
+                if (event.target.tagName === 'A' || event.target.tagName === 'BUTTON') return;
+                
+                section.classList.toggle('expanded');
+                
+                // Add a small vibration effect on mobile
+                if ('vibrate' in navigator) {
+                    navigator.vibrate(50);
+                }
+            });
+        });
+
+        // Modal functions
+        function openSummaryModal() {
+            document.getElementById('summaryModal').style.display = 'block';
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeSummaryModal() {
+            document.getElementById('summaryModal').style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }
+
+        function openContactModal() {
+            document.getElementById('contactModal').style.display = 'block';
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeContactModal() {
+            document.getElementById('contactModal').style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }
+
+        // Close modals when clicking outside
+        window.addEventListener('click', (e) => {
+            if (e.target.classList.contains('modal')) {
+                e.target.style.display = 'none';
+                document.body.style.overflow = 'auto';
+            }
+        });
+
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                document.querySelectorAll('.modal').forEach(modal => {
+                    modal.style.display = 'none';
+                });
+                document.body.style.overflow = 'auto';
+            }
+        });
+
+        // Add entrance animations to sections
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.section').forEach(section => {
+            section.style.opacity = '0';
+            section.style.transform = 'translateY(20px)';
+            section.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+            observer.observe(section);
+        });
+    </script>
+</body>
+</html>

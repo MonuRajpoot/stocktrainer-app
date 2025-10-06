@@ -1,0 +1,35 @@
+# Core Flask dependencies
+Flask==3.1.0
+gunicorn==21.2.0
+Werkzeug==3.1.3
+Jinja2==3.1.6
+MarkupSafe==3.0.2
+itsdangerous==2.2.0
+click==8.1.8
+blinker==1.9.0
+
+# Database
+Flask-SQLAlchemy==3.1.1
+SQLAlchemy==2.0.42
+psycopg2-binary==2.9.9
+
+# Additional Flask extensions (if needed)
+flask-cors==5.0.1
+Flask-Login==0.6.3
+
+# Data processing (keep only if actually used)
+requests==2.32.3
+beautifulsoup4==4.13.3
+pandas==2.2.3
+numpy==2.2.4
+
+# Date/time handling
+python-dateutil==2.9.0.post0
+pytz==2025.2
+
+# Other utilities (keep minimal)
+certifi==2025.7.14
+charset-normalizer==3.4.1
+urllib3==2.5.0
+six==1.17.0
+packaging==25.0

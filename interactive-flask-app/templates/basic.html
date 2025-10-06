@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Basic Topics</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+    <script src="{{ url_for('static', filename='js/main.js') }}" defer></script>
+</head>
+<body>
+    {% include 'base.html' %}
+
+    <div class="container">
+        <h1>Basic Topics</h1>
+        <p>Welcome to the Basic Topics section. Here you will find introductory content on various subjects.</p>
+
+        <div class="topics">
+            <h2>Topics Overview</h2>
+            <ul>
+                <li><a href="#topic1">Introduction to HTML</a></li>
+                <li><a href="#topic2">CSS Basics</a></li>
+                <li><a href="#topic3">JavaScript Fundamentals</a></li>
+            </ul>
+        </div>
+
+        <div id="topic1" class="topic">
+            <h3>Introduction to HTML</h3>
+            <p>HTML (HyperText Markup Language) is the standard markup language for creating web pages.</p>
+        </div>
+
+        <div id="topic2" class="topic">
+            <h3>CSS Basics</h3>
+            <p>CSS (Cascading Style Sheets) is a style sheet language used for describing the presentation of a document written in HTML.</p>
+        </div>
+
+        <div id="topic3" class="topic">
+            <h3>JavaScript Fundamentals</h3>
+            <p>JavaScript is a programming language that allows you to implement complex features on web pages.</p>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2023 Interactive Flask App. All rights reserved.</p>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,963 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>📘 Interactive Stock Market Guide</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/@fortawesome/fontawesome-free/js/all.js"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+    
+    * {
+      font-family: 'Inter', sans-serif;
+    }
+    
+    .gradient-bg {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    }
+    
+    .glass-effect {
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+    
+    .section-card {
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+    
+    .section-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+    }
+    
+    .progress-ring {
+      transition: stroke-dashoffset 0.35s;
+      transform: rotate(-90deg);
+      transform-origin: 50% 50%;
+    }
+    
+    .completed {
+      background: linear-gradient(135deg, #10b981, #34d399);
+      color: white;
+    }
+    
+    .quiz-option {
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+    
+    .quiz-option:hover {
+      transform: scale(1.02);
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    }
+    
+    .correct {
+      background: linear-gradient(135deg, #10b981, #34d399);
+      color: white;
+    }
+    
+    .incorrect {
+      background: linear-gradient(135deg, #ef4444, #f87171);
+      color: white;
+    }
+    
+    .floating-progress {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 1000;
+    }
+    
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    @keyframes bounceIn {
+      0% {
+        opacity: 0;
+        transform: scale(0.3);
+      }
+      50% {
+        opacity: 1;
+        transform: scale(1.05);
+      }
+      70% {
+        transform: scale(0.9);
+      }
+      100% {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+    
+    @keyframes pulse {
+      0%, 100% {
+        transform: scale(1);
+      }
+      50% {
+        transform: scale(1.05);
+      }
+    }
+    
+    .fade-in-up {
+      animation: fadeInUp 0.6s ease-out;
+    }
+    
+    .bounce-in {
+      animation: bounceIn 0.6s ease-out;
+    }
+    
+    .pulse-animation {
+      animation: pulse 2s infinite;
+    }
+  </style>
+</head>
+<body class="bg-gray-50 text-gray-800 font-sans">
+
+  <!-- Floating Progress Circle -->
+  <div class="floating-progress">
+    <div class="relative w-16 h-16">
+      <svg class="w-16 h-16" viewBox="0 0 36 36">
+        <circle cx="18" cy="18" r="16" fill="none" stroke="#e5e7eb" stroke-width="3"/>
+        <circle cx="18" cy="18" r="16" fill="none" stroke="#4f46e5" stroke-width="3" 
+                stroke-dasharray="100" stroke-dashoffset="100" class="progress-ring" id="progressRing"/>
+      </svg>
+      <div class="absolute inset-0 flex items-center justify-center text-xs font-bold text-indigo-600" id="progressText">0%</div>
+    </div>
+  </div>
+
+  <!-- Header -->
+  <header class="gradient-bg text-white py-8 shadow-xl">
+    <div class="max-w-6xl mx-auto px-4 text-center">
+      <h1 class="text-4xl font-bold mb-2 fade-in-up">📘 Interactive Stock Market Guide</h1>
+      <p class="text-lg opacity-90 fade-in-up">Master the basics with interactive lessons, quizzes, and real-time progress tracking!</p>
+      <div class="mt-6 flex justify-center space-x-4">
+        <div class="glass-effect px-4 py-2 rounded-full">
+          <i class="fas fa-trophy text-yellow-400"></i> <span id="totalScore">0</span> Points
+        </div>
+        <div class="glass-effect px-4 py-2 rounded-full">
+          <i class="fas fa-check-circle text-green-400"></i> <span id="completedSections">0</span>/15 Completed
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Learning Path -->
+  <div class="max-w-6xl mx-auto px-4 py-8">
+    <div class="text-center mb-8">
+      <h2 class="text-3xl font-bold text-gray-800 mb-2">🎯 Your Learning Journey</h2>
+      <p class="text-gray-600">Click on each topic to start learning. Complete quizzes to earn points!</p>
+    </div>
+
+    <!-- Learning Sections Grid -->
+    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
+      
+      <!-- Section 1 -->
+      <div class="section-card bg-white rounded-xl p-6 shadow-lg border-l-4 border-indigo-500" onclick="openSection('section1')" data-section="section1">
+        <div class="flex items-center justify-between mb-4">
+          <h3 class="text-xl font-semibold text-gray-800">🔍 What is Stock Market?</h3>
+          <div class="completion-badge hidden">
+            <i class="fas fa-check-circle text-green-500 text-xl"></i>
+          </div>
+        </div>
+        <p class="text-gray-600 mb-4">Understanding the basics of stock market and how it works</p>
+        <div class="flex justify-between items-center">
+          <span class="text-sm text-gray-500">5 min read</span>
+          <span class="px-3 py-1 bg-indigo-100 text-indigo-700 rounded-full text-sm font-medium">Beginner</span>
+        </div>
+      </div>
+
+      <!-- Section 2 -->
+      <div class="section-card bg-white rounded-xl p-6 shadow-lg border-l-4 border-purple-500" onclick="openSection('section2')" data-section="section2">
+        <div class="flex items-center justify-between mb-4">
+          <h3 class="text-xl font-semibold text-gray-800">💡 Why Does It Exist?</h3>
+          <div class="completion-badge hidden">
+            <i class="fas fa-check-circle text-green-500 text-xl"></i>
+          </div>
+        </div>
+        <p class="text-gray-600 mb-4">Learn the purpose and importance of stock markets</p>
+        <div class="flex justify-between items-center">
+          <span class="text-sm text-gray-500">3 min read</span>
+          <span class="px-3 py-1 bg-purple-100 text-purple-700 rounded-full text-sm font-medium">Beginner</span>
+        </div>
+      </div>
+
+      <!-- Section 3 -->
+      <div class="section-card bg-white rounded-xl p-6 shadow-lg border-l-4 border-green-500" onclick="openSection('section3')" data-section="section3">
+        <div class="flex items-center justify-between mb-4">
+          <h3 class="text-xl font-semibold text-gray-800">⚙️ How It Works</h3>
+          <div class="completion-badge hidden">
+            <i class="fas fa-check-circle text-green-500 text-xl"></i>
+          </div>
+        </div>
+        <p class="text-gray-600 mb-4">Understand the mechanics of buying and selling stocks</p>
+        <div class="flex justify-between items-center">
+          <span class="text-sm text-gray-500">4 min read</span>
+          <span class="px-3 py-1 bg-green-100 text-green-700 rounded-full text-sm font-medium">Beginner</span>
+        </div>
+      </div>
+
+      <!-- Section 4 -->
+      <div class="section-card bg-white rounded-xl p-6 shadow-lg border-l-4 border-blue-500" onclick="openSection('section4')" data-section="section4">
+        <div class="flex items-center justify-between mb-4">
+          <h3 class="text-xl font-semibold text-gray-800">📑 Key Terms</h3>
+          <div class="completion-badge hidden">
+            <i class="fas fa-check-circle text-green-500 text-xl"></i>
+          </div>
+        </div>
+        <p class="text-gray-600 mb-4">Master essential stock market vocabulary</p>
+        <div class="flex justify-between items-center">
+          <span class="text-sm text-gray-500">6 min read</span>
+          <span class="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-sm font-medium">Intermediate</span>
+        </div>
+      </div>
+
+      <!-- Section 5 -->
+      <div class="section-card bg-white rounded-xl p-6 shadow-lg border-l-4 border-red-500" onclick="openSection('section5')" data-section="section5">
+        <div class="flex items-center justify-between mb-4">
+          <h3 class="text-xl font-semibold text-gray-800">👥 Market Participants</h3>
+          <div class="completion-badge hidden">
+            <i class="fas fa-check-circle text-green-500 text-xl"></i>
+          </div>
+        </div>
+        <p class="text-gray-600 mb-4">Know who plays in the stock market game</p>
+        <div class="flex justify-between items-center">
+          <span class="text-sm text-gray-500">4 min read</span>
+          <span class="px-3 py-1 bg-red-100 text-red-700 rounded-full text-sm font-medium">Beginner</span>
+        </div>
+      </div>
+
+      <!-- Section 6 -->
+      <div class="section-card bg-white rounded-xl p-6 shadow-lg border-l-4 border-yellow-500" onclick="openSection('section6')" data-section="section6">
+        <div class="flex items-center justify-between mb-4">
+          <h3 class="text-xl font-semibold text-gray-800">🔄 Market Types</h3>
+          <div class="completion-badge hidden">
+            <i class="fas fa-check-circle text-green-500 text-xl"></i>
+          </div>
+        </div>
+        <p class="text-gray-600 mb-4">Primary vs Secondary markets explained</p>
+        <div class="flex justify-between items-center">
+          <span class="text-sm text-gray-500">3 min read</span>
+          <span class="px-3 py-1 bg-yellow-100 text-yellow-700 rounded-full text-sm font-medium">Beginner</span>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Achievement Section -->
+    <div class="bg-gradient-to-r from-purple-600 to-pink-600 rounded-xl p-8 text-white text-center mb-12">
+      <h2 class="text-2xl font-bold mb-4">🏆 Your Achievements</h2>
+      <div class="grid md:grid-cols-3 gap-6">
+        <div class="achievement-badge bg-white bg-opacity-20 rounded-lg p-4" id="badge1">
+          <i class="fas fa-star text-3xl text-yellow-400 mb-2"></i>
+          <h4 class="font-semibold">First Steps</h4>
+          <p class="text-sm opacity-80">Complete your first section</p>
+        </div>
+        <div class="achievement-badge bg-white bg-opacity-20 rounded-lg p-4" id="badge2">
+          <i class="fas fa-brain text-3xl text-blue-400 mb-2"></i>
+          <h4 class="font-semibold">Knowledge Seeker</h4>
+          <p class="text-sm opacity-80">Complete 5 sections</p>
+        </div>
+        <div class="achievement-badge bg-white bg-opacity-20 rounded-lg p-4" id="badge3">
+          <i class="fas fa-trophy text-3xl text-gold-400 mb-2"></i>
+          <h4 class="font-semibold">Market Master</h4>
+          <p class="text-sm opacity-80">Complete all sections</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal for Content -->
+  <div id="contentModal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 backdrop-blur-sm">
+    <div class="flex items-center justify-center min-h-screen p-4">
+      <div class="bg-white rounded-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto shadow-2xl">
+        <div class="sticky top-0 bg-white border-b border-gray-200 px-6 py-4 flex justify-between items-center">
+          <h2 id="modalTitle" class="text-2xl font-bold text-gray-800"></h2>
+          <button onclick="closeModal()" class="text-gray-400 hover:text-gray-600 text-2xl">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+        <div id="modalContent" class="p-6">
+          <!-- Content will be injected here -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Quiz Modal -->
+  <div id="quizModal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 backdrop-blur-sm">
+    <div class="flex items-center justify-center min-h-screen p-4">
+      <div class="bg-white rounded-2xl max-w-2xl w-full shadow-2xl">
+        <div class="bg-gradient-to-r from-indigo-500 to-purple-600 text-white px-6 py-4 rounded-t-2xl">
+          <h2 class="text-2xl font-bold">🧠 Quick Quiz</h2>
+          <p class="opacity-90">Test your understanding!</p>
+        </div>
+        <div id="quizContent" class="p-6">
+          <!-- Quiz content will be injected here -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let completedSections = 0;
+    let totalScore = 0;
+    let currentSection = '';
+    
+    const sectionContent = {
+      section1: {
+        title: "🔍 What is the Stock Market?",
+        content: `
+          <div class="space-y-6">
+            <div class="bg-gradient-to-r from-blue-50 to-indigo-50 p-6 rounded-xl border-l-4 border-indigo-500">
+              <h3 class="text-xl font-semibold mb-3 text-indigo-800">Understanding the Basics</h3>
+              <p class="text-gray-700 leading-relaxed">The <strong>stock market</strong> is where people buy and sell parts (called <em>shares</em>) of companies. When you own a share, you own a small portion of that company.</p>
+            </div>
+            
+            <div class="bg-yellow-50 border-l-4 border-yellow-400 p-6 rounded-xl">
+              <h4 class="font-semibold text-yellow-800 mb-2">🍕 Real-Life Analogy</h4>
+              <p class="text-gray-700">Imagine your friend opens a pizza shop and needs ₹1 lakh. He sells 100 shares at ₹1,000 each. You buy 10 shares — now you own 10% of the pizza shop! If the shop makes profit, you get your share. If it grows popular, your shares become more valuable!</p>
+            </div>
+            
+            <div class="grid md:grid-cols-2 gap-4">
+              <div class="bg-green-50 p-4 rounded-lg">
+                <h4 class="font-semibold text-green-800 mb-2">✅ What You Get</h4>
+                <ul class="text-gray-700 space-y-1">
+                  <li>• Ownership in the company</li>
+                  <li>• Right to vote on important decisions</li>
+                  <li>• Share in profits (dividends)</li>
+                  <li>• Potential for capital growth</li>
+                </ul>
+              </div>
+              <div class="bg-red-50 p-4 rounded-lg">
+                <h4 class="font-semibold text-red-800 mb-2">⚠️ What You Risk</h4>
+                <ul class="text-gray-700 space-y-1">
+                  <li>• Share prices can go down</li>
+                  <li>• Company might make losses</li>
+                  <li>• No guaranteed returns</li>
+                  <li>• Market can be volatile</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        `,
+        quiz: {
+          question: "When you buy shares of a company, what do you actually own?",
+          options: [
+            "The company's products",
+            "A small portion of the company",
+            "The company's building",
+            "The company's employees"
+          ],
+          correct: 1,
+          explanation: "Correct! When you buy shares, you own a small portion of the company itself, including its assets, future profits, and voting rights."
+        }
+      },
+      section2: {
+        title: "💡 Why Does the Stock Market Exist?",
+        content: `
+          <div class="space-y-6">
+            <div class="bg-gradient-to-r from-purple-50 to-pink-50 p-6 rounded-xl border-l-4 border-purple-500">
+              <h3 class="text-xl font-semibold mb-3 text-purple-800">The Perfect Match</h3>
+              <p class="text-gray-700 leading-relaxed">The stock market exists to solve a beautiful problem - connecting companies that need money with people who have money to invest.</p>
+            </div>
+            
+            <div class="grid md:grid-cols-2 gap-6">
+              <div class="bg-blue-50 p-6 rounded-xl">
+                <div class="text-center mb-4">
+                  <i class="fas fa-building text-4xl text-blue-500"></i>
+                </div>
+                <h4 class="font-semibold text-blue-800 mb-3 text-center">Companies Need:</h4>
+                <ul class="text-gray-700 space-y-2">
+                  <li class="flex items-center"><i class="fas fa-money-bill text-green-500 mr-2"></i> Money to grow and expand</li>
+                  <li class="flex items-center"><i class="fas fa-cogs text-blue-500 mr-2"></i> Funds for new equipment</li>
+                  <li class="flex items-center"><i class="fas fa-users text-purple-500 mr-2"></i> Capital to hire more people</li>
+                  <li class="flex items-center"><i class="fas fa-lightbulb text-yellow-500 mr-2"></i> Investment in research & development</li>
+                </ul>
+              </div>
+              
+              <div class="bg-green-50 p-6 rounded-xl">
+                <div class="text-center mb-4">
+                  <i class="fas fa-user-friends text-4xl text-green-500"></i>
+                </div>
+                <h4 class="font-semibold text-green-800 mb-3 text-center">Investors Want:</h4>
+                <ul class="text-gray-700 space-y-2">
+                  <li class="flex items-center"><i class="fas fa-chart-line text-green-500 mr-2"></i> Grow their money over time</li>
+                  <li class="flex items-center"><i class="fas fa-shield-alt text-blue-500 mr-2"></i> Beat inflation and preserve wealth</li>
+                  <li class="flex items-center"><i class="fas fa-coins text-yellow-500 mr-2"></i> Earn passive income (dividends)</li>
+                  <li class="flex items-center"><i class="fas fa-rocket text-red-500 mr-2"></i> Participate in company growth</li>
+                </ul>
+              </div>
+            </div>
+            
+            <div class="bg-gradient-to-r from-indigo-500 to-purple-600 text-white p-6 rounded-xl text-center">
+              <h4 class="text-xl font-semibold mb-2">🤝 The Win-Win Solution</h4>
+              <p class="text-indigo-100">Stock markets create a platform where companies get the funding they need, and investors get opportunities to grow their wealth. It's capitalism at its finest!</p>
+            </div>
+          </div>
+        `,
+        quiz: {
+          question: "What is the main purpose of the stock market?",
+          options: [
+            "To gamble with money",
+            "To connect companies needing money with people wanting to invest",
+            "To make brokers rich",
+            "To confuse people with numbers"
+          ],
+          correct: 1,
+          explanation: "Exactly! The stock market serves as a bridge between companies that need capital to grow and investors who want to grow their wealth."
+        }
+      },
+      section3: {
+        title: "⚙️ How the Stock Market Works",
+        content: `
+          <div class="space-y-6">
+            <div class="bg-gradient-to-r from-green-50 to-teal-50 p-6 rounded-xl border-l-4 border-green-500">
+              <h3 class="text-xl font-semibold mb-3 text-green-800">The Trading Triangle</h3>
+              <p class="text-gray-700 leading-relaxed">Every stock transaction involves three key players: a <strong>buyer</strong>, a <strong>seller</strong>, and an <strong>exchange</strong> (like NSE or BSE) that facilitates the trade.</p>
+            </div>
+            
+            <div class="bg-blue-50 border-l-4 border-blue-400 p-6 rounded-xl">
+              <h4 class="font-semibold text-blue-800 mb-2">🛒 Perfect Analogy: Amazon for Stocks</h4>
+              <p class="text-gray-700">Think of the stock exchange like Amazon - but instead of buying T-shirts or books, you're buying pieces of companies. Amazon connects buyers and sellers, handles payments, and ensures delivery. Stock exchanges do the same for shares!</p>
+            </div>
+            
+            <div class="grid md:grid-cols-3 gap-4">
+              <div class="bg-white p-4 rounded-lg shadow-md text-center">
+                <i class="fas fa-user-tie text-3xl text-blue-500 mb-3"></i>
+                <h4 class="font-semibold text-gray-800">1. Buyer</h4>
+                <p class="text-sm text-gray-600">Wants to purchase shares at a certain price</p>
+              </div>
+              <div class="bg-white p-4 rounded-lg shadow-md text-center">
+                <i class="fas fa-handshake text-3xl text-green-500 mb-3"></i>
+                <h4 class="font-semibold text-gray-800">2. Exchange</h4>
+                <p class="text-sm text-gray-600">Matches buyers with sellers safely</p>
+              </div>
+              <div class="bg-white p-4 rounded-lg shadow-md text-center">
+                <i class="fas fa-user-check text-3xl text-red-500 mb-3"></i>
+                <h4 class="font-semibold text-gray-800">3. Seller</h4>
+                <p class="text-sm text-gray-600">Wants to sell shares at a certain price</p>
+              </div>
+            </div>
+            
+            <div class="bg-gradient-to-r from-yellow-400 to-orange-500 text-white p-6 rounded-xl">
+              <h4 class="text-xl font-semibold mb-3">📊 How Prices Are Determined</h4>
+              <div class="grid md:grid-cols-2 gap-4 text-sm">
+                <div>
+                  <h5 class="font-semibold mb-2">📈 Price Goes UP When:</h5>
+                  <ul class="space-y-1 text-yellow-100">
+                    <li>• More buyers than sellers</li>
+                    <li>• Good company news</li>
+                    <li>• Strong financial results</li>
+                    <li>• Positive market sentiment</li>
+                  </ul>
+                </div>
+                <div>
+                  <h5 class="font-semibold mb-2">📉 Price Goes DOWN When:</h5>
+                  <ul class="space-y-1 text-yellow-100">
+                    <li>• More sellers than buyers</li>
+                    <li>• Bad company news</li>
+                    <li>• Poor financial results</li>
+                    <li>• Negative market sentiment</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        `,
+        quiz: {
+          question: "What determines stock prices in the market?",
+          options: [
+            "The government decides",
+            "Company CEOs set the price",
+            "Supply and demand - buyers vs sellers",
+            "Random number generator"
+          ],
+          correct: 2,
+          explanation: "Perfect! Stock prices are determined by supply and demand. When more people want to buy (demand) than sell (supply), prices go up, and vice versa."
+        }
+      },
+      section4: {
+        title: "📑 Key Terms and Jargon",
+        content: `
+          <div class="space-y-6">
+            <div class="bg-gradient-to-r from-indigo-50 to-blue-50 p-6 rounded-xl border-l-4 border-indigo-500">
+              <h3 class="text-xl font-semibold mb-3 text-indigo-800">Master the Language</h3>
+              <p class="text-gray-700 leading-relaxed">Understanding stock market terminology is like learning a new language. Once you know these terms, everything becomes much clearer!</p>
+            </div>
+            
+            <div class="grid gap-4">
+              <div class="bg-white p-4 rounded-lg shadow-md border-l-4 border-green-500">
+                <div class="flex justify-between items-start">
+                  <div>
+                    <h4 class="font-semibold text-gray-800 text-lg">Share / Stock</h4>
+                    <p class="text-gray-600">A unit of ownership in a company</p>
+                  </div>
+                  <div class="text-green-500 text-xl">📊</div>
+                </div>
+                <p class="text-sm text-gray-500 mt-2"><strong>Example:</strong> 1 share of Reliance = You own a tiny piece of Reliance Industries</p>
+              </div>
+              
+              <div class="bg-white p-4 rounded-lg shadow-md border-l-4 border-blue-500">
+                <div class="flex justify-between items-start">
+                  <div>
+                    <h4 class="font-semibold text-gray-800 text-lg">Dividend</h4>
+                    <p class="text-gray-600">Profit shared with shareholders</p>
+                  </div>
+                  <div class="text-blue-500 text-xl">💰</div>
+                </div>
+                <p class="text-sm text-gray-500 mt-2"><strong>Example:</strong> Infosys pays ₹16 per share as dividend annually</p>
+              </div>
+              
+              <div class="bg-white p-4 rounded-lg shadow-md border-l-4 border-purple-500">
+                <div class="flex justify-between items-start">
+                  <div>
+                    <h4 class="font-semibold text-gray-800 text-lg">IPO</h4>
+                    <p class="text-gray-600">Initial Public Offering - Company's first share sale to public</p>
+                  </div>
+                  <div class="text-purple-500 text-xl">🚀</div>
+                </div>
+                <p class="text-sm text-gray-500 mt-2"><strong>Example:</strong> LIC IPO in 2022, Zomato IPO in 2021</p>
+              </div>
+              
+              <div class="bg-white p-4 rounded-lg shadow-md border-l-4 border-red-500">
+                <div class="flex justify-between items-start">
+                  <div>
+                    <h4 class="font-semibold text-gray-800 text-lg">Market Cap</h4>
+                    <p class="text-gray-600">Total value of all company shares</p>
+                  </div>
+                  <div class="text-red-500 text-xl">🏢</div>
+                </div>
+                <p class="text-sm text-gray-500 mt-2"><strong>Example:</strong> Reliance market cap = ₹18 lakh crore</p>
+              </div>
+              
+              <div class="bg-white p-4 rounded-lg shadow-md border-l-4 border-yellow-500">
+                <div class="flex justify-between items-start">
+                  <div>
+                    <h4 class="font-semibold text-gray-800 text-lg">Bull Market vs Bear Market</h4>
+                    <p class="text-gray-600">Rising prices vs Falling prices</p>
+                  </div>
+                  <div class="text-yellow-500 text-xl">🐂🐻</div>
+                </div>
+                <p class="text-sm text-gray-500 mt-2"><strong>Remember:</strong> Bull attacks upward, Bear swipes downward</p>
+              </div>
+            </div>
+            
+            <div class="bg-gradient-to-r from-emerald-500 to-teal-600 text-white p-6 rounded-xl">
+              <h4 class="text-xl font-semibold mb-3">🎯 Pro Tip</h4>
+              <p class="text-emerald-100">Don't worry about memorizing everything at once! These terms will become natural as you start following the market. Focus on understanding the concepts first.</p>
+            </div>
+          </div>
+        `,
+        quiz: {
+          question: "What does IPO stand for?",
+          options: [
+            "International Public Offering",
+            "Initial Public Offering", 
+            "Internal Profit Operation",
+            "Investment Portfolio Option"
+          ],
+          correct: 1,
+          explanation: "Correct! IPO stands for Initial Public Offering - it's when a private company sells shares to the public for the first time."
+        }
+      },
+      section5: {
+        title: "👥 Stock Market Participants",
+        content: `
+          <div class="space-y-6">
+            <div class="bg-gradient-to-r from-red-50 to-pink-50 p-6 rounded-xl border-l-4 border-red-500">
+              <h3 class="text-xl font-semibold mb-3 text-red-800">Who's Playing the Game?</h3>
+              <p class="text-gray-700 leading-relaxed">The stock market is like a huge playground with different types of players, each with their own strategies and goals.</p>
+            </div>
+            
+            <div class="grid md:grid-cols-2 gap-6">
+              <div class="space-y-4">
+                <div class="bg-white p-5 rounded-lg shadow-md border-l-4 border-green-500">
+                  <div class="flex items-center mb-3">
+                    <i class="fas fa-seedling text-2xl text-green-500 mr-3"></i>
+                    <h4 class="font-semibold text-gray-800 text-lg">Investors</h4>
+                  </div>
+                  <p class="text-gray-600 mb-2">The patient gardeners of the stock market</p>
+                  <ul class="text-sm text-gray-500 space-y-1">
+                    <li>• Hold shares for months or years</li>
+                    <li>• Focus on company fundamentals</li>
+                    <li>• Believe in long-term growth</li>
+                    <li>• Examples: Warren Buffett, SIP investors</li>
+                  </ul>
+                </div>
+                
+                <div class="bg-white p-5 rounded-lg shadow-md border-l-4 border-orange-500">
+                  <div class="flex items-center mb-3">
+                    <i class="fas fa-bolt text-2xl text-orange-500 mr-3"></i>
+                    <h4 class="font-semibold text-gray-800 text-lg">Traders</h4>
+                  </div>
+                  <p class="text-gray-600 mb-2">The speed racers of the stock market</p>
+                  <ul class="text-sm text-gray-500 space-y-1">
+                    <li>• Buy and sell quickly (minutes to days)</li>
+                    <li>• Focus on price movements and charts</li>
+                    <li>• Make money from short-term fluctuations</li>
+                    <li>• Examples: Day traders, swing traders</li>
+                  </ul>
+                </div>
+              </div>
+              
+              <div class="space-y-4">
+                <div class="bg-white p-5 rounded-lg shadow-md border-l-4 border-blue-500">
+                  <div class="flex items-center mb-3">
+                    <i class="fas fa-building text-2xl text-blue-500 mr-3"></i>
+                    <h4 class="font-semibold text-gray-800 text-lg">Institutional Investors</h4>
+                  </div>
+                  <p class="text-gray-600 mb-2">The big elephants with huge money</p>
+                  <ul class="text-sm text-gray-500 space-y-1">
+                    <li>• LIC, SBI, HDFC, Mutual Funds</li>
+                    <li>• Foreign Investment Institutions (FIIs)</li>
+                    <li>• Can move markets with large trades</li>
+                    <li>• Professional fund managers</li>
+                  </ul>
+                </div>
+                
+                <div class="bg-white p-5 rounded-lg shadow-md border-l-4 border-purple-500">
+                  <div class="flex items-center mb-3">
+                    <i class="fas fa-user text-2xl text-purple-500 mr-3"></i>
+                    <h4 class="font-semibold text-gray-800 text-lg">Retail Investors</h4>
+                  </div>
+                  <p class="text-gray-600 mb-2">Common people like you and me</p>
+                  <ul class="text-sm text-gray-500 space-y-1">
+                    <li>• Individual investors</li>
+                    <li>• Smaller investment amounts</li>
+                    <li>• Growing rapidly with apps like Zerodha</li>
+                    <li>• You fall in this category!</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            
+            <div class="bg-gradient-to-r from-indigo-500 to-purple-600 text-white p-6 rounded-xl text-center">
+              <h4 class="text-xl font-semibold mb-2">🎭 Different Players, Same Market</h4>
+              <p class="text-indigo-100">Each type of participant brings liquidity and different perspectives to the market. This diversity makes the market more efficient and provides opportunities for everyone!</p>
+            </div>
+          </div>
+        `,
+        quiz: {
+          question: "What's the main difference between an investor and a trader?",
+          options: [
+            "Investors are rich, traders are poor",
+            "Investors hold long-term, traders buy/sell quickly", 
+            "Investors use apps, traders don't",
+            "There's no difference"
+          ],
+          correct: 1,
+          explanation: "Exactly! Investors focus on long-term wealth building and hold stocks for months/years, while traders make quick profits from short-term price movements."
+        }
+      },
+      section6: {
+        title: "🔄 Types of Markets",
+        content: `
+          <div class="space-y-6">
+            <div class="bg-gradient-to-r from-yellow-50 to-orange-50 p-6 rounded-xl border-l-4 border-yellow-500">
+              <h3 class="text-xl font-semibold mb-3 text-yellow-800">Two Different Worlds</h3>
+              <p class="text-gray-700 leading-relaxed">Think of the stock market as having two separate shopping areas - one for brand new shares, and another for pre-owned shares.</p>
+            </div>
+            
+            <div class="grid md:grid-cols-2 gap-6">
+              <div class="bg-white rounded-xl p-6 shadow-lg border-t-4 border-green-500">
+                <div class="text-center mb-4">
+                  <i class="fas fa-rocket text-4xl text-green-500"></i>
+                </div>
+                <h4 class="text-xl font-semibold text-center mb-3 text-green-800">Primary Market</h4>
+                <p class="text-gray-600 text-center mb-4">Where companies sell NEW shares directly to investors</p>
+                
+                <div class="space-y-3">
+                  <div class="bg-green-50 p-3 rounded-lg">
+                    <h5 class="font-semibold text-green-800 mb-1">🎯 What Happens Here</h5>
+                    <ul class="text-sm text-gray-700 space-y-1">
+                      <li>• Companies raise fresh money</li>
+                      <li>• IPOs (Initial Public Offerings)</li>
+                      <li>• Rights issues to existing shareholders</li>
+                      <li>• FPOs (Follow-up Public Offerings)</li>
+                    </ul>
+                  </div>
+                  
+                  <div class="bg-green-50 p-3 rounded-lg">
+                    <h5 class="font-semibold text-green-800 mb-1">💡 Examples</h5>
+                    <ul class="text-sm text-gray-700 space-y-1">
+                      <li>• LIC IPO (2022)</li>
+                      <li>• Zomato IPO (2021)</li>
+                      <li>• Paytm IPO (2021)</li>
+                      <li>• Nykaa IPO (2021)</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="bg-white rounded-xl p-6 shadow-lg border-t-4 border-blue-500">
+                <div class="text-center mb-4">
+                  <i class="fas fa-exchange-alt text-4xl text-blue-500"></i>
+                </div>
+                <h4 class="text-xl font-semibold text-center mb-3 text-blue-800">Secondary Market</h4>
+                <p class="text-gray-600 text-center mb-4">Where investors trade EXISTING shares among themselves</p>
+                
+                <div class="space-y-3">
+                  <div class="bg-blue-50 p-3 rounded-lg">
+                    <h5 class="font-semibold text-blue-800 mb-1">🎯 What Happens Here</h5>
+                    <ul class="text-sm text-gray-700 space-y-1">
+                      <li>• Daily buying and selling</li>
+                      <li>• NSE and BSE exchanges</li>
+                      <li>• Price discovery through trading</li>
+                      <li>• Liquidity for investors</li>
+                    </ul>
+                  </div>
+                  
+                  <div class="bg-blue-50 p-3 rounded-lg">
+                    <h5 class="font-semibold text-blue-800 mb-1">💡 Examples</h5>
+                    <ul class="text-sm text-gray-700 space-y-1">
+                      <li>• Your Zerodha/Groww trades</li>
+                      <li>• Daily NSE/BSE transactions</li>
+                      <li>• Mutual fund buying/selling</li>
+                      <li>• Institutional trading</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <div class="bg-gray-100 p-6 rounded-xl">
+              <h4 class="text-lg font-semibold text-gray-800 mb-3">🏪 Simple Analogy: Car Markets</h4>
+              <div class="grid md:grid-cols-2 gap-4 text-sm">
+                <div class="bg-white p-4 rounded-lg">
+                  <h5 class="font-semibold text-green-700 mb-2">🚗 Primary = Car Showroom</h5>
+                  <p class="text-gray-600">You buy a brand new car directly from the manufacturer (Maruti, Hyundai). The money goes to the company.</p>
+                </div>
+                <div class="bg-white p-4 rounded-lg">
+                  <h5 class="font-semibold text-blue-700 mb-2">🚙 Secondary = Used Car Market</h5>
+                  <p class="text-gray-600">You buy a used car from another person. The money goes to the previous owner, not the manufacturer.</p>
+                </div>
+              </div>
+            </div>
+            
+            <div class="bg-gradient-to-r from-emerald-500 to-teal-600 text-white p-6 rounded-xl">
+              <h4 class="text-xl font-semibold mb-2">🎯 Key Insight</h4>
+              <p class="text-emerald-100">Most of your daily trading happens in the secondary market. Companies only benefit financially from primary market transactions (IPOs), but secondary market trading helps determine fair prices!</p>
+            </div>
+          </div>
+        `
+      }
+    };
+
+    const quizData = {
+      section1: sectionContent.section1.quiz,
+      section2: sectionContent.section2.quiz,
+      section3: sectionContent.section3.quiz,
+      section4: sectionContent.section4.quiz,
+      section5: sectionContent.section5.quiz,
+      section6: {
+        question: "Where do most of your daily stock trades happen?",
+        options: [
+          "Primary market",
+          "Secondary market",
+          "Both equally",
+          "Neither"
+        ],
+        correct: 1,
+        explanation: "Correct! Most daily trading happens in the secondary market where existing shares are traded between investors."
+      }
+    };
+
+    function openSection(sectionId) {
+      currentSection = sectionId;
+      const section = sectionContent[sectionId];
+      
+      if (!section) return;
+      
+      document.getElementById('modalTitle').innerHTML = section.title;
+      document.getElementById('modalContent').innerHTML = `
+        ${section.content}
+        <div class="mt-8 text-center">
+          <button onclick="startQuiz('${sectionId}')" class="bg-gradient-to-r from-indigo-500 to-purple-600 text-white px-8 py-3 rounded-full font-semibold hover:shadow-lg transform hover:scale-105 transition-all duration-300">
+            <i class="fas fa-brain mr-2"></i>Take Quiz & Earn Points!
+          </button>
+        </div>
+      `;
+      
+      document.getElementById('contentModal').classList.remove('hidden');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeModal() {
+      document.getElementById('contentModal').classList.add('hidden');
+      document.getElementById('quizModal').classList.add('hidden');
+      document.body.style.overflow = 'auto';
+    }
+
+    function startQuiz(sectionId) {
+      const quiz = quizData[sectionId];
+      if (!quiz) return;
+      
+      document.getElementById('quizContent').innerHTML = `
+        <div class="space-y-4">
+          <h3 class="text-xl font-semibold mb-4">${quiz.question}</h3>
+          <div class="space-y-3">
+            ${quiz.options.map((option, index) => `
+              <div class="quiz-option bg-gray-50 p-4 rounded-lg border-2 border-transparent hover:border-indigo-300" onclick="selectAnswer(${index}, '${sectionId}')">
+                <span class="font-medium">${String.fromCharCode(65 + index)}.</span> ${option}
+              </div>
+            `).join('')}
+          </div>
+          <div id="quizResult" class="hidden mt-6 p-4 rounded-lg">
+            <div id="resultContent"></div>
+            <button onclick="completeSection('${sectionId}')" class="mt-4 bg-green-500 text-white px-6 py-2 rounded-lg font-semibold hover:bg-green-600 transition-colors">
+              Continue Learning <i class="fas fa-arrow-right ml-2"></i>
+            </button>
+          </div>
+        </div>
+      `;
+      
+      document.getElementById('contentModal').classList.add('hidden');
+      document.getElementById('quizModal').classList.remove('hidden');
+    }
+
+    function selectAnswer(selectedIndex, sectionId) {
+      const quiz = quizData[sectionId];
+      const options = document.querySelectorAll('.quiz-option');
+      
+      // Disable all options
+      options.forEach(option => option.style.pointerEvents = 'none');
+      
+      // Show results
+      options[quiz.correct].classList.add('correct');
+      if (selectedIndex !== quiz.correct) {
+        options[selectedIndex].classList.add('incorrect');
+      }
+      
+      // Show explanation
+      const resultDiv = document.getElementById('quizResult');
+      const isCorrect = selectedIndex === quiz.correct;
+      
+      document.getElementById('resultContent').innerHTML = `
+        <div class="flex items-center mb-3">
+          <i class="fas fa-${isCorrect ? 'check-circle text-green-500' : 'times-circle text-red-500'} text-2xl mr-3"></i>
+          <h4 class="text-lg font-semibold">${isCorrect ? 'Correct! 🎉' : 'Oops! 😅'}</h4>
+        </div>
+        <p class="text-gray-700">${quiz.explanation}</p>
+        ${isCorrect ? '<div class="mt-2 text-green-600 font-semibold">+10 Points Earned!</div>' : ''}
+      `;
+      
+      resultDiv.classList.remove('hidden');
+      
+      if (isCorrect) {
+        totalScore += 10;
+        updateScore();
+      }
+    }
+
+    function completeSection(sectionId) {
+      // Mark section as completed
+      const sectionCard = document.querySelector(`[data-section="${sectionId}"]`);
+      const badge = sectionCard.querySelector('.completion-badge');
+      
+      if (!sectionCard.classList.contains('completed')) {
+        sectionCard.classList.add('completed');
+        badge.classList.remove('hidden');
+        completedSections++;
+        updateProgress();
+        checkAchievements();
+      }
+      
+      closeModal();
+    }
+
+    function updateScore() {
+      document.getElementById('totalScore').textContent = totalScore;
+    }
+
+    function updateProgress() {
+      document.getElementById('completedSections').textContent = completedSections;
+      
+      // Update progress ring
+      const progressPercentage = (completedSections / 6) * 100;
+      const progressRing = document.getElementById('progressRing');
+      const progressText = document.getElementById('progressText');
+      
+      progressRing.style.strokeDashoffset = 100 - progressPercentage;
+      progressText.textContent = Math.round(progressPercentage) + '%';
+    }
+
+    function checkAchievements() {
+      if (completedSections === 1) {
+        showAchievement('badge1', 'First Steps Unlocked! 🌟');
+      } else if (completedSections === 3) {
+        showAchievement('badge2', 'Knowledge Seeker Unlocked! 🧠');
+      } else if (completedSections === 6) {
+        showAchievement('badge3', 'Market Master Unlocked! 🏆');
+      }
+    }
+
+    function showAchievement(badgeId, message) {
+      const badge = document.getElementById(badgeId);
+      badge.classList.add('pulse-animation');
+      
+      // Show notification
+      const notification = document.createElement('div');
+      notification.className = 'fixed top-20 right-4 bg-gradient-to-r from-yellow-400 to-orange-500 text-white px-6 py-3 rounded-lg shadow-lg z-50 transform translate-x-full transition-transform duration-500';
+      notification.innerHTML = `
+        <div class="flex items-center">
+          <i class="fas fa-trophy mr-2"></i>
+          ${message}
+        </div>
+      `;
+      
+      document.body.appendChild(notification);
+      
+      setTimeout(() => {
+        notification.style.transform = 'translateX(0)';
+      }, 100);
+      
+      setTimeout(() => {
+        notification.style.transform = 'translateX(100%)';
+        setTimeout(() => notification.remove(), 500);
+      }, 3000);
+    }
+
+    // Initialize on page load
+    document.addEventListener('DOMContentLoaded', function() {
+      // Add entrance animations
+      const cards = document.querySelectorAll('.section-card');
+      cards.forEach((card, index) => {
+        card.style.opacity = '0';
+        card.style.transform = 'translateY(30px)';
+        
+        setTimeout(() => {
+          card.style.transition = 'all 0.6s ease';
+          card.style.opacity = '1';
+          card.style.transform = 'translateY(0)';
+        }, index * 100);
+      });
+    });
+
+    // Close modal on outside click
+    document.getElementById('contentModal').addEventListener('click', function(e) {
+      if (e.target === this) closeModal();
+    });
+    
+    document.getElementById('quizModal').addEventListener('click', function(e) {
+      if (e.target === this) closeModal();
+    });
+
+    // Keyboard shortcuts
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') closeModal();
+    });
+  </script>
+
+</body>
+</html>

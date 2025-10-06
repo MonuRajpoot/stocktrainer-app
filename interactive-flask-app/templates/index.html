@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Flask App</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+    <script src="{{ url_for('static', filename='js/main.js') }}" defer></script>
+</head>
+<body>
+    <header>
+        <h1>Welcome to the Interactive Flask App</h1>
+        <nav>
+            <ul>
+                <li><a href="{{ url_for('home') }}">Home</a></li>
+                <li><a href="{{ url_for('courses') }}">Courses</a></li>
+                <li><a href="{{ url_for('profile') }}">Profile</a></li>
+                <li><a href="{{ url_for('contact') }}">Contact</a></li>
+                <li><a href="{{ url_for('logout') }}" id="logout">Logout</a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <section>
+            <h2>Featured Courses</h2>
+            <div id="course-list">
+                <!-- Dynamic course content will be loaded here -->
+            </div>
+        </section>
+        <section>
+            <h2>Latest News</h2>
+            <div id="news-section">
+                <!-- Dynamic news content will be loaded here -->
+            </div>
+        </section>
+    </main>
+    <footer>
+        <p>&copy; 2023 Interactive Flask App. All rights reserved.</p>
+    </footer>
+    <script>
+        // Fetch and display courses and news dynamically
+        document.addEventListener('DOMContentLoaded', function() {
+            loadCourses();
+            loadNews();
+        });
+
+        function loadCourses() {
+            // Fetch courses from the server and display them
+        }
+
+        function loadNews() {
+            // Fetch latest news from the server and display them
+        }
+    </script>
+</body>
+</html>

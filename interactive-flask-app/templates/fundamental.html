@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fundamentals</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+    <script src="{{ url_for('static', filename='js/main.js') }}" defer></script>
+</head>
+<body>
+    {% include 'base.html' %}
+
+    <div class="container">
+        <h1>Fundamental Topics</h1>
+        <p>Welcome to the fundamentals section. Here you will find resources and information on basic concepts.</p>
+
+        <div id="fundamental-content">
+            <h2>Topics Covered</h2>
+            <ul>
+                <li><a href="#topic1">Topic 1: Introduction to Fundamentals</a></li>
+                <li><a href="#topic2">Topic 2: Key Principles</a></li>
+                <li><a href="#topic3">Topic 3: Practical Applications</a></li>
+            </ul>
+
+            <div id="topic1">
+                <h3>Introduction to Fundamentals</h3>
+                <p>This section covers the basic principles that form the foundation of our subject.</p>
+            </div>
+
+            <div id="topic2">
+                <h3>Key Principles</h3>
+                <p>Here we discuss the key principles that are essential for understanding the fundamentals.</p>
+            </div>
+
+            <div id="topic3">
+                <h3>Practical Applications</h3>
+                <p>This section provides examples of how fundamental concepts are applied in real-world scenarios.</p>
+            </div>
+        </div>
+
+        <div class="interactive-section">
+            <h2>Interactive Quiz</h2>
+            <button id="start-quiz">Start Quiz</button>
+            <div id="quiz-container" style="display:none;">
+                <p>Quiz questions will appear here.</p>
+                <!-- Quiz questions will be dynamically loaded here -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('start-quiz').addEventListener('click', function() {
+            const quizContainer = document.getElementById('quiz-container');
+            quizContainer.style.display = 'block';
+            // Load quiz questions dynamically
+            loadQuizQuestions();
+        });
+
+        function loadQuizQuestions() {
+            // Fetch quiz questions from the server or a local file
+            // This is a placeholder for the actual implementation
+            const questions = [
+                { question: "What is the fundamental principle of X?", options: ["A", "B", "C"], answer: "A" },
+                { question: "Explain the concept of Y.", options: ["Option 1", "Option 2"], answer: "Option 1" }
+            ];
+            // Render questions in the quiz container
+            questions.forEach(q => {
+                const questionElement = document.createElement('div');
+                questionElement.innerHTML = `<p>${q.question}</p>`;
+                quizContainer.appendChild(questionElement);
+            });
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,1047 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>📘 Interactive Technical Analysis Guide</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    .section-card {
+      transition: all 0.3s ease;
+      transform: translateY(0);
+    }
+    .section-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+    }
+    .progress-bar {
+      transition: width 0.5s ease;
+    }
+    .fade-in {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: all 0.6s ease;
+    }
+    .fade-in.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .floating-emoji {
+      animation: float 3s ease-in-out infinite;
+    }
+    @keyframes float {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-10px); }
+    }
+    .chart-container {
+      background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+      border-radius: 12px;
+      padding: 20px;
+      color: white;
+    }
+    .price-line {
+      stroke-width: 3;
+      fill: none;
+      stroke-dasharray: 1000;
+      stroke-dashoffset: 1000;
+      animation: drawLine 3s ease-in-out forwards;
+    }
+    @keyframes drawLine {
+      to { stroke-dashoffset: 0; }
+    }
+    .candlestick {
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+    .candlestick:hover {
+      transform: scale(1.1);
+    }
+    .quiz-option {
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+    .quiz-option:hover {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      transform: translateX(10px);
+    }
+    .correct-answer {
+      background: linear-gradient(135deg, #4ade80 0%, #22c55e 100%) !important;
+      color: white !important;
+    }
+    .wrong-answer {
+      background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%) !important;
+      color: white !important;
+    }
+    .indicator-meter {
+      width: 100%;
+      height: 20px;
+      background: linear-gradient(90deg, #ef4444 0%, #f59e0b 50%, #22c55e 100%);
+      border-radius: 10px;
+      position: relative;
+    }
+    .indicator-pointer {
+      position: absolute;
+      top: -5px;
+      width: 30px;
+      height: 30px;
+      background: white;
+      border: 3px solid #333;
+      border-radius: 50%;
+      transition: all 0.5s ease;
+      transform: translateX(-15px);
+    }
+    .pattern-card {
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+    .pattern-card:hover {
+      transform: scale(1.05);
+      box-shadow: 0 15px 30px rgba(0,0,0,0.2);
+    }
+    .pattern-card.selected {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+    }
+  </style>
+</head>
+<body class="bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 min-h-screen">
+  <!-- Progress Bar -->
+  <div class="fixed top-0 left-0 w-full h-2 bg-gray-200 z-50">
+    <div id="progressBar" class="progress-bar h-full bg-gradient-to-r from-blue-500 to-purple-600" style="width: 0%"></div>
+  </div>
+
+  <div class="max-w-7xl mx-auto px-4 py-16">
+    <!-- Hero Section -->
+    <div class="text-center mb-16 fade-in">
+      <h1 class="text-6xl font-bold mb-6 bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600 bg-clip-text text-transparent">
+        📘 Master Technical Analysis
+      </h1>
+      <p class="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
+        Learn to read charts like a pro trader with interactive tools, live examples, and hands-on practice!
+      </p>
+      <div class="mt-8">
+        <span class="floating-emoji text-4xl">📈</span>
+        <span class="floating-emoji text-4xl" style="animation-delay: 1s;">📊</span>
+        <span class="floating-emoji text-4xl" style="animation-delay: 2s;">🎯</span>
+      </div>
+    </div>
+
+    <!-- Learning Dashboard -->
+    <div class="bg-white rounded-2xl shadow-xl p-8 mb-12 section-card">
+      <h2 class="text-3xl font-bold mb-6 text-center">Your Progress Dashboard</h2>
+      <div class="grid md:grid-cols-4 gap-6">
+        <div class="text-center p-6 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl text-white">
+          <div class="text-3xl font-bold" id="sectionsCompleted">0</div>
+          <div class="text-sm opacity-90">Sections Mastered</div>
+        </div>
+        <div class="text-center p-6 bg-gradient-to-br from-green-500 to-green-600 rounded-xl text-white">
+          <div class="text-3xl font-bold" id="patternsIdentified">0</div>
+          <div class="text-sm opacity-90">Patterns Identified</div>
+        </div>
+        <div class="text-center p-6 bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl text-white">
+          <div class="text-3xl font-bold" id="quizScore">0%</div>
+          <div class="text-sm opacity-90">Quiz Score</div>
+        </div>
+        <div class="text-center p-6 bg-gradient-to-br from-orange-500 to-red-600 rounded-xl text-white">
+          <div class="text-3xl font-bold" id="skillLevel">Beginner</div>
+          <div class="text-sm opacity-90">Skill Level</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Interactive Chart Builder -->
+    <div class="section-card bg-white rounded-2xl shadow-xl p-8 mb-12 fade-in" data-section="1">
+      <div class="flex items-center mb-6">
+        <div class="w-12 h-12 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white font-bold text-xl mr-4">1</div>
+        <h2 class="text-3xl font-bold">📊 Interactive Chart Builder</h2>
+      </div>
+      
+      <div class="grid lg:grid-cols-2 gap-8">
+        <div>
+          <h3 class="text-xl font-semibold mb-4">Build Your Own Candlestick Chart</h3>
+          <div class="space-y-4">
+            <div class="grid grid-cols-2 gap-4">
+              <div>
+                <label class="block text-sm font-semibold mb-2">Open Price</label>
+                <input type="number" id="openPrice" placeholder="100" class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+              </div>
+              <div>
+                <label class="block text-sm font-semibold mb-2">High Price</label>
+                <input type="number" id="highPrice" placeholder="110" class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+              </div>
+            </div>
+            <div class="grid grid-cols-2 gap-4">
+              <div>
+                <label class="block text-sm font-semibold mb-2">Low Price</label>
+                <input type="number" id="lowPrice" placeholder="95" class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+              </div>
+              <div>
+                <label class="block text-sm font-semibold mb-2">Close Price</label>
+                <input type="number" id="closePrice" placeholder="105" class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+              </div>
+            </div>
+            <button onclick="drawCandlestick()" class="w-full bg-gradient-to-r from-blue-500 to-purple-600 text-white py-3 rounded-lg hover:shadow-lg transition-all">
+              Draw Candlestick 🕯️
+            </button>
+          </div>
+        </div>
+        
+        <div class="chart-container">
+          <h3 class="text-xl font-semibold mb-4">Your Candlestick Chart</h3>
+          <svg id="candlestickChart" width="100%" height="300" viewBox="0 0 400 300">
+            <!-- Grid lines -->
+            <defs>
+              <pattern id="grid" width="40" height="30" patternUnits="userSpaceOnUse">
+                <path d="M 40 0 L 0 0 0 30" fill="none" stroke="#374151" stroke-width="0.5" opacity="0.3"/>
+              </pattern>
+            </defs>
+            <rect width="100%" height="100%" fill="url(#grid)" />
+            
+            <!-- Chart area -->
+            <g id="chartArea" transform="translate(50, 50)">
+              <!-- Candlestick will be drawn here -->
+            </g>
+            
+            <!-- Axes -->
+            <g id="yAxis"></g>
+            <text x="200" y="290" text-anchor="middle" fill="#9ca3af" font-size="12">Price Movement</text>
+          </svg>
+          <div id="candlestickInfo" class="mt-4 p-4 bg-gray-800 rounded-lg hidden">
+            <div class="text-sm">
+              <div>📊 <span id="candleType"></span></div>
+              <div>📏 Body Size: <span id="bodySize"></span></div>
+              <div>📐 Wick Ratio: <span id="wickRatio"></span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <button onclick="markSectionComplete(1)" class="mt-6 bg-gradient-to-r from-green-500 to-green-600 text-white px-8 py-3 rounded-full hover:shadow-lg transition-all">
+        Master Candlesticks ✓
+      </button>
+    </div>
+
+    <!-- Interactive Indicators -->
+    <div class="section-card bg-white rounded-2xl shadow-xl p-8 mb-12 fade-in" data-section="2">
+      <div class="flex items-center mb-6">
+        <div class="w-12 h-12 bg-gradient-to-r from-purple-500 to-pink-600 rounded-full flex items-center justify-center text-white font-bold text-xl mr-4">2</div>
+        <h2 class="text-3xl font-bold">🔧 Interactive Technical Indicators</h2>
+      </div>
+      
+      <div class="grid lg:grid-cols-2 gap-8">
+        <!-- RSI Simulator -->
+        <div class="bg-gradient-to-br from-red-50 to-orange-50 p-6 rounded-xl">
+          <h3 class="text-xl font-bold mb-4">📊 RSI Indicator Simulator</h3>
+          <div class="mb-4">
+            <label class="block text-sm font-semibold mb-2">Current RSI Value</label>
+            <input type="range" id="rsiSlider" min="0" max="100" value="50" class="w-full mb-2">
+            <div class="text-center text-2xl font-bold" id="rsiValue">50</div>
+          </div>
+          
+          <div class="indicator-meter mb-4">
+            <div class="indicator-pointer" id="rsiPointer"></div>
+          </div>
+          
+          <div class="text-center">
+            <div id="rsiZone" class="text-lg font-bold mb-2">Neutral Zone</div>
+            <div id="rsiAdvice" class="text-sm text-gray-600">Hold or wait for signals</div>
+          </div>
+          
+          <div class="mt-4 grid grid-cols-3 gap-2 text-xs">
+            <div class="bg-red-100 p-2 rounded text-center">
+              <div class="font-bold text-red-600">Oversold</div>
+              <div>RSI < 30</div>
+            </div>
+            <div class="bg-yellow-100 p-2 rounded text-center">
+              <div class="font-bold text-yellow-600">Neutral</div>
+              <div>30-70</div>
+            </div>
+            <div class="bg-green-100 p-2 rounded text-center">
+              <div class="font-bold text-green-600">Overbought</div>
+              <div>RSI > 70</div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Moving Average Calculator -->
+        <div class="bg-gradient-to-br from-blue-50 to-indigo-50 p-6 rounded-xl">
+          <h3 class="text-xl font-bold mb-4">📈 Moving Average Calculator</h3>
+          <div class="space-y-4">
+            <div>
+              <label class="block text-sm font-semibold mb-2">Enter Recent Prices (comma separated)</label>
+              <textarea id="priceData" placeholder="100,102,105,103,108,110,112" class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 h-20"></textarea>
+            </div>
+            <div class="grid grid-cols-2 gap-4">
+              <div>
+                <label class="block text-sm font-semibold mb-2">Period</label>
+                <select id="maPeriod" class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                  <option value="5">5-day MA</option>
+                  <option value="10">10-day MA</option>
+                  <option value="20">20-day MA</option>
+                  <option value="50">50-day MA</option>
+                </select>
+              </div>
+              <div>
+                <label class="block text-sm font-semibold mb-2">Type</label>
+                <select id="maType" class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                  <option value="sma">Simple MA</option>
+                  <option value="ema">Exponential MA</option>
+                </select>
+              </div>
+            </div>
+            <button onclick="calculateMA()" class="w-full bg-gradient-to-r from-blue-500 to-indigo-600 text-white py-3 rounded-lg hover:shadow-lg transition-all">
+              Calculate Moving Average
+            </button>
+            <div id="maResult" class="hidden bg-white p-4 rounded-lg border-l-4 border-blue-500">
+              <div class="font-bold text-lg" id="maValue"></div>
+              <div class="text-sm text-gray-600" id="maTrend"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <button onclick="markSectionComplete(2)" class="mt-6 bg-gradient-to-r from-green-500 to-green-600 text-white px-8 py-3 rounded-full hover:shadow-lg transition-all">
+        Master Indicators ✓
+      </button>
+    </div>
+
+    <!-- Pattern Recognition Game -->
+    <div class="section-card bg-white rounded-2xl shadow-xl p-8 mb-12 fade-in" data-section="3">
+      <div class="flex items-center mb-6">
+        <div class="w-12 h-12 bg-gradient-to-r from-green-500 to-teal-600 rounded-full flex items-center justify-center text-white font-bold text-xl mr-4">3</div>
+        <h2 class="text-3xl font-bold">🎯 Pattern Recognition Challenge</h2>
+      </div>
+      
+      <div class="mb-6">
+        <h3 class="text-xl font-semibold mb-4">Identify the Chart Patterns</h3>
+        <div class="grid md:grid-cols-3 gap-6">
+          <!-- Head & Shoulders -->
+          <div class="pattern-card bg-gray-50 p-6 rounded-xl border-2 border-transparent" onclick="selectPattern(this, 'head-shoulders')">
+            <div class="text-center mb-4">
+              <svg width="120" height="80" class="mx-auto">
+                <path d="M10,60 L30,40 L50,20 L70,45 L90,50 L110,55" stroke="#ef4444" stroke-width="3" fill="none"/>
+                <circle cx="50" cy="20" r="3" fill="#ef4444"/>
+                <circle cx="30" cy="40" r="2" fill="#ef4444"/>
+                <circle cx="70" cy="45" r="2" fill="#ef4444"/>
+              </svg>
+            </div>
+            <h4 class="font-bold text-center">Head & Shoulders</h4>
+            <p class="text-sm text-gray-600 text-center mt-2">Bearish reversal pattern</p>
+          </div>
+          
+          <!-- Cup & Handle -->
+          <div class="pattern-card bg-gray-50 p-6 rounded-xl border-2 border-transparent" onclick="selectPattern(this, 'cup-handle')">
+            <div class="text-center mb-4">
+              <svg width="120" height="80" class="mx-auto">
+                <path d="M10,30 Q30,60 50,60 Q70,60 90,30 L95,35 L100,30 L110,25" stroke="#22c55e" stroke-width="3" fill="none"/>
+              </svg>
+            </div>
+            <h4 class="font-bold text-center">Cup & Handle</h4>
+            <p class="text-sm text-gray-600 text-center mt-2">Bullish continuation</p>
+          </div>
+          
+          <!-- Ascending Triangle -->
+          <div class="pattern-card bg-gray-50 p-6 rounded-xl border-2 border-transparent" onclick="selectPattern(this, 'ascending-triangle')">
+            <div class="text-center mb-4">
+              <svg width="120" height="80" class="mx-auto">
+                <line x1="10" y1="60" x2="110" y2="25" stroke="#6b7280" stroke-width="2"/>
+                <line x1="10" y1="60" x2="90" y2="45" stroke="#6b7280" stroke-width="2"/>
+                <path d="M10,60 L30,50 L50,45 L70,40 L90,45" stroke="#3b82f6" stroke-width="3" fill="none"/>
+              </svg>
+            </div>
+            <h4 class="font-bold text-center">Ascending Triangle</h4>
+            <p class="text-sm text-gray-600 text-center mt-2">Bullish breakout</p>
+          </div>
+        </div>
+        
+        <div id="patternFeedback" class="hidden mt-6 p-4 rounded-xl">
+          <div class="text-center">
+            <div class="text-2xl mb-2" id="feedbackEmoji"></div>
+            <div class="font-bold text-lg" id="feedbackText"></div>
+            <div class="text-sm text-gray-600 mt-2" id="feedbackDescription"></div>
+          </div>
+        </div>
+      </div>
+      
+      <button onclick="markSectionComplete(3)" class="mt-6 bg-gradient-to-r from-green-500 to-green-600 text-white px-8 py-3 rounded-full hover:shadow-lg transition-all">
+        Master Patterns ✓
+      </button>
+    </div>
+
+    <!-- Support & Resistance Finder -->
+    <div class="section-card bg-white rounded-2xl shadow-xl p-8 mb-12 fade-in" data-section="4">
+      <div class="flex items-center mb-6">
+        <div class="w-12 h-12 bg-gradient-to-r from-orange-500 to-red-600 rounded-full flex items-center justify-center text-white font-bold text-xl mr-4">4</div>
+        <h2 class="text-3xl font-bold">🧲 Support & Resistance Simulator</h2>
+      </div>
+      
+      <div class="grid lg:grid-cols-2 gap-8">
+        <div>
+          <h3 class="text-xl font-semibold mb-4">Interactive Price Chart</h3>
+          <div class="chart-container">
+            <svg id="srChart" width="100%" height="300" viewBox="0 0 400 300">
+              <!-- Price line -->
+              <path id="priceLine" class="price-line" stroke="#22c55e" d="M20,250 L80,200 L140,180 L200,220 L260,160 L320,140 L380,120"/>
+              
+              <!-- Support line -->
+              <line id="supportLine" x1="20" y1="230" x2="380" y2="230" stroke="#ef4444" stroke-width="2" stroke-dasharray="5,5"/>
+              <text x="25" y="225" fill="#ef4444" font-size="12">Support: ₹1450</text>
+              
+              <!-- Resistance line -->
+              <line id="resistanceLine" x1="20" y1="100" x2="380" y2="100" stroke="#f59e0b" stroke-width="2" stroke-dasharray="5,5"/>
+              <text x="25" y="95" fill="#f59e0b" font-size="12">Resistance: ₹1650</text>
+              
+              <!-- Interactive points -->
+              <circle cx="320" cy="140" r="6" fill="#22c55e" class="cursor-pointer" onclick="showPriceInfo(1600)"/>
+              <circle cx="380" cy="120" r="6" fill="#22c55e" class="cursor-pointer" onclick="showPriceInfo(1680)"/>
+            </svg>
+          </div>
+          
+          <div id="priceInfo" class="mt-4 p-4 bg-gray-800 rounded-lg text-white hidden">
+            <div class="text-center">
+              <div class="text-xl font-bold" id="currentPrice">₹1600</div>
+              <div class="text-sm opacity-80" id="pricePosition">Above Support</div>
+            </div>
+          </div>
+        </div>
+        
+        <div>
+          <h3 class="text-xl font-semibold mb-4">Real Example: HDFC Bank</h3>
+          <div class="space-y-4">
+            <div class="p-4 bg-red-50 border-l-4 border-red-400 rounded">
+              <div class="font-bold text-red-700">🟢 Support Level: ₹1450</div>
+              <div class="text-sm text-gray-600">Price bounced 3 times from this level</div>
+            </div>
+            
+            <div class="p-4 bg-yellow-50 border-l-4 border-yellow-400 rounded">
+              <div class="font-bold text-yellow-700">🔴 Resistance Level: ₹1650</div>
+              <div class="text-sm text-gray-600">Failed to break above 4 times</div>
+            </div>
+            
+            <div class="p-4 bg-blue-50 border-l-4 border-blue-400 rounded">
+              <div class="font-bold text-blue-700">📊 Current Status</div>
+              <div class="text-sm text-gray-600">Trading in the middle range - neutral zone</div>
+            </div>
+            
+            <div class="p-4 bg-green-50 border-l-4 border-green-400 rounded">
+              <div class="font-bold text-green-700">🎯 Trading Strategy</div>
+              <div class="text-sm text-gray-600">Buy near support, sell near resistance</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <button onclick="markSectionComplete(4)" class="mt-6 bg-gradient-to-r from-green-500 to-green-600 text-white px-8 py-3 rounded-full hover:shadow-lg transition-all">
+        Master S&R ✓
+      </button>
+    </div>
+
+    <!-- Technical Analysis Quiz -->
+    <div class="section-card bg-white rounded-2xl shadow-xl p-8 mb-12 fade-in" data-section="5">
+      <div class="flex items-center mb-6">
+        <div class="w-12 h-12 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-full flex items-center justify-center text-white font-bold text-xl mr-4">5</div>
+        <h2 class="text-3xl font-bold">🧠 Technical Analysis Challenge</h2>
+      </div>
+      
+      <div id="quizContainer">
+        <div class="quiz-question mb-8" id="taQuestion1">
+          <h3 class="text-xl font-semibold mb-4">What does RSI above 70 typically indicate?</h3>
+          <div class="space-y-3">
+            <div class="quiz-option p-4 border border-gray-300 rounded-lg" onclick="selectTAAnswer(this, false)">
+              The stock is undervalued and should be bought
+            </div>
+            <div class="quiz-option p-4 border border-gray-300 rounded-lg" onclick="selectTAAnswer(this, true)">
+              The stock is overbought and might face selling pressure
+            </div>
+            <div class="quiz-option p-4 border border-gray-300 rounded-lg" onclick="selectTAAnswer(this, false)">
+              The company has good fundamentals
+            </div>
+          </div>
+        </div>
+        
+        <div class="quiz-question mb-8 hidden" id="taQuestion2">
+          <h3 class="text-xl font-semibold mb-4">What is a "Golden Cross" in technical analysis?</h3>
+          <div class="space-y-3">
+            <div class="quiz-option p-4 border border-gray-300 rounded-lg" onclick="selectTAAnswer(this, false)">
+              When RSI crosses above 50
+            </div>
+            <div class="quiz-option p-4 border border-gray-300 rounded-lg" onclick="selectTAAnswer(this, true)">
+              When 50-day MA crosses above 200-day MA
+            </div>
+            <div class="quiz-option p-4 border border-gray-300 rounded-lg" onclick="selectTAAnswer(this, false)">
+              When volume increases significantly
+            </div>
+          </div>
+        </div>
+        
+        <div class="quiz-question mb-8 hidden" id="taQuestion3">
+          <h3 class="text-xl font-semibold mb-4">What makes a breakout more reliable?</h3>
+          <div class="space-y-3">
+            <div class="quiz-option p-4 border border-gray-300 rounded-lg" onclick="selectTAAnswer(this, false)">
+              Low trading volume
+            </div>
+            <div class="quiz-option p-4 border border-gray-300 rounded-lg" onclick="selectTAAnswer(this, true)">
+              High trading volume confirmation
+            </div>
+            <div class="quiz-option p-4 border border-gray-300 rounded-lg" onclick="selectTAAnswer(this, false)">
+              Perfect chart patterns
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div id="taQuizResults" class="hidden text-center">
+        <h3 class="text-2xl font-bold mb-4">Challenge Complete! 🏆</h3>
+        <div class="text-4xl font-bold mb-2" id="taFinalScore">0/3</div>
+        <p class="text-gray-600 mb-6">Keep practicing to become a chart master!</p>
+        <button onclick="resetTAQuiz()" class="bg-gradient-to-r from-blue-500 to-purple-600 text-white px-8 py-3 rounded-full hover:shadow-lg transition-all">
+          Retake Challenge
+        </button>
+      </div>
+      
+      <button onclick="markSectionComplete(5)" class="mt-6 bg-gradient-to-r from-green-500 to-green-600 text-white px-8 py-3 rounded-full hover:shadow-lg transition-all">
+        Master Concepts ✓
+      </button>
+    </div>
+
+    <!-- Trading Strategy Simulator -->
+    <div class="section-card bg-white rounded-2xl shadow-xl p-8 mb-12 fade-in" data-section="6">
+      <div class="flex items-center mb-6">
+        <div class="w-12 h-12 bg-gradient-to-r from-pink-500 to-rose-600 rounded-full flex items-center justify-center text-white font-bold text-xl mr-4">6</div>
+        <h2 class="text-3xl font-bold">🎮 Trading Strategy Simulator</h2>
+      </div>
+      
+      <div class="grid lg:grid-cols-2 gap-8">
+        <div>
+          <h3 class="text-xl font-semibold mb-4">Virtual Trading Setup</h3>
+          <div class="space-y-4">
+            <div class="grid grid-cols-2 gap-4">
+              <div>
+                <label class="block text-sm font-semibold mb-2">Stock Symbol</label>
+                <select id="stockSymbol" class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500">
+                  <option value="HDFC">HDFC Bank</option>
+                  <option value="INFY">Infosys</option>
+                  <option value="TCS">TCS</option>
+                  <option value="RELIANCE">Reliance</option>
+                </select>
+              </div>
+              <div>
+                <label class="block text-sm font-semibold mb-2">Strategy</label>
+                <select id="strategy" class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500">
+                  <option value="breakout">Breakout</option>
+                  <option value="pullback">Pullback</option>
+                  <option value="trend">Trend Following</option>
+                </select>
+              </div>
+            </div>
+            
+            <div class="grid grid-cols-2 gap-4">
+              <div>
+                <label class="block text-sm font-semibold mb-2">Entry Price (₹)</label>
+                <input type="number" id="entryPrice" placeholder="1500" class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500">
+              </div>
+              <div>
+                <label class="block text-sm font-semibold mb-2">Quantity</label>
+                <input type="number" id="quantity" placeholder="100" class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500">
+              </div>
+            </div>
+            
+            <div class="grid grid-cols-2 gap-4">
+              <div>
+                <label class="block text-sm font-semibold mb-2">Stop Loss (₹)</label>
+                <input type="number" id="stopLoss" placeholder="1450" class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500">
+              </div>
+              <div>
+                <label class="block text-sm font-semibold mb-2">Target (₹)</label>
+                <input type="number" id="target" placeholder="1600" class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500">
+              </div>
+            </div>
+            
+            <button onclick="simulateTrade()" class="w-full bg-gradient-to-r from-pink-500 to-rose-600 text-white py-3 rounded-lg hover:shadow-lg transition-all">
+              Execute Virtual Trade 🚀
+            </button>
+          </div>
+        </div>
+        
+        <div>
+          <h3 class="text-xl font-semibold mb-4">Trade Analysis</h3>
+          <div id="tradeResults" class="space-y-4">
+            <div class="p-4 bg-gray-50 rounded-lg text-center text-gray-500">
+              Set up a trade to see analysis
+            </div>
+          </div>
+          
+          <div class="mt-6 p-4 bg-gradient-to-r from-blue-50 to-purple-50 rounded-xl">
+            <h4 class="font-bold mb-2">📈 Portfolio Performance</h4>
+            <div class="grid grid-cols-2 gap-4 text-sm">
+              <div class="text-center">
+                <div class="text-2xl font-bold text-green-600" id="totalPnL">₹0</div>
+                <div class="text-gray-600">Total P&L</div>
+              </div>
+              <div class="text-center">
+                <div class="text-2xl font-bold text-blue-600" id="winRate">0%</div>
+                <div class="text-gray-600">Win Rate</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <button onclick="markSectionComplete(6)" class="mt-6 bg-gradient-to-r from-green-500 to-green-600 text-white px-8 py-3 rounded-full hover:shadow-lg transition-all">
+        Master Trading ✓
+      </button>
+    </div>
+
+    <!-- Tools & Resources -->
+    <div class="section-card bg-white rounded-2xl shadow-xl p-8 mb-12 fade-in" data-section="7">
+      <div class="flex items-center mb-6">
+        <div class="w-12 h-12 bg-gradient-to-r from-cyan-500 to-blue-600 rounded-full flex items-center justify-center text-white font-bold text-xl mr-4">7</div>
+        <h2 class="text-3xl font-bold">🛠️ Professional Trading Tools</h2>
+      </div>
+      
+      <div class="grid md:grid-cols-3 gap-6">
+        <div class="p-6 border border-gray-200 rounded-xl hover:shadow-lg transition-all cursor-pointer bg-gradient-to-br from-blue-50 to-blue-100" onclick="window.open('https://www.tradingview.com', '_blank')">
+          <div class="text-4xl mb-4 text-center">📊</div>
+          <h3 class="font-bold text-lg mb-2 text-center">TradingView</h3>
+          <p class="text-gray-600 text-sm text-center">Advanced charting & analysis</p>
+          <div class="mt-4 flex justify-center">
+            <span class="bg-blue-500 text-white px-3 py-1 rounded-full text-xs">Professional</span>
+          </div>
+        </div>
+        
+        <div class="p-6 border border-gray-200 rounded-xl hover:shadow-lg transition-all cursor-pointer bg-gradient-to-br from-green-50 to-green-100" onclick="window.open('https://kite.zerodha.com', '_blank')">
+          <div class="text-4xl mb-4 text-center">📱</div>
+          <h3 class="font-bold text-lg mb-2 text-center">Zerodha Kite</h3>
+          <p class="text-gray-600 text-sm text-center">Trading + Technical Analysis</p>
+          <div class="mt-4 flex justify-center">
+            <span class="bg-green-500 text-white px-3 py-1 rounded-full text-xs">Free</span>
+          </div>
+        </div>
+        
+        <div class="p-6 border border-gray-200 rounded-xl hover:shadow-lg transition-all cursor-pointer bg-gradient-to-br from-purple-50 to-purple-100" onclick="window.open('https://chartink.com', '_blank')">
+          <div class="text-4xl mb-4 text-center">🔍</div>
+          <h3 class="font-bold text-lg mb-2 text-center">Chartink</h3>
+          <p class="text-gray-600 text-sm text-center">Stock screener & scanner</p>
+          <div class="mt-4 flex justify-center">
+            <span class="bg-purple-500 text-white px-3 py-1 rounded-full text-xs">Powerful</span>
+          </div>
+        </div>
+      </div>
+      
+      <button onclick="markSectionComplete(7)" class="mt-6 bg-gradient-to-r from-green-500 to-green-600 text-white px-8 py-3 rounded-full hover:shadow-lg transition-all">
+        Explore Tools ✓
+      </button>
+    </div>
+
+    <!-- Master Certificate -->
+    <div id="masterCertificate" class="hidden section-card bg-gradient-to-r from-yellow-400 via-yellow-500 to-orange-500 rounded-2xl shadow-2xl p-12 text-center text-white mb-12">
+      <div class="text-8xl mb-6">🏆</div>
+      <h2 class="text-5xl font-bold mb-4">Technical Analysis Master!</h2>
+      <p class="text-xl mb-6">You've completed the comprehensive technical analysis course!</p>
+      <div class="text-lg opacity-90 mb-8">
+        You're now equipped to read charts, identify patterns, and make informed trading decisions. 
+        Ready to conquer the markets! 📈
+      </div>
+      <div class="bg-white/20 backdrop-blur-sm rounded-xl p-6 max-w-md mx-auto">
+        <div class="text-2xl font-bold mb-2">Your Achievement Stats</div>
+        <div class="grid grid-cols-2 gap-4 text-sm">
+          <div>Patterns Mastered: <span class="font-bold" id="certPatterns">0</span></div>
+          <div>Quiz Score: <span class="font-bold" id="certQuiz">0%</span></div>
+          <div>Sections Complete: <span class="font-bold" id="certSections">0/7</span></div>
+          <div>Skill Level: <span class="font-bold" id="certSkill">Expert</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let sectionsCompleted = 0;
+    let patternsIdentified = 0;
+    let quizScore = 0;
+    let currentTAQuestion = 1;
+    let correctTAAnswers = 0;
+    let trades = [];
+    let startTime = Date.now();
+
+    // Intersection Observer for animations
+    const observerOptions = {
+      threshold: 0.1,
+      rootMargin: '0px 0px -50px 0px'
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+        }
+      });
+    }, observerOptions);
+
+    document.querySelectorAll('.fade-in').forEach(el => {
+      observer.observe(el);
+    });
+
+    // Progress tracking
+    function updateProgress() {
+      const totalSections = 7;
+      const progress = (sectionsCompleted / totalSections) * 100;
+      document.getElementById('progressBar').style.width = progress + '%';
+      document.getElementById('sectionsCompleted').textContent = sectionsCompleted;
+      document.getElementById('patternsIdentified').textContent = patternsIdentified;
+      
+      // Update skill level
+      const skillLevel = sectionsCompleted < 2 ? 'Beginner' : 
+                        sectionsCompleted < 5 ? 'Intermediate' : 
+                        sectionsCompleted < 7 ? 'Advanced' : 'Expert';
+      document.getElementById('skillLevel').textContent = skillLevel;
+      
+      // Show certificate
+      if (sectionsCompleted === totalSections) {
+        document.getElementById('masterCertificate').classList.remove('hidden');
+        document.getElementById('certPatterns').textContent = patternsIdentified;
+        document.getElementById('certQuiz').textContent = Math.round(quizScore) + '%';
+        document.getElementById('certSections').textContent = sectionsCompleted + '/7';
+        document.getElementById('certSkill').textContent = skillLevel;
+      }
+    }
+
+    function markSectionComplete(sectionNum) {
+      const button = event.target;
+      if (!button.classList.contains('completed')) {
+        button.classList.add('completed');
+        button.textContent = button.textContent.replace('✓', '✅ Completed');
+        button.classList.remove('from-green-500', 'to-green-600');
+        button.classList.add('from-gray-400', 'to-gray-500');
+        sectionsCompleted++;
+        updateProgress();
+      }
+    }
+
+    // Candlestick drawing function
+    function drawCandlestick() {
+      const open = parseFloat(document.getElementById('openPrice').value) || 100;
+      const high = parseFloat(document.getElementById('highPrice').value) || 110;
+      const low = parseFloat(document.getElementById('lowPrice').value) || 95;
+      const close = parseFloat(document.getElementById('closePrice').value) || 105;
+      
+      if (high < Math.max(open, close) || low > Math.min(open, close)) {
+        alert('Invalid data: High must be >= max(open,close) and Low must be <= min(open,close)');
+        return;
+      }
+      
+      const chartArea = document.getElementById('chartArea');
+      chartArea.innerHTML = '';
+      
+      // Scale values to chart
+      const maxPrice = Math.max(high, open, close, low) + 5;
+      const minPrice = Math.min(high, open, close, low) - 5;
+      const priceRange = maxPrice - minPrice;
+      
+      const scaleY = (price) => 200 - ((price - minPrice) / priceRange) * 180;
+      
+      const x = 150; // Center position
+      
+      // Draw wick (high-low line)
+      const wickLine = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+      wickLine.setAttribute('x1', x);
+      wickLine.setAttribute('y1', scaleY(high));
+      wickLine.setAttribute('x2', x);
+      wickLine.setAttribute('y2', scaleY(low));
+      wickLine.setAttribute('stroke', '#6b7280');
+      wickLine.setAttribute('stroke-width', '2');
+      chartArea.appendChild(wickLine);
+      
+      // Draw body (open-close rectangle)
+      const bodyHeight = Math.abs(scaleY(open) - scaleY(close));
+      const bodyY = Math.min(scaleY(open), scaleY(close));
+      const isGreen = close > open;
+      
+      const body = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+      body.setAttribute('x', x - 15);
+      body.setAttribute('y', bodyY);
+      body.setAttribute('width', '30');
+      body.setAttribute('height', bodyHeight);
+      body.setAttribute('fill', isGreen ? '#22c55e' : '#ef4444');
+      body.setAttribute('stroke', isGreen ? '#16a34a' : '#dc2626');
+      body.setAttribute('stroke-width', '1');
+      chartArea.appendChild(body);
+      
+      // Add price labels
+      const labels = [
+        { price: high, label: 'H' },
+        { price: open, label: 'O' },
+        { price: close, label: 'C' },
+        { price: low, label: 'L' }
+      ];
+      
+      labels.forEach(({ price, label }) => {
+        const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+        text.setAttribute('x', x + 25);
+        text.setAttribute('y', scaleY(price) + 5);
+        text.setAttribute('fill', '#9ca3af');
+        text.setAttribute('font-size', '12');
+        text.textContent = `${label}: ₹${price}`;
+        chartArea.appendChild(text);
+      });
+      
+      // Show candlestick info
+      document.getElementById('candlestickInfo').classList.remove('hidden');
+      document.getElementById('candleType').textContent = isGreen ? 'Bullish (Green) Candle' : 'Bearish (Red) Candle';
+      document.getElementById('bodySize').textContent = `₹${Math.abs(close - open).toFixed(2)}`;
+      document.getElementById('wickRatio').textContent = `${((high - low) / Math.abs(close - open)).toFixed(2)}:1`;
+    }
+
+    // RSI Slider functionality
+    document.getElementById('rsiSlider').addEventListener('input', function() {
+      const rsiValue = parseInt(this.value);
+      document.getElementById('rsiValue').textContent = rsiValue;
+      
+      // Update pointer position
+      const pointer = document.getElementById('rsiPointer');
+      pointer.style.left = rsiValue + '%';
+      
+      // Update zone and advice
+      const zone = document.getElementById('rsiZone');
+      const advice = document.getElementById('rsiAdvice');
+      
+      if (rsiValue < 30) {
+        zone.textContent = 'Oversold Zone';
+        zone.className = 'text-lg font-bold mb-2 text-red-600';
+        advice.textContent = 'Consider buying - stock may bounce back';
+      } else if (rsiValue > 70) {
+        zone.textContent = 'Overbought Zone';
+        zone.className = 'text-lg font-bold mb-2 text-green-600';
+        advice.textContent = 'Consider selling - stock may decline';
+      } else {
+        zone.textContent = 'Neutral Zone';
+        zone.className = 'text-lg font-bold mb-2 text-gray-600';
+        advice.textContent = 'Hold or wait for clear signals';
+      }
+    });
+
+    // Moving Average Calculator
+    function calculateMA() {
+      const priceText = document.getElementById('priceData').value;
+      const period = parseInt(document.getElementById('maPeriod').value);
+      const type = document.getElementById('maType').value;
+      
+      if (!priceText) return;
+      
+      const prices = priceText.split(',').map(p => parseFloat(p.trim())).filter(p => !isNaN(p));
+      
+      if (prices.length < period) {
+        alert(`Need at least ${period} prices for ${period}-day MA`);
+        return;
+      }
+      
+      let ma;
+      if (type === 'sma') {
+        const recentPrices = prices.slice(-period);
+        ma = recentPrices.reduce((sum, price) => sum + price, 0) / period;
+      } else {
+        // Simple EMA calculation
+        ma = prices.reduce((ema, price, index) => {
+          const multiplier = 2 / (period + 1);
+          return index === 0 ? price : (price * multiplier) + (ema * (1 - multiplier));
+        });
+      }
+      
+      document.getElementById('maValue').textContent = `${period}-day ${type.toUpperCase()}: ₹${ma.toFixed(2)}`;
+      
+      const currentPrice = prices[prices.length - 1];
+      const trend = currentPrice > ma ? 'Above MA (Bullish)' : 'Below MA (Bearish)';
+      document.getElementById('maTrend').textContent = `Current price ${trend}`;
+      
+      document.getElementById('maResult').classList.remove('hidden');
+    }
+
+    // Pattern selection game
+    function selectPattern(element, patternType) {
+      // Remove previous selections
+      document.querySelectorAll('.pattern-card').forEach(card => {
+        card.classList.remove('selected');
+      });
+      
+      // Select current pattern
+      element.classList.add('selected');
+      patternsIdentified++;
+      updateProgress();
+      
+      // Show feedback
+      const feedback = document.getElementById('patternFeedback');
+      const emoji = document.getElementById('feedbackEmoji');
+      const text = document.getElementById('feedbackText');
+      const description = document.getElementById('feedbackDescription');
+      
+      feedback.classList.remove('hidden');
+      feedback.className = 'mt-6 p-4 rounded-xl bg-gradient-to-r from-green-50 to-blue-50 border border-green-200';
+      
+      const patternInfo = {
+        'head-shoulders': {
+          emoji: '📉',
+          text: 'Head & Shoulders Pattern',
+          description: 'Bearish reversal pattern - indicates potential downtrend after uptrend'
+        },
+        'cup-handle': {
+          emoji: '📈',
+          text: 'Cup & Handle Pattern', 
+          description: 'Bullish continuation pattern - indicates potential breakout to higher levels'
+        },
+        'ascending-triangle': {
+          emoji: '🔺',
+          text: 'Ascending Triangle',
+          description: 'Bullish breakout pattern - shows increasing buying pressure'
+        }
+      };
+      
+      const info = patternInfo[patternType];
+      emoji.textContent = info.emoji;
+      text.textContent = info.text;
+      description.textContent = info.description;
+    }
+
+    // Support & Resistance interaction
+    function showPriceInfo(price) {
+      document.getElementById('priceInfo').classList.remove('hidden');
+      document.getElementById('currentPrice').textContent = `₹${price}`;
+      
+      let position;
+      if (price < 1450) {
+        position = 'Below Support - Bearish';
+      } else if (price > 1650) {
+        position = 'Above Resistance - Bullish';
+      } else {
+        position = 'Between S&R - Neutral';
+      }
+      
+      document.getElementById('pricePosition').textContent = position;
+    }
+
+    // Trading Simulator
+    function simulateTrade() {
+      const symbol = document.getElementById('stockSymbol').value;
+      const strategy = document.getElementById('strategy').value;
+      const entry = parseFloat(document.getElementById('entryPrice').value);
+      const qty = parseInt(document.getElementById('quantity').value);
+      const stopLoss = parseFloat(document.getElementById('stopLoss').value);
+      const target = parseFloat(document.getElementById('target').value);
+      
+      if (!entry || !qty || !stopLoss || !target) {
+        alert('Please fill all trade parameters');
+        return;
+      }
+      
+      // Simulate price movement (random for demo)
+      const priceChange = (Math.random() - 0.5) * 0.1; // ±5% movement
+      const exitPrice = entry * (1 + priceChange);
+      
+      let result, pnl, status;
+      if (exitPrice <= stopLoss) {
+        result = 'Stop Loss Hit';
+        pnl = (stopLoss - entry) * qty;
+        status = 'loss';
+      } else if (exitPrice >= target) {
+        result = 'Target Achieved';
+        pnl = (target - entry) * qty;
+        status = 'profit';
+      } else {
+        result = 'Trade Ongoing';
+        pnl = (exitPrice - entry) * qty;
+        status = pnl > 0 ? 'profit' : 'loss';
+      }
+      
+      trades.push({ pnl, status });
+      
+      // Update display
+      const resultsDiv = document.getElementById('tradeResults');
+      resultsDiv.innerHTML = `
+        <div class="p-4 ${status === 'profit' ? 'bg-green-50 border-l-4 border-green-400' : 'bg-red-50 border-l-4 border-red-400'} rounded-lg">
+          <div class="font-bold text-lg">${symbol} - ${strategy.charAt(0).toUpperCase() + strategy.slice(1)} Strategy</div>
+          <div class="text-sm text-gray-600 mb-2">Entry: ₹${entry} | Exit: ₹${exitPrice.toFixed(2)}</div>
+          <div class="font-bold ${pnl > 0 ? 'text-green-600' : 'text-red-600'}">${result}: ${pnl > 0 ? '+' : ''}₹${pnl.toFixed(2)}</div>
+        </div>
+      `;
+      
+      // Update portfolio stats
+      const totalPnL = trades.reduce((sum, trade) => sum + trade.pnl, 0);
+      const winningTrades = trades.filter(trade => trade.pnl > 0).length;
+      const winRate = trades.length > 0 ? (winningTrades / trades.length) * 100 : 0;
+      
+      document.getElementById('totalPnL').textContent = `₹${totalPnL.toFixed(2)}`;
+      document.getElementById('totalPnL').className = `text-2xl font-bold ${totalPnL > 0 ? 'text-green-600' : 'text-red-600'}`;
+      document.getElementById('winRate').textContent = `${winRate.toFixed(1)}%`;
+    }
+
+    // Quiz functions
+    function selectTAAnswer(element, isCorrect) {
+      const question = element.closest('.quiz-question');
+      const options = question.querySelectorAll('.quiz-option');
+      options.forEach(opt => {
+        opt.style.pointerEvents = 'none';
+        if (opt === element) {
+          if (isCorrect) {
+            opt.classList.add('correct-answer');
+            correctTAAnswers++;
+          } else {
+            opt.classList.add('wrong-answer');
+          }
+        } else if (opt.onclick.toString().includes('true')) {
+          opt.classList.add('correct-answer');
+        }
+      });
+      
+      setTimeout(() => {
+        question.classList.add('hidden');
+        if (currentTAQuestion < 3) {
+          currentTAQuestion++;
+          document.getElementById('taQuestion' + currentTAQuestion).classList.remove('hidden');
+        } else {
+          showTAQuizResults();
+        }
+      }, 2000);
+    }
+
+    function showTAQuizResults() {
+      document.getElementById('quizContainer').classList.add('hidden');
+      document.getElementById('taQuizResults').classList.remove('hidden');
+      
+      const score = Math.round((correctTAAnswers / 3) * 100);
+      document.getElementById('taFinalScore').textContent = correctTAAnswers + '/3';
+      document.getElementById('quizScore').textContent = score + '%';
+      quizScore = score;
+      updateProgress();
+    }
+
+    function resetTAQuiz() {
+      currentTAQuestion = 1;
+      correctTAAnswers = 0;
+      
+      document.querySelectorAll('.quiz-question').forEach((q, index) => {
+        q.classList.add('hidden');
+        if (index === 0) q.classList.remove('hidden');
+        
+        q.querySelectorAll('.quiz-option').forEach(opt => {
+          opt.style.pointerEvents = 'auto';
+          opt.classList.remove('correct-answer', 'wrong-answer');
+        });
+      });
+      
+      document.getElementById('quizContainer').classList.remove('hidden');
+      document.getElementById('taQuizResults').classList.add('hidden');
+    }
+
+    // Initialize
+    updateProgress();
+    
+    // Auto-draw sample candlestick on load
+    setTimeout(() => {
+      document.getElementById('openPrice').value = 100;
+      document.getElementById('highPrice').value = 110;
+      document.getElementById('lowPrice').value = 95;
+      document.getElementById('closePrice').value = 105;
+      drawCandlestick();
+    }, 1000);
+  </script>
+</body>
+</html>

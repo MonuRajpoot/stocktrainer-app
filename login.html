@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login | StockTrainer</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    .login-container {
+      animation: fadeInUp 0.8s ease-out;
+    }
+    
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    .input-group {
+      position: relative;
+      margin-bottom: 1.5rem;
+    }
+    
+    .input-field {
+      width: 100%;
+      padding: 1rem;
+      border: 2px solid #e5e7eb;
+      border-radius: 0.75rem;
+      font-size: 1rem;
+      transition: all 0.3s ease;
+      background: rgba(255, 255, 255, 0.9);
+    }
+    
+    .input-field:focus {
+      outline: none;
+      border-color: #3b82f6;
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+      transform: scale(1.02);
+    }
+    
+    .input-label {
+      position: absolute;
+      left: 1rem;
+      top: 1rem;
+      color: #6b7280;
+      font-weight: 500;
+      transition: all 0.3s ease;
+      pointer-events: none;
+      background: white;
+      padding: 0 0.5rem;
+    }
+    
+    .input-field:focus + .input-label,
+    .input-field:not(:placeholder-shown) + .input-label {
+      top: -0.5rem;
+      left: 0.75rem;
+      font-size: 0.75rem;
+      color: #3b82f6;
+      font-weight: 600;
+    }
+    
+    .login-btn {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      transition: all 0.3s ease;
+      transform: translateY(0);
+    }
+    
+    .login-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+    }
+    
+    .login-btn:active {
+      transform: translateY(0);
+    }
+    
+    .floating-shapes {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      pointer-events: none;
+    }
+    
+    .shape {
+      position: absolute;
+      border-radius: 50%;
+      background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.1));
+      animation: float 6s ease-in-out infinite;
+    }
+    
+    .shape:nth-child(1) {
+      width: 80px;
+      height: 80px;
+      top: 20%;
+      left: 10%;
+      animation-delay: -2s;
+    }
+    
+    .shape:nth-child(2) {
+      width: 120px;
+      height: 120px;
+      top: 60%;
+      right: 10%;
+      animation-delay: -4s;
+    }
+    
+    .shape:nth-child(3) {
+      width: 100px;
+      height: 100px;
+      top: 10%;
+      right: 20%;
+      animation-delay: -1s;
+    }
+    
+    @keyframes float {
+      0%, 100% { transform: translateY(0px) rotate(0deg); }
+      50% { transform: translateY(-20px) rotate(180deg); }
+    }
+    
+    .checkbox-custom {
+      appearance: none;
+      width: 1.25rem;
+      height: 1.25rem;
+      border: 2px solid #d1d5db;
+      border-radius: 0.375rem;
+      position: relative;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    
+    .checkbox-custom:checked {
+      background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+      border-color: #3b82f6;
+    }
+    
+    .checkbox-custom:checked::after {
+      content: '✓';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      color: white;
+      font-size: 0.875rem;
+      font-weight: bold;
+    }
+    
+    .social-btn {
+      transition: all 0.3s ease;
+    }
+    
+    .social-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    }
+    
+    .welcome-text {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    
+    .card-glow {
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.1);
+      backdrop-filter: blur(20px);
+      background: rgba(255, 255, 255, 0.95);
+    }
+    
+    .pulse-ring {
+      animation: pulse-ring 2s ease-out infinite;
+    }
+    
+    @keyframes pulse-ring {
+      0% { transform: scale(1); opacity: 1; }
+      100% { transform: scale(1.3); opacity: 0; }
+    }
+    
+    .loading-spinner {
+      border: 3px solid rgba(255, 255, 255, 0.3);
+      border-radius: 50%;
+      border-top: 3px solid white;
+      width: 20px;
+      height: 20px;
+      animation: spin 1s linear infinite;
+      display: none;
+    }
+    
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+<body class="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 relative overflow-hidden">
+  <!-- Floating Background Shapes -->
+  <div class="floating-shapes">
+    <div class="shape"></div>
+    <div class="shape"></div>
+    <div class="shape"></div>
+  </div>
+  
+  <!-- Main Content -->
+  <section class="min-h-screen flex items-center justify-center relative z-10 px-4 py-8">
+    <div class="login-container card-glow rounded-2xl w-full max-w-md p-8 border border-white/20">
+      <!-- Header -->
+      <div class="text-center mb-8">
+        <div class="relative inline-block">
+          <h2 class="text-3xl font-bold welcome-text mb-2">Welcome Back 👋</h2>
+          <div class="absolute inset-0 pulse-ring bg-gradient-to-r from-blue-400 to-purple-400 rounded-full opacity-20"></div>
+        </div>
+        <p class="text-gray-600 text-sm mt-2">Continue your trading journey</p>
+      </div>
+      
+      <!-- Login Form -->
+      <form id="loginForm" method="POST" action="/login" class="space-y-6">
+        <!-- Email Field -->
+        <div class="input-group">
+          <input 
+            type="email" 
+            name="email" 
+            id="email"
+            class="input-field" 
+            placeholder=" "
+            required
+          >
+          <label for="email" class="input-label">📧 Email Address</label>
+        </div>
+        
+        <!-- Password Field -->
+        <div class="input-group">
+          <input 
+            type="password" 
+            name="password" 
+            id="password"
+            class="input-field" 
+            placeholder=" "
+            required
+          >
+          <label for="password" class="input-label">🔒 Password</label>
+          <button 
+            type="button" 
+            id="togglePassword"
+            class="absolute right-3 top-4 text-gray-500 hover:text-gray-700 transition-colors"
+          >
+            👁️
+          </button>
+        </div>
+        
+        <!-- Remember Me & Forgot Password -->
+        <div class="flex justify-between items-center">
+          <label class="inline-flex items-center cursor-pointer">
+            <input type="checkbox" name="remember" class="checkbox-custom">
+            <span class="ml-3 text-sm text-gray-600 font-medium">Remember me</span>
+          </label>
+          <a href="#" class="text-sm font-medium text-blue-600 hover:text-purple-600 transition-colors">
+            Forgot Password? 🤔
+          </a>
+        </div>
+        
+        <!-- Login Button -->
+        <button 
+          type="submit" 
+          class="login-btn w-full text-white font-semibold py-4 px-6 rounded-xl text-lg relative overflow-hidden"
+          id="loginBtn"
+        >
+          <span id="loginText">Sign In</span>
+          <div class="loading-spinner absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2" id="loginSpinner"></div>
+        </button>
+      </form>
+      
+      <!-- Divider -->
+      <div class="relative my-8">
+        <div class="absolute inset-0 flex items-center">
+          <div class="w-full border-t border-gray-300"></div>
+        </div>
+        <div class="relative flex justify-center text-sm">
+          <span class="px-4 bg-white text-gray-500 font-medium">or continue with</span>
+        </div>
+      </div>
+      
+      <!-- Social Login -->
+      <div class="grid grid-cols-2 gap-4 mb-8">
+        <button class="social-btn flex items-center justify-center py-3 px-4 border border-gray-300 rounded-xl hover:bg-gray-50 transition-all">
+          <svg class="w-5 h-5 mr-2" viewBox="0 0 24 24">
+            <path fill="#4285f4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+            <path fill="#34a853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+            <path fill="#fbbc05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+            <path fill="#ea4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+          </svg>
+          <span class="text-sm font-medium text-gray-700">Google</span>
+        </button>
+        
+        <button class="social-btn flex items-center justify-center py-3 px-4 border border-gray-300 rounded-xl hover:bg-gray-50 transition-all">
+          <svg class="w-5 h-5 mr-2" fill="#1877f2" viewBox="0 0 24 24">
+            <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+          </svg>
+          <span class="text-sm font-medium text-gray-700">Facebook</span>
+        </button>
+      </div>
+      
+      <!-- Sign Up Link -->
+      <div class="text-center">
+        <p class="text-sm text-gray-600">
+          Don't have an account?
+          <a href="/signup" class="font-semibold text-blue-600 hover:text-purple-600 transition-colors ml-1">
+            Create one 🚀
+          </a>
+        </p>
+      </div>
+      
+      <!-- Features Preview -->
+      <div class="mt-8 p-4 bg-gradient-to-r from-blue-50 to-purple-50 rounded-xl border border-blue-100">
+        <h3 class="font-semibold text-gray-800 mb-2 text-center">🎯 What's Inside?</h3>
+        <div class="grid grid-cols-2 gap-2 text-xs text-gray-600">
+          <div class="flex items-center">
+            <span class="text-green-500 mr-1">✓</span>
+            <span>Interactive Learning</span>
+          </div>
+          <div class="flex items-center">
+            <span class="text-green-500 mr-1">✓</span>
+            <span>Live Trading Sim</span>
+          </div>
+          <div class="flex items-center">
+            <span class="text-green-500 mr-1">✓</span>
+            <span>Progress Tracking</span>
+          </div>
+          <div class="flex items-center">
+            <span class="text-green-500 mr-1">✓</span>
+            <span>Expert Analysis</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  
+  <script>
+    // Password toggle functionality
+    document.getElementById('togglePassword').addEventListener('click', function() {
+      const passwordField = document.getElementById('password');
+      const toggleBtn = this;
+      
+      if (passwordField.type === 'password') {
+        passwordField.type = 'text';
+        toggleBtn.textContent = '🙈';
+      } else {
+        passwordField.type = 'password';
+        toggleBtn.textContent = '👁️';
+      }
+    });
+    
+    // Form submission with loading state
+    document.getElementById('loginForm').addEventListener('submit', function(e) {
+      const loginBtn = document.getElementById('loginBtn');
+      const loginText = document.getElementById('loginText');
+      const loginSpinner = document.getElementById('loginSpinner');
+      
+      // Show loading state
+      loginText.style.display = 'none';
+      loginSpinner.style.display = 'block';
+      loginBtn.disabled = true;
+      loginBtn.classList.add('opacity-80');
+      
+      // In real implementation, remove this setTimeout
+      // This is just for demo purposes
+      setTimeout(() => {
+        loginText.style.display = 'block';
+        loginSpinner.style.display = 'none';
+        loginBtn.disabled = false;
+        loginBtn.classList.remove('opacity-80');
+      }, 2000);
+    });
+    
+    // Floating label animation enhancement
+    document.querySelectorAll('.input-field').forEach(field => {
+      field.addEventListener('focus', function() {
+        this.parentElement.classList.add('focused');
+      });
+      
+      field.addEventListener('blur', function() {
+        if (!this.value) {
+          this.parentElement.classList.remove('focused');
+        }
+      });
+    });
+    
+    // Add some interactive feedback
+    document.querySelectorAll('.social-btn').forEach(btn => {
+      btn.addEventListener('click', function(e) {
+        e.preventDefault();
+        
+        // Create ripple effect
+        const ripple = document.createElement('div');
+        ripple.className = 'absolute inset-0 bg-blue-400 opacity-30 rounded-xl transform scale-0 transition-transform duration-300';
+        this.style.position = 'relative';
+        this.appendChild(ripple);
+        
+        setTimeout(() => {
+          ripple.style.transform = 'scale(1)';
+        }, 10);
+        
+        setTimeout(() => {
+          ripple.remove();
+        }, 300);
+        
+        // Simulate social login
+        alert(`${this.textContent.trim()} login coming soon! 🚀`);
+      });
+    });
+    
+    // Form validation feedback
+    document.querySelectorAll('.input-field').forEach(field => {
+      field.addEventListener('input', function() {
+        if (this.validity.valid) {
+          this.style.borderColor = '#10b981';
+        } else if (this.value) {
+          this.style.borderColor = '#ef4444';
+        } else {
+          this.style.borderColor = '#e5e7eb';
+        }
+      });
+    });
+  </script>
+</body>
+</html>

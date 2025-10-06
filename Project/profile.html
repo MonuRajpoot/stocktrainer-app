@@ -1,0 +1,1083 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Profile | Kalkaji</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.02);
+            }
+        }
+        
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0px) rotate(0deg);
+            }
+            50% {
+                transform: translateY(-15px) rotate(5deg);
+            }
+        }
+        
+        @keyframes progressFill {
+            from { width: 0%; }
+            to { width: var(--progress); }
+        }
+        
+        .fade-in-up {
+            animation: fadeInUp 0.6s ease-out forwards;
+        }
+        
+        .slide-in {
+            animation: slideIn 0.5s ease-out forwards;
+        }
+        
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+        
+        .float {
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        .profile-card {
+            transition: all 0.3s ease;
+        }
+        
+        .profile-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+        
+        .course-card {
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .course-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s;
+        }
+        
+        .course-card:hover::before {
+            left: 100%;
+        }
+        
+        .course-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 35px -5px rgba(0, 0, 0, 0.15);
+        }
+        
+        .progress-bar {
+            animation: progressFill 1.5s ease-out forwards;
+        }
+        
+        .stat-card {
+            background: linear-gradient(135deg, var(--bg-start), var(--bg-end));
+            transition: all 0.3s ease;
+        }
+        
+        .stat-card:hover {
+            transform: scale(1.05);
+        }
+        
+        .floating-background {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            pointer-events: none;
+            z-index: 1;
+        }
+        
+        .bg-icon {
+            position: absolute;
+            font-size: 40px;
+            opacity: 0.05;
+            animation: float 8s ease-in-out infinite;
+        }
+        
+        .edit-mode {
+            display: none;
+        }
+        
+        .edit-mode.active {
+            display: block;
+        }
+        
+        .view-mode.editing {
+            display: none;
+        }
+        
+        .skill-tag {
+            transition: all 0.3s ease;
+        }
+        
+        .skill-tag:hover {
+            transform: scale(1.1);
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-blue-50 via-purple-50 to-indigo-100 min-h-screen relative">
+    <div class="floating-background">
+        <div class="bg-icon" style="top: 10%; left: 5%;">📊</div>
+        <div class="bg-icon" style="top: 20%; right: 10%;">💼</div>
+        <div class="bg-icon" style="top: 50%; left: 15%;">📈</div>
+        <div class="bg-icon" style="bottom: 30%; right: 5%;">🎯</div>
+        <div class="bg-icon" style="bottom: 20%; left: 10%;">💡</div>
+    </div>
+
+    <section class="py-8 px-4 relative z-10">
+        <div class="max-w-6xl mx-auto">
+            <!-- Header with Stats -->
+            <div class="fade-in-up mb-8">
+                <div class="bg-white rounded-2xl shadow-xl p-6 border border-gray-100">
+                    <div class="flex items-center justify-between mb-6">
+                        <h1 class="text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                            👤 My Profile
+                        </h1>
+                        <button onclick="toggleEditMode()" id="editBtn" 
+                                class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-all transform hover:scale-105">
+                            ✏️ Edit Profile
+                        </button>
+                    </div>
+                    
+                    <!-- Quick Stats -->
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                        <div class="stat-card p-4 rounded-xl text-center text-white" style="--bg-start: #667eea; --bg-end: #764ba2;">
+                            <div class="text-2xl font-bold">3</div>
+                            <div class="text-sm opacity-90">Courses</div>
+                        </div>
+                        <div class="stat-card p-4 rounded-xl text-center text-white" style="--bg-start: #f093fb; --bg-end: #f5576c;">
+                            <div class="text-2xl font-bold">67%</div>
+                            <div class="text-sm opacity-90">Avg Progress</div>
+                        </div>
+                        <div class="stat-card p-4 rounded-xl text-center text-white" style="--bg-start: #4facfe; --bg-end: #00f2fe;">
+                            <div class="text-2xl font-bold">8</div>
+                            <div class="text-sm opacity-90">Certificates</div>
+                        </div>
+                        <div class="stat-card p-4 rounded-xl text-center text-white" style="--bg-start: #43e97b; --bg-end: #38f9d7;">
+                            <div class="text-2xl font-bold">45</div>
+                            <div class="text-sm opacity-90">Study Hours</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <!-- Left Column - Profile Info -->
+                <div class="lg:col-span-1">
+                    <div class="profile-card bg-white rounded-2xl shadow-xl p-6 border border-gray-100 slide-in">
+                        <!-- Profile Picture -->
+                        <div class="text-center mb-6">
+                            <div class="relative inline-block">
+                                <img id="profileImg" 
+                                     src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop&crop=face" 
+                                     alt="Profile Picture" 
+                                     class="w-32 h-32 rounded-full mx-auto mb-4 border-4 border-white shadow-lg float">
+                                <button onclick="changeProfilePicture()" 
+                                        class="absolute bottom-2 right-2 bg-blue-600 text-white rounded-full w-8 h-8 flex items-center justify-center hover:bg-blue-700 transition-colors">
+                                    📷
+                                </button>
+                            </div>
+                            
+                            <!-- View Mode -->
+                            <div class="view-mode">
+                                <h2 class="text-2xl font-bold text-gray-800">{{ user.name }}</h2>
+                                <p class="text-gray-600">{{ user_email }}</p>
+                                <p class="text-sm text-gray-500 mt-1 capitalize bg-blue-100 text-blue-800 px-3 py-1 rounded-full inline-block">
+                                    Premium Member
+                                </p>
+                            </div>
+                            
+                            <!-- Edit Mode -->
+                            <div class="edit-mode text-left">
+                                <input type="text" id="editName" value="{{ user.name }}" 
+                                       class="w-full p-2 border border-gray-300 rounded-lg mb-2 text-center font-bold text-xl">
+                                <input type="email" id="editEmail" value="{{ user_email }}" 
+                                       class="w-full p-2 border border-gray-300 rounded-lg mb-2 text-center">
+                            </div>
+                        </div>
+                        
+                        <!-- Profile Details -->
+                        <div class="space-y-4">
+                            <!-- View Mode Details --
+                            
+                            <!-- Edit Mode Details -->
+                            <div class="edit-mode space-y-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Phone</label>
+                                    <input type="tel" id="editPhone" value="+91 98765 43210" 
+                                           class="w-full p-3 border border-gray-300 rounded-lg">
+                                </div>
+                                
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Location</label>
+                                    <input type="text" id="editLocation" value="Delhi, India" 
+                                           class="w-full p-3 border border-gray-300 rounded-lg">
+                                </div>
+                                
+                                <div class="flex space-x-2">
+                                    <button onclick="saveProfile()" 
+                                            class="flex-1 bg-green-600 text-white py-2 px-4 rounded-lg hover:bg-green-700 transition-colors">
+                                        💾 Save
+                                    </button>
+                                    <button onclick="cancelEdit()" 
+                                            class="flex-1 bg-gray-500 text-white py-2 px-4 rounded-lg hover:bg-gray-600 transition-colors">
+                                        ❌ Cancel
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Learning Streak -->
+                        <div class="mt-6 p-4 bg-gradient-to-r from-orange-400 to-pink-500 rounded-xl text-white text-center">
+                            <div class="text-2xl font-bold">🔥 7 Day Streak!</div>
+                            <div class="text-sm opacity-90">Keep up the great work!</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Column - Courses & Activity -->
+                <div class="lg:col-span-2 space-y-6">
+                    <!-- Achievement Badges -->
+                    <div class="bg-white rounded-2xl shadow-xl p-6 border border-gray-100 slide-in">
+                        <h3 class="text-xl font-bold text-gray-800 mb-4 flex items-center">
+                            🏆 Achievements
+                            <span class="ml-2 bg-yellow-100 text-yellow-800 text-xs px-2 py-1 rounded-full">8 earned</span>
+                        </h3>
+                        
+                        <div class="grid grid-cols-4 md:grid-cols-6 gap-3">
+                            <div class="achievement-badge text-center p-3 bg-yellow-50 rounded-xl border-2 border-yellow-200 hover:scale-110 transition-transform cursor-pointer pulse" 
+                                 onclick="showAchievement('First Course')">
+                                <div class="text-2xl mb-1">🎓</div>
+                                <div class="text-xs text-yellow-700 font-medium">First Course</div>
+                            </div>
+                            <div class="achievement-badge text-center p-3 bg-blue-50 rounded-xl border-2 border-blue-200 hover:scale-110 transition-transform cursor-pointer" 
+                                 onclick="showAchievement('Quiz Master')">
+                                <div class="text-2xl mb-1">🧠</div>
+                                <div class="text-xs text-blue-700 font-medium">Quiz Master</div>
+                            </div>
+                            <div class="achievement-badge text-center p-3 bg-green-50 rounded-xl border-2 border-green-200 hover:scale-110 transition-transform cursor-pointer" 
+                                 onclick="showAchievement('7 Day Streak')">
+                                <div class="text-2xl mb-1">🔥</div>
+                                <div class="text-xs text-green-700 font-medium">7 Day Streak</div>
+                            </div>
+                            <div class="achievement-badge text-center p-3 bg-purple-50 rounded-xl border-2 border-purple-200 hover:scale-110 transition-transform cursor-pointer" 
+                                 onclick="showAchievement('Fast Learner')">
+                                <div class="text-2xl mb-1">⚡</div>
+                                <div class="text-xs text-purple-700 font-medium">Fast Learner</div>
+                            </div>
+                            <div class="achievement-badge text-center p-3 bg-gray-100 rounded-xl border-2 border-dashed border-gray-300 opacity-50">
+                                <div class="text-2xl mb-1">🎯</div>
+                                <div class="text-xs text-gray-500 font-medium">Goal Setter</div>
+                            </div>
+                            <div class="achievement-badge text-center p-3 bg-gray-100 rounded-xl border-2 border-dashed border-gray-300 opacity-50">
+                                <div class="text-2xl mb-1">💎</div>
+                                <div class="text-xs text-gray-500 font-medium">Expert</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Learning Progress -->
+                    <div class="bg-white rounded-2xl shadow-xl p-6 border border-gray-100 slide-in">
+                        <h3 class="text-xl font-bold text-gray-800 mb-6 flex items-center justify-between">
+                            📈 Learning Progress
+                            <select onchange="changeTimeframe(this.value)" class="text-sm bg-gray-100 border-none rounded-lg px-3 py-1">
+                                <option value="week">This Week</option>
+                                <option value="month">This Month</option>
+                                <option value="all">All Time</option>
+                            </select>
+                        </h3>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                            <div class="text-center p-4 bg-blue-50 rounded-xl">
+                                <div class="text-3xl font-bold text-blue-600">12</div>
+                                <div class="text-sm text-blue-700">Hours This Week</div>
+                            </div>
+                            <div class="text-center p-4 bg-green-50 rounded-xl">
+                                <div class="text-3xl font-bold text-green-600">95%</div>
+                                <div class="text-sm text-green-700">Quiz Average</div>
+                            </div>
+                            <div class="text-center p-4 bg-purple-50 rounded-xl">
+                                <div class="text-3xl font-bold text-purple-600">5</div>
+                                <div class="text-sm text-purple-700">Lessons Completed</div>
+                            </div>
+                        </div>
+                        
+                        <!-- Skills Progress -->
+                        <div class="space-y-3">
+                            <div>
+                                <div class="flex justify-between text-sm mb-1">
+                                    <span class="font-medium text-gray-700">Technical Analysis</span>
+                                    <span class="text-blue-600">85%</span>
+                                </div>
+                                <div class="w-full bg-gray-200 rounded-full h-2">
+                                    <div class="progress-bar bg-gradient-to-r from-blue-500 to-blue-600 h-2 rounded-full" style="--progress: 85%"></div>
+                                </div>
+                            </div>
+                            
+                            <div>
+                                <div class="flex justify-between text-sm mb-1">
+                                    <span class="font-medium text-gray-700">Fundamental Analysis</span>
+                                    <span class="text-green-600">72%</span>
+                                </div>
+                                <div class="w-full bg-gray-200 rounded-full h-2">
+                                    <div class="progress-bar bg-gradient-to-r from-green-500 to-green-600 h-2 rounded-full" style="--progress: 72%"></div>
+                                </div>
+                            </div>
+                            
+                            <div>
+                                <div class="flex justify-between text-sm mb-1">
+                                    <span class="font-medium text-gray-700">Risk Management</span>
+                                    <span class="text-purple-600">91%</span>
+                                </div>
+                                <div class="w-full bg-gray-200 rounded-full h-2">
+                                    <div class="progress-bar bg-gradient-to-r from-purple-500 to-purple-600 h-2 rounded-full" style="--progress: 91%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Enrolled Courses -->
+                    <div class="bg-white rounded-2xl shadow-xl p-6 border border-gray-100 slide-in">
+                        <div class="flex items-center justify-between mb-6">
+                            <h3 class="text-xl font-bold text-gray-800 flex items-center">
+                                📚 Enrolled Courses
+                                <span class="ml-2 bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full">3 active</span>
+                            </h3>
+                            <button onclick="showAllCourses()" class="text-blue-600 hover:text-blue-800 text-sm font-medium">
+                                View All →
+                            </button>
+                        </div>
+                        
+                        <div class="space-y-4">
+                            <!-- Course 1 -->
+                            <div class="course-card bg-gradient-to-r from-blue-500 to-purple-600 p-4 rounded-xl text-white">
+                                <div class="flex justify-between items-start mb-3">
+                                    <div>
+                                        <h4 class="font-bold text-lg">Stock Market Fundamentals</h4>
+                                        <p class="text-sm opacity-90">Master the basics of trading</p>
+                                    </div>
+                                    <span class="bg-white bg-opacity-20 px-2 py-1 rounded text-xs">85% Complete</span>
+                                </div>
+                                
+                                <div class="w-full bg-white bg-opacity-20 rounded-full h-2 mb-3">
+                                    <div class="bg-white h-2 rounded-full transition-all duration-1000" style="width: 85%"></div>
+                                </div>
+                                
+                                <div class="flex justify-between items-center">
+                                    <div class="text-xs opacity-90">
+                                        <span>📖 12/15 lessons</span>
+                                        <span class="ml-3">⏱️ 2.5 hrs left</span>
+                                    </div>
+                                    <button onclick="continueCourse(1)" 
+                                            class="bg-white text-blue-600 px-3 py-1 rounded-lg text-sm font-medium hover:bg-blue-50 transition-colors">
+                                        Continue →
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Course 2 -->
+                            <div class="course-card bg-gradient-to-r from-green-500 to-teal-600 p-4 rounded-xl text-white">
+                                <div class="flex justify-between items-start mb-3">
+                                    <div>
+                                        <h4 class="font-bold text-lg">Technical Analysis Mastery</h4>
+                                        <p class="text-sm opacity-90">Advanced chart reading techniques</p>
+                                    </div>
+                                    <span class="bg-white bg-opacity-20 px-2 py-1 rounded text-xs">45% Complete</span>
+                                </div>
+                                
+                                <div class="w-full bg-white bg-opacity-20 rounded-full h-2 mb-3">
+                                    <div class="bg-white h-2 rounded-full transition-all duration-1000" style="width: 45%"></div>
+                                </div>
+                                
+                                <div class="flex justify-between items-center">
+                                    <div class="text-xs opacity-90">
+                                        <span>📖 9/20 lessons</span>
+                                        <span class="ml-3">⏱️ 6 hrs left</span>
+                                    </div>
+                                    <button onclick="continueCourse(2)" 
+                                          class="bg-white text-green-600 px-3 py-1 rounded-lg text-sm font-medium hover:bg-green-50 transition-colors">
+                                        Continue →
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Course 3 -->
+                            <div class="course-card bg-gradient-to-r from-purple-500 to-pink-600 p-4 rounded-xl text-white">
+                                <div class="flex justify-between items-start mb-3">
+                                    <div>
+                                        <h4 class="font-bold text-lg">Portfolio Management</h4>
+                                        <p class="text-sm opacity-90">Build and manage your portfolio</p>
+                                    </div>
+                                    <span class="bg-white bg-opacity-20 px-2 py-1 rounded text-xs">70% Complete</span>
+                                </div>
+                                
+                                <div class="w-full bg-white bg-opacity-20 rounded-full h-2 mb-3">
+                                    <div class="bg-white h-2 rounded-full transition-all duration-1000" style="width: 70%"></div>
+                                </div>
+                                
+                                <div class="flex justify-between items-center">
+                                    <div class="text-xs opacity-90">
+                                        <span>📖 7/10 lessons</span>
+                                        <span class="ml-3">⏱️ 1.5 hrs left</span>
+                                    </div>
+                                    <button onclick="continueCourse(3)" 
+                                            class="bg-white text-purple-600 px-3 py-1 rounded-lg text-sm font-medium hover:bg-purple-50 transition-colors">
+                                        Continue →
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Browse More Courses -->
+                        <div class="mt-6 p-4 border-2 border-dashed border-gray-300 rounded-xl text-center hover:border-blue-400 transition-colors cursor-pointer" 
+                             onclick="browseCourses()">
+                            <div class="text-2xl mb-2">➕</div>
+                            <div class="text-gray-600 font-medium">Browse More Courses</div>
+                            <div class="text-xs text-gray-500">Expand your knowledge</div>
+                        </div>
+                    </div>
+
+                    <!-- Recent Activity & Learning Path -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <!-- Recent Activity -->
+                        <div class="bg-white rounded-2xl shadow-xl p-6 border border-gray-100 slide-in">
+                            <h3 class="text-lg font-bold text-gray-800 mb-4 flex items-center">
+                                ⚡ Recent Activity
+                                <span class="ml-2 w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
+                            </h3>
+                            
+                            <div class="space-y-3">
+                                <div class="flex items-center space-x-3 p-3 bg-blue-50 rounded-lg">
+                                    <span class="text-blue-600">📝</span>
+                                    <div class="flex-1">
+                                        <p class="text-sm font-medium text-gray-800">Completed Quiz: Market Basics</p>
+                                        <p class="text-xs text-gray-500">2 hours ago • Score: 95%</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="flex items-center space-x-3 p-3 bg-green-50 rounded-lg">
+                                    <span class="text-green-600">🎥</span>
+                                    <div class="flex-1">
+                                        <p class="text-sm font-medium text-gray-800">Watched: Candlestick Patterns</p>
+                                        <p class="text-xs text-gray-500">1 day ago • 45 min lesson</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="flex items-center space-x-3 p-3 bg-purple-50 rounded-lg">
+                                    <span class="text-purple-600">🏆</span>
+                                    <div class="flex-1">
+                                        <p class="text-sm font-medium text-gray-800">Earned: Quiz Master Badge</p>
+                                        <p class="text-xs text-gray-500">2 days ago • Achievement unlocked</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Learning Goals -->
+                        <div class="bg-white rounded-2xl shadow-xl p-6 border border-gray-100 slide-in">
+                            <h3 class="text-lg font-bold text-gray-800 mb-4 flex items-center justify-between">
+                                🎯 Learning Goals
+                                <button onclick="addGoal()" class="text-sm bg-blue-600 text-white px-3 py-1 rounded-lg hover:bg-blue-700 transition-colors">
+                                    + Add
+                                </button>
+                            </h3>
+                            
+                            <div class="space-y-3">
+                                <div class="flex items-center space-x-3 p-3 bg-green-50 rounded-lg border border-green-200">
+                                    <input type="checkbox" checked class="w-4 h-4 text-green-600">
+                                    <div class="flex-1">
+                                        <p class="text-sm font-medium text-gray-800 line-through">Complete Technical Analysis Course</p>
+                                        <p class="text-xs text-green-600">✅ Completed!</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="flex items-center space-x-3 p-3 bg-blue-50 rounded-lg border border-blue-200">
+                                    <input type="checkbox" class="w-4 h-4 text-blue-600">
+                                    <div class="flex-1">
+                                        <p class="text-sm font-medium text-gray-800">Score 90%+ on Portfolio Quiz</p>
+                                        <p class="text-xs text-blue-600">📅 Due: Aug 20, 2025</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="flex items-center space-x-3 p-3 bg-purple-50 rounded-lg border border-purple-200">
+                                    <input type="checkbox" class="w-4 h-4 text-purple-600">
+                                    <div class="flex-1">
+                                        <p class="text-sm font-medium text-gray-800">Read 5 Market Analysis Reports</p>
+                                        <p class="text-xs text-purple-600">📊 Progress: 2/5</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Certificates -->
+                    <div class="bg-white rounded-2xl shadow-xl p-6 border border-gray-100 slide-in">
+                        <h3 class="text-xl font-bold text-gray-800 mb-6 flex items-center justify-between">
+                            🏅 Certificates & Achievements
+                            <span class="text-sm bg-yellow-100 text-yellow-800 px-3 py-1 rounded-full">2 earned</span>
+                        </h3>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div class="certificate-card p-4 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-xl text-white relative overflow-hidden cursor-pointer hover:scale-105 transition-transform"
+                                 onclick="viewCertificate(1)">
+                                <div class="relative z-10">
+                                    <div class="flex justify-between items-start mb-3">
+                                        <span class="text-2xl">🎓</span>
+                                        <span class="bg-white bg-opacity-20 px-2 py-1 rounded text-xs">Verified</span>
+                                    </div>
+                                    <h4 class="font-bold">Stock Market Fundamentals</h4>
+                                    <p class="text-xs opacity-90 mb-2">Completed: Aug 1, 2025</p>
+                                    <p class="text-xs opacity-75">Certificate ID: KLK-2025-001</p>
+                                </div>
+                                <div class="absolute top-0 right-0 text-6xl opacity-10">🏆</div>
+                            </div>
+                            
+                            <div class="certificate-card p-4 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl text-white relative overflow-hidden cursor-pointer hover:scale-105 transition-transform"
+                                 onclick="viewCertificate(2)">
+                                <div class="relative z-10">
+                                    <div class="flex justify-between items-start mb-3">
+                                        <span class="text-2xl">📊</span>
+                                        <span class="bg-white bg-opacity-20 px-2 py-1 rounded text-xs">Verified</span>
+                                    </div>
+                                    <h4 class="font-bold">Technical Analysis Basics</h4>
+                                    <p class="text-xs opacity-90 mb-2">Completed: Jul 28, 2025</p>
+                                    <p class="text-xs opacity-75">Certificate ID: KLK-2025-002</p>
+                                </div>
+                                <div class="absolute top-0 right-0 text-6xl opacity-10">📈</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Modals -->
+    <!-- Achievement Modal -->
+    <div id="achievementModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+        <div class="bg-white rounded-2xl p-8 max-w-md mx-4 text-center">
+            <div id="achievementContent">
+                <!-- Achievement details will be populated here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Certificate Modal -->
+    <div id="certificateModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+        <div class="bg-white rounded-2xl p-8 max-w-2xl mx-4">
+            <div id="certificateContent">
+                <!-- Certificate details will be populated here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Goal Modal -->
+    <div id="goalModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+        <div class="bg-white rounded-2xl p-6 max-w-md mx-4">
+            <h3 class="text-xl font-bold text-gray-800 mb-4">🎯 Add New Learning Goal</h3>
+            <form onsubmit="submitGoal(event)">
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Goal Description</label>
+                    <input type="text" id="goalInput" placeholder="e.g., Complete Options Trading Course" 
+                           class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                </div>
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Target Date</label>
+                    <input type="date" id="goalDate" 
+                           class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                </div>
+                <div class="flex space-x-3">
+                    <button type="button" onclick="closeGoalModal()" 
+                            class="flex-1 px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors">
+                        Cancel
+                    </button>
+                    <button type="submit" 
+                            class="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+                        Add Goal
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        let isEditMode = false;
+
+        // Embed initial user data from Flask for JavaScript access
+        let initialUserName = "{{ user.name }}";
+        let initialUserEmail = "{{ user_email }}";
+
+        // Initialize animations
+        document.addEventListener('DOMContentLoaded', () => {
+            // Stagger animation for cards
+            const cards = document.querySelectorAll('.slide-in');
+            cards.forEach((card, index) => {
+                setTimeout(() => {
+                    card.style.opacity = '1';
+                    card.style.transform = 'translateX(0)';
+                }, index * 200);
+            });
+
+            // Animate progress bars after page load
+            setTimeout(() => {
+                document.querySelectorAll('.progress-bar').forEach(bar => {
+                    bar.style.animation = 'progressFill 1.5s ease-out forwards';
+                });
+            }, 500);
+        });
+
+        function toggleEditMode() {
+            isEditMode = !isEditMode;
+            const viewModes = document.querySelectorAll('.view-mode');
+            const editModes = document.querySelectorAll('.edit-mode');
+            const editBtn = document.getElementById('editBtn');
+
+            if (isEditMode) {
+                viewModes.forEach(el => el.classList.add('editing'));
+                editModes.forEach(el => el.classList.add('active'));
+                editBtn.innerHTML = '❌ Cancel';
+                editBtn.className = 'px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-all transform hover:scale-105';
+            } else {
+                viewModes.forEach(el => el.classList.remove('editing'));
+                editModes.forEach(el => el.classList.remove('active'));
+                editBtn.innerHTML = '✏️ Edit Profile';
+                editBtn.className = 'px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-all transform hover:scale-105';
+            }
+        }
+
+        function saveProfile() {
+            // Get values from edit inputs
+            const name = document.getElementById('editName').value;
+            const email = document.getElementById('editEmail').value;
+            const phone = document.getElementById('editPhone').value;
+            const location = document.getElementById('editLocation').value;
+
+            // Show success message
+            showNotification('✅ Profile updated successfully!', 'success');
+            
+            // Exit edit mode
+            toggleEditMode();
+        }
+
+        function cancelEdit() {
+            // Reset form values to original
+            document.getElementById('editName').value = initialUserName;
+            document.getElementById('editEmail').value = initialUserEmail;
+            document.getElementById('editPhone').value = '+91 98765 43210';
+            document.getElementById('editLocation').value = 'Delhi, India';
+            
+            toggleEditMode();
+        }
+
+        function changeProfilePicture() {
+            const images = [
+                'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop&crop=face',
+                'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=200&h=200&fit=crop&crop=face',
+                'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=200&h=200&fit=crop&crop=face',
+                'https://images.unsplash.com/photo-1519244703995-f4e0f30006d5?w=200&h=200&fit=crop&crop=face'
+            ];
+            
+            const currentImg = document.getElementById('profileImg');
+            const currentSrc = currentImg.src;
+            const currentIndex = images.indexOf(currentSrc);
+            const nextIndex = (currentIndex + 1) % images.length;
+            
+            // Add transition effect
+            currentImg.style.transform = 'scale(0.8)';
+            currentImg.style.opacity = '0.5';
+            
+            setTimeout(() => {
+                currentImg.src = images[nextIndex];
+                currentImg.style.transform = 'scale(1)';
+                currentImg.style.opacity = '1';
+                showNotification('📷 Profile picture updated!', 'info');
+            }, 200);
+        }
+
+        function continueCourse(courseId) {
+            showNotification(`🚀 Redirecting to course ${courseId}...`, 'info');
+            // Simulate navigation
+            setTimeout(() => {
+                // window.location.href = `/course/${courseId}`;
+                console.log(`Navigate to course ${courseId}`);
+            }, 1000);
+        }
+
+        function browseCourses() {
+            showNotification('🔍 Opening course catalog...', 'info');
+            // Simulate navigation to courses page
+        }
+
+        function showAllCourses() {
+            showNotification('📚 Loading all courses...', 'info');
+        }
+
+        function changeTimeframe(timeframe) {
+            // Update stats based on timeframe
+            const stats = {
+                week: { hours: 12, average: 95, lessons: 5 },
+                month: { hours: 48, average: 87, lessons: 23 },
+                all: { hours: 120, average: 89, lessons: 67 }
+            };
+            
+            const data = stats[timeframe];
+            document.querySelector('.text-blue-600').textContent = data.hours;
+            document.querySelector('.text-green-600').textContent = data.average + '%';
+            document.querySelector('.text-purple-600').textContent = data.lessons;
+            
+            showNotification(`📊 Updated to ${timeframe} view`, 'info');
+        }
+
+        function showAchievement(achievement) {
+            const modal = document.getElementById('achievementModal');
+            const content = document.getElementById('achievementContent');
+            
+            const achievements = {
+                'First Course': {
+                    icon: '🎓',
+                    title: 'First Course',
+                    description: 'Congratulations on starting your learning journey!',
+                    date: 'Earned on July 15, 2025',
+                    color: 'yellow'
+                },
+                'Quiz Master': {
+                    icon: '🧠',
+                    title: 'Quiz Master',
+                    description: 'Scored above 90% on 5 consecutive quizzes!',
+                    date: 'Earned on August 10, 2025',
+                    color: 'blue'
+                },
+                '7 Day Streak': {
+                    icon: '🔥',
+                    title: '7 Day Streak',
+                    description: 'Maintained a 7-day learning streak. Keep it up!',
+                    date: 'Earned on August 12, 2025',
+                    color: 'green'
+                },
+                'Fast Learner': {
+                    icon: '⚡',
+                    title: 'Fast Learner',
+                    description: 'Completed a full course in under 2 weeks!',
+                    date: 'Earned on August 5, 2025',
+                    color: 'purple'
+                }
+            };
+            
+            const badge = achievements[achievement];
+            if (badge) {
+                content.innerHTML = `
+                    <div class="text-6xl mb-4 pulse">${badge.icon}</div>
+                    <h3 class="text-2xl font-bold text-gray-800 mb-2">${badge.title}</h3>
+                    <p class="text-gray-600 mb-4">${badge.description}</p>
+                    <p class="text-sm text-gray-500 mb-6">${badge.date}</p>
+                    <button onclick="closeAchievementModal()" 
+                            class="px-6 py-2 bg-${badge.color}-600 text-white rounded-lg hover:bg-${badge.color}-700 transition-colors">
+                        Awesome! 🎉
+                    </button>
+                `;
+                modal.classList.remove('hidden');
+            }
+        }
+
+        function viewCertificate(certId) {
+            const modal = document.getElementById('certificateModal');
+            const content = document.getElementById('certificateContent');
+            
+            const certificates = {
+                1: {
+                    title: 'Stock Market Fundamentals',
+                    date: 'August 1, 2025',
+                    id: 'KLK-2025-001',
+                    score: '95%'
+                },
+                2: {
+                    title: 'Technical Analysis Basics',
+                    date: 'July 28, 2025',
+                    id: 'KLK-2025-002',
+                    score: '92%'
+                }
+            };
+            
+            const cert = certificates[certId];
+            if (cert) {
+                content.innerHTML = `
+                    <div class="text-center">
+                        <div class="bg-gradient-to-r from-yellow-400 to-orange-500 p-8 rounded-xl text-white mb-6">
+                            <div class="text-4xl mb-4">🏆</div>
+                            <h3 class="text-2xl font-bold mb-2">Certificate of Completion</h3>
+                            <h4 class="text-xl">${cert.title}</h4>
+                            <p class="text-sm opacity-90 mt-2">Kalkaji Stock Market Training</p>
+                        </div>
+                        
+                        <div class="text-left space-y-3 mb-6">
+                            <div class="flex justify-between p-3 bg-gray-50 rounded-lg">
+                                <span class="font-medium text-gray-700">Student:</span>
+                                <span class="text-gray-800">${initialUserName}</span>
+                            </div>
+                            <div class="flex justify-between p-3 bg-gray-50 rounded-lg">
+                                <span class="font-medium text-gray-700">Completion Date:</span>
+                                <span class="text-gray-800">${cert.date}</span>
+                            </div>
+                            <div class="flex justify-between p-3 bg-gray-50 rounded-lg">
+                                <span class="font-medium text-gray-700">Final Score:</span>
+                                <span class="text-green-600 font-bold">${cert.score}</span>
+                            </div>
+                            <div class="flex justify-between p-3 bg-gray-50 rounded-lg">
+                                <span class="font-medium text-gray-700">Certificate ID:</span>
+                                <span class="text-gray-800 font-mono">${cert.id}</span>
+                            </div>
+                        </div>
+                        
+                        <div class="flex space-x-3">
+                            <button onclick="downloadCertificate(${certId})" 
+                                    class="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+                                📥 Download PDF
+                            </button>
+                            <button onclick="shareCertificate(${certId})" 
+                                    class="flex-1 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors">
+                                🔗 Share
+                            </button>
+                            <button onclick="closeCertificateModal()" 
+                                    class="px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors">
+                                ✕
+                            </button>
+                        </div>
+                    </div>
+                `;
+                modal.classList.remove('hidden');
+            }
+        }
+
+        function addGoal() {
+            document.getElementById('goalModal').classList.remove('hidden');
+        }
+
+        function submitGoal(event) {
+            event.preventDefault();
+            const goalText = document.getElementById('goalInput').value;
+            const goalDate = document.getElementById('goalDate').value;
+            
+            if (goalText && goalDate) {
+                showNotification('🎯 New goal added successfully!', 'success');
+                closeGoalModal();
+                
+                // Reset form
+                document.getElementById('goalInput').value = '';
+                document.getElementById('goalDate').value = '';
+            }
+        }
+
+        function closeGoalModal() {
+            document.getElementById('goalModal').classList.add('hidden');
+        }
+
+        function closeAchievementModal() {
+            document.getElementById('achievementModal').classList.add('hidden');
+        }
+
+        function closeCertificateModal() {
+            document.getElementById('certificateModal').classList.add('hidden');
+        }
+
+        function downloadCertificate(certId) {
+            showNotification('📥 Preparing certificate download...', 'info');
+            // Simulate download
+            setTimeout(() => {
+                showNotification('✅ Certificate downloaded!', 'success');
+            }, 1500);
+        }
+
+        function shareCertificate(certId) {
+            if (navigator.share) {
+                navigator.share({
+                    title: 'My Kalkaji Certificate',
+                    text: 'Check out my stock market learning certificate!',
+                    url: window.location.href
+                });
+            } else {
+                // Fallback to clipboard
+                navigator.clipboard.writeText(window.location.href);
+                showNotification('🔗 Certificate link copied to clipboard!', 'success');
+            }
+        }
+
+        function showNotification(message, type) {
+            const notification = document.createElement('div');
+            const colors = {
+                success: 'bg-green-500',
+                error: 'bg-red-500',
+                info: 'bg-blue-500',
+                warning: 'bg-yellow-500'
+            };
+            
+            notification.className = `fixed top-4 right-4 ${colors[type]} text-white px-4 py-3 rounded-lg shadow-lg z-50 transform translate-x-full transition-transform`;
+            notification.textContent = message;
+            
+            document.body.appendChild(notification);
+            
+            // Slide in
+            setTimeout(() => {
+                notification.classList.remove('translate-x-full');
+            }, 100);
+            
+            // Slide out and remove
+            setTimeout(() => {
+                notification.classList.add('translate-x-full');
+                setTimeout(() => {
+                    notification.remove();
+                }, 300);
+            }, 3000);
+        }
+
+        // Floating icon animations
+        document.querySelectorAll('.bg-icon').forEach((icon, index) => {
+            icon.style.animationDelay = `${index * 1.5}s`;
+        });
+
+        // Add some interactive hover effects
+        document.querySelectorAll('.stat-card').forEach(card => {
+            card.addEventListener('mouseenter', () => {
+                card.style.transform = 'scale(1.05) rotate(1deg)';
+            });
+            
+            card.addEventListener('mouseleave', () => {
+                card.style.transform = 'scale(1) rotate(0deg)';
+            });
+        });
+
+        // Course card interactions
+        document.querySelectorAll('.course-card').forEach(card => {
+            card.addEventListener('mouseenter', () => {
+                card.style.transform = 'translateY(-5px) scale(1.02)';
+            });
+            
+            card.addEventListener('mouseleave', () => {
+                card.style.transform = 'translateY(0) scale(1)';
+            });
+        });
+
+        // Auto-refresh stats every 30 seconds (simulate real-time updates)
+        setInterval(() => {
+            // Simulate slight changes in progress
+            const progressBars = document.querySelectorAll('.progress-bar');
+            progressBars.forEach(bar => {
+                const currentWidth = parseFloat(bar.style.width) || 0;
+                const newWidth = Math.min(100, currentWidth + Math.random() * 2);
+                bar.style.width = newWidth + '%';
+            });
+        }, 30000);
+
+        // Add keyboard shortcuts
+        document.addEventListener('keydown', (e) => {
+            if (e.ctrlKey || e.metaKey) {
+                switch(e.key) {
+                    case 'e':
+                        e.preventDefault();
+                        toggleEditMode();
+                        break;
+                    case 's':
+                        e.preventDefault();
+                        if (isEditMode) {
+                            saveProfile();
+                        }
+                        break;
+                }
+            }
+            
+            if (e.key === 'Escape') {
+                // Close any open modals
+                document.querySelectorAll('[id$="Modal"]').forEach(modal => {
+                    modal.classList.add('hidden');
+                });
+                
+                if (isEditMode) {
+                    cancelEdit();
+                }
+            }
+        });
+
+        // Profile completion check
+        function checkProfileCompletion() {
+            // Use IDs for dynamically updated fields
+            const nameElement = document.getElementById('editName');
+            const emailElement = document.getElementById('editEmail');
+            const phoneElement = document.getElementById('editPhone');
+
+            let completed = 0;
+            const totalFields = 3; // Name, Email, Phone
+            
+            if (nameElement && nameElement.value.trim()) {
+                completed++;
+            }
+            if (emailElement && emailElement.value.trim()) {
+                completed++;
+            }
+            if (phoneElement && phoneElement.value.trim()) {
+                completed++;
+            }
+            
+            const percentage = Math.round((completed / totalFields) * 100);
+            
+            if (percentage < 100) {
+                setTimeout(() => {
+                    showNotification(`📝 Profile ${percentage}% complete. Add missing info for better experience!`, 'warning');
+                }, 2000);
+            }
+        }
+
+        // Initialize profile completion check
+        setTimeout(checkProfileCompletion, 3000);
+
+        // Add smooth scrolling for internal links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Available Courses</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+</head>
+<body>
+    {% include 'base.html' %}
+    <div class="container">
+        <h1>Available Courses</h1>
+        <div id="courses-list">
+            <div class="course-item">
+                <h2>Course Title 1</h2>
+                <p>Description of Course 1. This course covers the basics of...</p>
+                <button class="enroll-btn" data-course-id="1">Enroll Now</button>
+            </div>
+            <div class="course-item">
+                <h2>Course Title 2</h2>
+                <p>Description of Course 2. This course dives deep into...</p>
+                <button class="enroll-btn" data-course-id="2">Enroll Now</button>
+            </div>
+            <div class="course-item">
+                <h2>Course Title 3</h2>
+                <p>Description of Course 3. This course focuses on...</p>
+                <button class="enroll-btn" data-course-id="3">Enroll Now</button>
+            </div>
+            <!-- Add more courses as needed -->
+        </div>
+    </div>
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    <script>
+        document.querySelectorAll('.enroll-btn').forEach(button => {
+            button.addEventListener('click', function() {
+                const courseId = this.getAttribute('data-course-id');
+                // Add AJAX call to enroll in the course
+                fetch('/enroll', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ course_id: courseId }),
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert('Successfully enrolled in the course!');
+                    } else {
+                        alert('Enrollment failed: ' + data.message);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+            });
+        });
+    </script>
+</body>
+</html>

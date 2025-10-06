@@ -1,0 +1,1211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Us | Kalkaji</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { font-family: 'Inter', sans-serif; }
+        .poppins { font-family: 'Poppins', sans-serif; }
+        
+        .hero-gradient {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .floating-shape {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(180deg); }
+        }
+        
+        .glass-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 25px 45px rgba(0, 0, 0, 0.1);
+        }
+        
+        .form-field {
+            position: relative;
+            margin-bottom: 2rem;
+        }
+        
+        .form-input {
+            width: 100%;
+            padding: 1rem;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            background: #f9fafb;
+            transition: all 0.3s ease;
+            font-size: 1rem;
+        }
+        
+        .form-input:focus {
+            outline: none;
+            border-color: #667eea;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+            transform: translateY(-2px);
+        }
+        
+        .form-label {
+            position: absolute;
+            left: 1rem;
+            top: 1rem;
+            color: #6b7280;
+            transition: all 0.3s ease;
+            pointer-events: none;
+            background: transparent;
+            padding: 0 0.5rem;
+        }
+        
+        .form-input:focus + .form-label,
+        .form-input:not(:placeholder-shown) + .form-label {
+            top: -0.75rem;
+            left: 0.75rem;
+            font-size: 0.875rem;
+            color: #667eea;
+            background: white;
+        }
+        
+        .contact-card {
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .contact-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+        }
+        
+        .pulse-ring {
+            animation: pulse-ring 1.5s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
+        }
+        
+        @keyframes pulse-ring {
+            0% { transform: scale(0.33); }
+            80%, 100% { opacity: 0; }
+        }
+        
+        .fade-in-up {
+            opacity: 0;
+            transform: translateY(30px);
+            animation: fadeInUp 0.8s ease forwards;
+        }
+        
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .typing-indicator {
+            display: none;
+            align-items: center;
+        }
+        
+        .dot {
+            height: 8px;
+            width: 8px;
+            border-radius: 50%;
+            background-color: #667eea;
+            animation: typing 1.4s infinite ease-in-out both;
+        }
+        
+        .dot:nth-child(1) { animation-delay: -0.32s; }
+        .dot:nth-child(2) { animation-delay: -0.16s; }
+        
+        @keyframes typing {
+            0%, 80%, 100% {
+                transform: scale(0);
+                opacity: 0.5;
+            }
+            40% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+        
+        .success-checkmark {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            display: block;
+            stroke-width: 3;
+            stroke: #4ade80;
+            stroke-miterlimit: 10;
+            margin: 10% auto;
+            box-shadow: inset 0px 0px 0px #4ade80;
+            animation: fill 0.4s ease-in-out 0.4s forwards, scale 0.3s ease-in-out 0.9s both;
+        }
+        
+        .success-checkmark__circle {
+            stroke-dasharray: 166;
+            stroke-dashoffset: 166;
+            stroke-width: 3;
+            stroke-miterlimit: 10;
+            stroke: #4ade80;
+            fill: none;
+            animation: stroke 0.6s cubic-bezier(0.65, 0, 0.45, 1) forwards;
+        }
+        
+        .success-checkmark__check {
+            transform-origin: 50% 50%;
+            stroke-dasharray: 48;
+            stroke-dashoffset: 48;
+            animation: stroke 0.3s cubic-bezier(0.65, 0, 0.45, 1) 0.8s forwards;
+        }
+        
+        @keyframes stroke {
+            100% { stroke-dashoffset: 0; }
+        }
+        
+        @keyframes scale {
+            0%, 100% { transform: none; }
+            50% { transform: scale3d(1.1, 1.1, 1); }
+        }
+        
+        @keyframes fill {
+            100% { box-shadow: inset 0px 0px 0px 30px #4ade80; }
+        }
+        
+        .map-container {
+            height: 300px;
+            background: linear-gradient(45deg, #f0f9ff, #e0e7ff);
+            border-radius: 12px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .map-pin {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            animation: bounce 2s infinite;
+        }
+        
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translate(-50%, -50%) translateY(0); }
+            40% { transform: translate(-50%, -50%) translateY(-10px); }
+            60% { transform: translate(-50%, -50%) translateY(-5px); }
+        }
+        
+        .progress-bar {
+            height: 4px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            border-radius: 2px;
+            transform-origin: left;
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+        
+        .character-count {
+            font-size: 0.75rem;
+            color: #6b7280;
+            text-align: right;
+            margin-top: 0.25rem;
+        }
+        
+        .chat-bubble {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1rem;
+            border-radius: 1rem;
+            margin-bottom: 1rem;
+            position: relative;
+            animation: slideInRight 0.5s ease;
+        }
+        
+        @keyframes slideInRight {
+            from { transform: translateX(100px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        
+        .chat-bubble::before {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 20px;
+            width: 0;
+            height: 0;
+            border: 10px solid transparent;
+            border-top-color: #667eea;
+        }
+        
+        .quick-contact {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            z-index: 1000;
+        }
+        
+        .quick-contact-btn {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        .quick-contact-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 15px 35px rgba(102, 126, 234, 0.4);
+        }
+        
+        .quick-contact-menu {
+            position: absolute;
+            bottom: 80px;
+            right: 0;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            padding: 1rem;
+            min-width: 200px;
+            transform: scale(0);
+            transform-origin: bottom right;
+            transition: all 0.3s ease;
+        }
+        
+        .quick-contact-menu.active {
+            transform: scale(1);
+        }
+        
+        .validation-message {
+            font-size: 0.875rem;
+            margin-top: 0.25rem;
+            transition: all 0.3s ease;
+        }
+        
+        .field-valid {
+            border-color: #10b981 !important;
+            background-color: #f0fdf4 !important;
+        }
+        
+        .field-invalid {
+            border-color: #ef4444 !important;
+            background-color: #fef2f2 !important;
+        }
+        
+        .office-hours {
+            background: linear-gradient(135deg, #f0f9ff 0%, #e0e7ff 100%);
+            border-left: 4px solid #667eea;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Hero Section -->
+    <section class="hero-gradient py-16 relative">
+        <!-- Floating Shapes -->
+        <div class="floating-shape" style="width: 80px; height: 80px; top: 10%; left: 10%; animation-delay: 0s;"></div>
+        <div class="floating-shape" style="width: 60px; height: 60px; top: 20%; right: 15%; animation-delay: 1s;"></div>
+        <div class="floating-shape" style="width: 40px; height: 40px; bottom: 30%; left: 20%; animation-delay: 2s;"></div>
+        <div class="floating-shape" style="width: 100px; height: 100px; bottom: 20%; right: 10%; animation-delay: 1.5s;"></div>
+        
+        <div class="max-w-6xl mx-auto px-4 text-center relative z-10">
+            <div class="fade-in-up" style="animation-delay: 0.2s;">
+                <h1 class="text-5xl md:text-6xl font-bold text-white mb-6 poppins">Get in Touch</h1>
+                <p class="text-xl text-white opacity-90 max-w-2xl mx-auto leading-relaxed">
+                    We'd love to hear from you. Send us a message and we'll respond as soon as possible.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <section class="py-16 relative">
+        <div class="max-w-6xl mx-auto px-4">
+            <div class="grid lg:grid-cols-2 gap-12">
+                <!-- Contact Form -->
+                <div class="fade-in-up" style="animation-delay: 0.4s;">
+                    <div class="glass-card rounded-2xl p-8">
+                        <div class="text-center mb-8">
+                            <h2 class="text-3xl font-bold text-gray-800 mb-2 poppins">Send us a Message</h2>
+                            <p class="text-gray-600">Fill out the form below and we'll get back to you within 24 hours</p>
+                        </div>
+                        
+                        <form id="contactForm" class="space-y-6">
+                            <!-- Name Field -->
+                            <div class="form-field">
+                                <input 
+                                    type="text" 
+                                    id="name" 
+                                    name="name" 
+                                    class="form-input" 
+                                    placeholder=" "
+                                    required
+                                >
+                                <label for="name" class="form-label">
+                                    <i class="fas fa-user mr-2"></i>Full Name
+                                </label>
+                                <div class="progress-bar"></div>
+                                <div id="nameValidation" class="validation-message"></div>
+                            </div>
+
+                            <!-- Email Field -->
+                            <div class="form-field">
+                                <input 
+                                    type="email" 
+                                    id="email" 
+                                    name="email" 
+                                    class="form-input" 
+                                    placeholder=" "
+                                    required
+                                >
+                                <label for="email" class="form-label">
+                                    <i class="fas fa-envelope mr-2"></i>Email Address
+                                </label>
+                                <div class="progress-bar"></div>
+                                <div id="emailValidation" class="validation-message"></div>
+                            </div>
+
+                            <!-- Subject Field -->
+                            <div class="form-field">
+                                <select id="subject" name="subject" class="form-input" required>
+                                    <option value="">Select a topic...</option>
+                                    <option value="general">General Inquiry</option>
+                                    <option value="courses">Course Information</option>
+                                    <option value="technical">Technical Support</option>
+                                    <option value="partnership">Partnership</option>
+                                    <option value="feedback">Feedback</option>
+                                    <option value="other">Other</option>
+                                </select>
+                                <label for="subject" class="form-label">
+                                    <i class="fas fa-tag mr-2"></i>Subject
+                                </label>
+                                <div class="progress-bar"></div>
+                            </div>
+
+                            <!-- Message Field -->
+                            <div class="form-field">
+                                <textarea 
+                                    id="message" 
+                                    name="message" 
+                                    rows="5" 
+                                    class="form-input resize-none" 
+                                    placeholder=" "
+                                    maxlength="500"
+                                    required
+                                ></textarea>
+                                <label for="message" class="form-label">
+                                    <i class="fas fa-comment mr-2"></i>Your Message
+                                </label>
+                                <div class="progress-bar"></div>
+                                <div class="character-count">
+                                    <span id="charCount">0</span>/500 characters
+                                </div>
+                                <div id="messageValidation" class="validation-message"></div>
+                            </div>
+
+                            <!-- Submit Button -->
+                            <div class="text-center">
+                                <button 
+                                    type="submit" 
+                                    id="submitBtn"
+                                    class="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-8 py-4 rounded-full font-semibold text-lg hover:from-blue-700 hover:to-purple-700 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl"
+                                >
+                                    <span id="btnText">
+                                        <i class="fas fa-paper-plane mr-2"></i>Send Message
+                                    </span>
+                                    <div id="loadingSpinner" class="hidden">
+                                        <i class="fas fa-spinner animate-spin mr-2"></i>Sending...
+                                    </div>
+                                </button>
+                            </div>
+                        </form>
+                        
+                        <!-- AI Assistant -->
+                        <div class="mt-8 p-4 bg-gradient-to-r from-blue-50 to-purple-50 rounded-xl border border-blue-200">
+                            <div class="flex items-center mb-3">
+                                <div class="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center mr-3">
+                                    <i class="fas fa-robot text-white text-sm"></i>
+                                </div>
+                                <h4 class="font-semibold text-gray-800">Need Instant Help?</h4>
+                            </div>
+                            <p class="text-gray-600 text-sm mb-3">Our AI assistant is here to help with common questions!</p>
+                            <button onclick="startChat()" class="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-blue-700 transition">
+                                <i class="fas fa-comments mr-2"></i>Start Live Chat
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Contact Information -->
+                <div class="fade-in-up" style="animation-delay: 0.6s;">
+                    <!-- Contact Cards -->
+                    <div class="space-y-6 mb-8">
+                        <div class="contact-card glass-card rounded-2xl p-6" onclick="callPhone()">
+                            <div class="flex items-center">
+                                <div class="w-16 h-16 bg-gradient-to-r from-green-400 to-green-600 rounded-full flex items-center justify-center mr-4 relative">
+                                    <i class="fas fa-phone-alt text-white text-xl"></i>
+                                    <div class="absolute inset-0 rounded-full bg-green-400 pulse-ring"></div>
+                                </div>
+                                <div>
+                                    <h3 class="font-semibold text-gray-800 text-lg">Phone Support</h3>
+                                    <p class="text-green-600 font-semibold">+91-9876543210</p>
+                                    <p class="text-gray-600 text-sm">Mon-Fri, 9:00 AM - 6:00 PM IST</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="contact-card glass-card rounded-2xl p-6" onclick="sendEmail()">
+                            <div class="flex items-center">
+                                <div class="w-16 h-16 bg-gradient-to-r from-blue-400 to-blue-600 rounded-full flex items-center justify-center mr-4 relative">
+                                    <i class="fas fa-envelope text-white text-xl"></i>
+                                    <div class="absolute inset-0 rounded-full bg-blue-400 pulse-ring"></div>
+                                </div>
+                                <div>
+                                    <h3 class="font-semibold text-gray-800 text-lg">Email Us</h3>
+                                    <p class="text-blue-600 font-semibold">support@kalkaji.in</p>
+                                    <p class="text-gray-600 text-sm">We'll respond within 24 hours</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="contact-card glass-card rounded-2xl p-6" onclick="openMaps()">
+                            <div class="flex items-center">
+                                <div class="w-16 h-16 bg-gradient-to-r from-purple-400 to-purple-600 rounded-full flex items-center justify-center mr-4 relative">
+                                    <i class="fas fa-map-marker-alt text-white text-xl"></i>
+                                    <div class="absolute inset-0 rounded-full bg-purple-400 pulse-ring"></div>
+                                </div>
+                                <div>
+                                    <h3 class="font-semibold text-gray-800 text-lg">Visit Our Office</h3>
+                                    <p class="text-purple-600 font-semibold">Kalkaji, New Delhi</p>
+                                    <p class="text-gray-600 text-sm">110019, India</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Interactive Map -->
+                    <div class="glass-card rounded-2xl p-6 mb-6">
+                        <h3 class="font-semibold text-gray-800 text-lg mb-4">
+                            <i class="fas fa-map mr-2 text-purple-600"></i>Find Us Here
+                        </h3>
+                        <div class="map-container relative">
+                            <div class="absolute inset-0 flex items-center justify-center">
+                                <div class="text-center">
+                                    <div class="map-pin">
+                                        <i class="fas fa-map-marker-alt text-red-500 text-4xl"></i>
+                                    </div>
+                                    <div class="mt-16">
+                                        <h4 class="font-semibold text-gray-800">Kalkaji Office</h4>
+                                        <p class="text-sm text-gray-600">New Delhi - 110019</p>
+                                        <button onclick="getDirections()" class="mt-2 bg-blue-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-blue-700 transition">
+                                            <i class="fas fa-directions mr-2"></i>Get Directions
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Office Hours -->
+                    <div class="office-hours glass-card rounded-2xl p-6">
+                        <h3 class="font-semibold text-gray-800 text-lg mb-4">
+                            <i class="fas fa-clock mr-2 text-blue-600"></i>Office Hours
+                        </h3>
+                        <div class="space-y-3">
+                            <div class="flex justify-between items-center">
+                                <span class="text-gray-700">Monday - Friday</span>
+                                <span class="font-semibold text-green-600">9:00 AM - 6:00 PM</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-gray-700">Saturday</span>
+                                <span class="font-semibold text-green-600">10:00 AM - 4:00 PM</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-gray-700">Sunday</span>
+                                <span class="font-semibold text-red-500">Closed</span>
+                            </div>
+                            <div class="mt-4 p-3 bg-blue-50 rounded-lg">
+                                <div class="flex items-center">
+                                    <div class="w-3 h-3 bg-green-500 rounded-full mr-2 animate-pulse"></div>
+                                    <span class="text-sm text-gray-700" id="currentStatus">We're currently open!</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section class="bg-white py-16">
+        <div class="max-w-4xl mx-auto px-4">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold text-gray-800 mb-4 poppins">Frequently Asked Questions</h2>
+                <p class="text-gray-600">Quick answers to common questions</p>
+            </div>
+            
+            <div class="space-y-4">
+                <div class="faq-item bg-gray-50 rounded-xl overflow-hidden">
+                    <button onclick="toggleFAQ(0)" class="w-full p-6 text-left flex justify-between items-center hover:bg-gray-100 transition">
+                        <span class="font-semibold text-gray-800">How quickly do you respond to inquiries?</span>
+                        <i class="fas fa-chevron-down text-gray-500 transition-transform duration-300"></i>
+                    </button>
+                    <div class="faq-content max-h-0 overflow-hidden transition-all duration-300">
+                        <div class="p-6 pt-0 text-gray-600">
+                            We typically respond to all inquiries within 24 hours during business days. For urgent matters, please call us directly.
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="faq-item bg-gray-50 rounded-xl overflow-hidden">
+                    <button onclick="toggleFAQ(1)" class="w-full p-6 text-left flex justify-between items-center hover:bg-gray-100 transition">
+                        <span class="font-semibold text-gray-800">What information should I include in my message?</span>
+                        <i class="fas fa-chevron-down text-gray-500 transition-transform duration-300"></i>
+                    </button>
+                    <div class="faq-content max-h-0 overflow-hidden transition-all duration-300">
+                        <div class="p-6 pt-0 text-gray-600">
+                            Please include your full name, contact details, and a detailed description of your inquiry. This helps us provide the most accurate assistance.
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="faq-item bg-gray-50 rounded-xl overflow-hidden">
+                    <button onclick="toggleFAQ(2)" class="w-full p-6 text-left flex justify-between items-center hover:bg-gray-100 transition">
+                        <span class="font-semibold text-gray-800">Do you offer technical support?</span>
+                        <i class="fas fa-chevron-down text-gray-500 transition-transform duration-300"></i>
+                    </button>
+                    <div class="faq-content max-h-0 overflow-hidden transition-all duration-300">
+                        <div class="p-6 pt-0 text-gray-600">
+                            Yes! Our technical support team is available to help with any platform-related issues. Select "Technical Support" as your subject for faster routing.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Quick Contact Floating Button -->
+    <div class="quick-contact">
+        <div class="quick-contact-menu" id="quickMenu">
+            <div class="space-y-3">
+                <button onclick="quickCall()" class="w-full flex items-center p-3 text-left hover:bg-gray-50 rounded-lg transition">
+                    <i class="fas fa-phone text-green-500 mr-3"></i>
+                    <div>
+                        <div class="font-semibold text-gray-800">Quick Call</div>
+                        <div class="text-xs text-gray-600">+91-9876543210</div>
+                    </div>
+                </button>
+                <button onclick="quickEmail()" class="w-full flex items-center p-3 text-left hover:bg-gray-50 rounded-lg transition">
+                    <i class="fas fa-envelope text-blue-500 mr-3"></i>
+                    <div>
+                        <div class="font-semibold text-gray-800">Quick Email</div>
+                        <div class="text-xs text-gray-600">support@kalkaji.in</div>
+                    </div>
+                </button>
+                <button onclick="startChat()" class="w-full flex items-center p-3 text-left hover:bg-gray-50 rounded-lg transition">
+                    <i class="fas fa-comments text-purple-500 mr-3"></i>
+                    <div>
+                        <div class="font-semibold text-gray-800">Live Chat</div>
+                        <div class="text-xs text-gray-600">Instant support</div>
+                    </div>
+                </button>
+            </div>
+        </div>
+        <button onclick="toggleQuickMenu()" class="quick-contact-btn">
+            <i class="fas fa-headset text-xl"></i>
+        </button>
+    </div>
+
+    <!-- Success Modal -->
+    <div id="successModal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 flex items-center justify-center">
+        <div class="bg-white rounded-2xl p-8 max-w-md w-full mx-4 text-center transform transition-all duration-300">
+            <svg class="success-checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52">
+                <circle class="success-checkmark__circle" cx="26" cy="26" r="25" fill="none"/>
+                <path class="success-checkmark__check" fill="none" d="m14.1 27.2l7.1 7.2 16.7-16.8"/>
+            </svg>
+            <h3 class="text-2xl font-bold text-gray-800 mb-4">Message Sent!</h3>
+            <p class="text-gray-600 mb-6">Thank you for reaching out. We'll get back to you within 24 hours.</p>
+            <div class="space-x-3">
+                <button onclick="closeModal()" class="bg-gray-200 text-gray-700 px-6 py-2 rounded-lg hover:bg-gray-300 transition">
+                    Close
+                </button>
+                <button onclick="sendAnother()" class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition">
+                    Send Another Message
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Chat Modal -->
+    <div id="chatModal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 flex items-center justify-center">
+        <div class="bg-white rounded-2xl max-w-md w-full mx-4 overflow-hidden transform transition-all duration-300">
+            <!-- Chat Header -->
+            <div class="bg-gradient-to-r from-blue-600 to-purple-600 p-4 text-white">
+                <div class="flex justify-between items-center">
+                    <div class="flex items-center">
+                        <div class="w-8 h-8 bg-white bg-opacity-20 rounded-full flex items-center justify-center mr-3">
+                            <i class="fas fa-robot text-sm"></i>
+                        </div>
+                        <div>
+                            <h4 class="font-semibold">AI Assistant</h4>
+                            <div class="flex items-center text-xs opacity-80">
+                                <div class="w-2 h-2 bg-green-400 rounded-full mr-2"></div>
+                                Online
+                            </div>
+                        </div>
+                    </div>
+                    <button onclick="closeChat()" class="text-white hover:bg-white hover:bg-opacity-20 p-2 rounded-lg transition">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Chat Messages -->
+            <div id="chatMessages" class="h-80 overflow-y-auto p-4 space-y-4">
+                <div class="chat-bubble">
+                    <p>Hello! I'm here to help you with any questions. What can I assist you with today?</p>
+                </div>
+            </div>
+            
+            <!-- Chat Input -->
+            <div class="p-4 border-t border-gray-200">
+                <div class="typing-indicator" id="typingIndicator">
+                    <span class="text-sm text-gray-500 mr-2">AI is typing</span>
+                    <div class="dot"></div>
+                    <div class="dot"></div>
+                    <div class="dot"></div>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <input 
+                        type="text" 
+                        id="chatInput" 
+                        placeholder="Type your message..."
+                        class="flex-1 border border-gray-300 rounded-full px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        onkeypress="handleChatEnter(event)"
+                    >
+                    <button onclick="sendChatMessage()" class="bg-blue-600 text-white w-10 h-10 rounded-full hover:bg-blue-700 transition">
+                        <i class="fas fa-paper-plane text-sm"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notifications -->
+    <div id="toast" class="fixed top-4 right-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg transform translate-x-full transition-transform duration-300 z-50">
+        <div class="flex items-center">
+            <i class="fas fa-check-circle mr-2"></i>
+            <span id="toastMessage">Action completed successfully!</span>
+        </div>
+    </div>
+
+    <script>
+        // Form validation and interaction
+        document.addEventListener('DOMContentLoaded', () => {
+            initializeForm();
+            updateOfficeStatus();
+            animateElements();
+        });
+
+        function initializeForm() {
+            const form = document.getElementById('contactForm');
+            const inputs = form.querySelectorAll('input, textarea, select');
+            
+            inputs.forEach(input => {
+                input.addEventListener('input', () => validateField(input));
+                input.addEventListener('focus', () => focusField(input));
+                input.addEventListener('blur', () => blurField(input));
+            });
+
+            // Character counter for message
+            const messageField = document.getElementById('message');
+            const charCount = document.getElementById('charCount');
+            
+            messageField.addEventListener('input', () => {
+                const count = messageField.value.length;
+                charCount.textContent = count;
+                
+                if (count > 450) {
+                    charCount.parentElement.classList.add('text-red-500');
+                } else {
+                    charCount.parentElement.classList.remove('text-red-500');
+                }
+            });
+
+            // Form submission
+            form.addEventListener('submit', handleFormSubmit);
+        }
+
+        function validateField(field) {
+            const value = field.value.trim();
+            const fieldType = field.type || field.tagName.toLowerCase();
+            const progressBar = field.parentElement.querySelector('.progress-bar');
+            
+            let isValid = false;
+            let message = '';
+
+            switch (fieldType) {
+                case 'text':
+                    isValid = value.length >= 2;
+                    message = isValid ? '' : 'Name must be at least 2 characters';
+                    break;
+                case 'email':
+                    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                    isValid = emailRegex.test(value);
+                    message = isValid ? '' : 'Please enter a valid email address';
+                    break;
+                case 'select':
+                    isValid = value !== '';
+                    message = isValid ? '' : 'Please select a subject';
+                    break;
+                case 'textarea':
+                    isValid = value.length >= 10;
+                    message = isValid ? '' : 'Message must be at least 10 characters';
+                    break;
+            }
+
+            // Update field appearance
+            field.classList.remove('field-valid', 'field-invalid');
+            if (value && isValid) {
+                field.classList.add('field-valid');
+                progressBar.style.transform = 'scaleX(1)';
+            } else if (value && !isValid) {
+                field.classList.add('field-invalid');
+                progressBar.style.transform = 'scaleX(0.5)';
+            } else {
+                progressBar.style.transform = 'scaleX(0)';
+            }
+
+            // Update validation message
+            const validationEl = document.getElementById(field.id + 'Validation');
+            if (validationEl) {
+                validationEl.textContent = message;
+                validationEl.className = `validation-message ${isValid || !value ? 'text-green-600' : 'text-red-500'}`;
+            }
+
+            return isValid;
+        }
+
+        function focusField(field) {
+            field.parentElement.querySelector('.progress-bar').style.background = 'linear-gradient(90deg, #667eea, #764ba2)';
+        }
+
+        function blurField(field) {
+            const progressBar = field.parentElement.querySelector('.progress-bar');
+            if (!field.classList.contains('field-valid')) {
+                progressBar.style.background = '#e5e7eb';
+            }
+        }
+
+        function handleFormSubmit(e) {
+            e.preventDefault();
+            
+            const submitBtn = document.getElementById('submitBtn');
+            const btnText = document.getElementById('btnText');
+            const loadingSpinner = document.getElementById('loadingSpinner');
+            
+            // Validate all fields
+            const form = e.target;
+            const inputs = form.querySelectorAll('input[required], textarea[required], select[required]');
+            let allValid = true;
+            
+            inputs.forEach(input => {
+                if (!validateField(input)) {
+                    allValid = false;
+                }
+            });
+
+            if (!allValid) {
+                showToast('Please fill in all required fields correctly.', 'error');
+                return;
+            }
+
+            // Show loading state
+            btnText.classList.add('hidden');
+            loadingSpinner.classList.remove('hidden');
+            submitBtn.disabled = true;
+
+            // Simulate form submission
+            setTimeout(() => {
+                btnText.classList.remove('hidden');
+                loadingSpinner.classList.add('hidden');
+                submitBtn.disabled = false;
+                
+                document.getElementById('successModal').classList.remove('hidden');
+                form.reset();
+                
+                // Reset form styling
+                inputs.forEach(input => {
+                    input.classList.remove('field-valid', 'field-invalid');
+                    input.parentElement.querySelector('.progress-bar').style.transform = 'scaleX(0)';
+                });
+            }, 2000);
+        }
+
+        // Contact actions
+        function callPhone() {
+            window.open('tel:+919876543210');
+            showToast('Opening phone app...');
+        }
+
+        function sendEmail() {
+            window.open('mailto:support@kalkaji.in');
+            showToast('Opening email client...');
+        }
+
+        function openMaps() {
+            const address = 'Kalkaji, New Delhi, 110019, India';
+            window.open(`https://maps.google.com/?q=${encodeURIComponent(address)}`);
+            showToast('Opening in Google Maps...');
+        }
+
+        function getDirections() {
+            const address = 'Kalkaji, New Delhi, 110019, India';
+            window.open(`https://maps.google.com/dir/?api=1&destination=${encodeURIComponent(address)}`);
+            showToast('Getting directions...');
+        }
+
+        // Quick contact menu
+        function toggleQuickMenu() {
+            const menu = document.getElementById('quickMenu');
+            menu.classList.toggle('active');
+        }
+
+        function quickCall() {
+            callPhone();
+            toggleQuickMenu();
+        }
+
+        function quickEmail() {
+            sendEmail();
+            toggleQuickMenu();
+        }
+
+        // Chat functionality
+        function startChat() {
+            document.getElementById('chatModal').classList.remove('hidden');
+            setTimeout(() => {
+                sendAIMessage("How can I help you today? You can ask me about our courses, technical support, or general information.");
+            }, 1000);
+        }
+
+        function closeChat() {
+            document.getElementById('chatModal').classList.add('hidden');
+        }
+
+        function handleChatEnter(e) {
+            if (e.key === 'Enter') {
+                sendChatMessage();
+            }
+        }
+
+        function sendChatMessage() {
+            const input = document.getElementById('chatInput');
+            const message = input.value.trim();
+            
+            if (!message) return;
+            
+            // Add user message
+            addChatMessage(message, 'user');
+            input.value = '';
+            
+            // Show typing indicator
+            const typingIndicator = document.getElementById('typingIndicator');
+            typingIndicator.style.display = 'flex';
+            
+            // Simulate AI response
+            setTimeout(() => {
+                typingIndicator.style.display = 'none';
+                const responses = [
+                    "Thanks for your message! For course information, you can browse our catalog or speak with an advisor.",
+                    "I'd be happy to help! You can also fill out the contact form for detailed assistance.",
+                    "Great question! Our support team will provide you with comprehensive information.",
+                    "For technical issues, please describe your problem and we'll troubleshoot together."
+                ];
+                const response = responses[Math.floor(Math.random() * responses.length)];
+                sendAIMessage(response);
+            }, Math.random() * 2000 + 1000);
+        }
+
+        function addChatMessage(message, sender) {
+            const chatMessages = document.getElementById('chatMessages');
+            const messageDiv = document.createElement('div');
+            
+            if (sender === 'user') {
+                messageDiv.className = 'text-right';
+                messageDiv.innerHTML = `
+                    <div class="inline-block bg-blue-600 text-white p-3 rounded-lg max-w-xs">
+                        ${message}
+                    </div>
+                `;
+            } else {
+                messageDiv.innerHTML = `
+                    <div class="chat-bubble max-w-xs">
+                        ${message}
+                    </div>
+                `;
+            }
+            
+            chatMessages.appendChild(messageDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        function sendAIMessage(message) {
+            addChatMessage(message, 'ai');
+        }
+
+        // FAQ functionality
+        function toggleFAQ(index) {
+            const faqItems = document.querySelectorAll('.faq-item');
+            const currentItem = faqItems[index];
+            const content = currentItem.querySelector('.faq-content');
+            const icon = currentItem.querySelector('i');
+            
+            // Close all other FAQs
+            faqItems.forEach((item, i) => {
+                if (i !== index) {
+                    item.querySelector('.faq-content').style.maxHeight = '0';
+                    item.querySelector('i').style.transform = 'rotate(0deg)';
+                }
+            });
+            
+            // Toggle current FAQ
+            if (content.style.maxHeight === '0px' || !content.style.maxHeight) {
+                content.style.maxHeight = content.scrollHeight + 'px';
+                icon.style.transform = 'rotate(180deg)';
+            } else {
+                content.style.maxHeight = '0';
+                icon.style.transform = 'rotate(0deg)';
+            }
+        }
+
+        // Modal functions
+        function closeModal() {
+            document.getElementById('successModal').classList.add('hidden');
+        }
+
+        function sendAnother() {
+            closeModal();
+            document.getElementById('contactForm').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Utility functions
+        function showToast(message, type = 'success') {
+            const toast = document.getElementById('toast');
+            const messageEl = document.getElementById('toastMessage');
+            
+            toast.className = `fixed top-4 right-4 px-6 py-3 rounded-lg shadow-lg transform transition-transform duration-300 z-50 ${
+                type === 'error' ? 'bg-red-500' : 'bg-green-500'
+            } text-white`;
+            
+            messageEl.textContent = message;
+            toast.classList.remove('translate-x-full');
+            toast.classList.add('translate-x-0');
+            
+            setTimeout(() => {
+                toast.classList.add('translate-x-full');
+                toast.classList.remove('translate-x-0');
+            }, 3000);
+        }
+
+        function updateOfficeStatus() {
+            const now = new Date();
+            const day = now.getDay(); // 0 = Sunday, 1 = Monday, etc.
+            const hour = now.getHours();
+            const minute = now.getMinutes();
+            const currentTime = hour * 60 + minute;
+            
+            const statusEl = document.getElementById('currentStatus');
+            let isOpen = false;
+            
+            if (day >= 1 && day <= 5) { // Monday to Friday
+                isOpen = currentTime >= 540 && currentTime < 1080; // 9:00 AM to 6:00 PM
+            } else if (day === 6) { // Saturday
+                isOpen = currentTime >= 600 && currentTime < 960; // 10:00 AM to 4:00 PM
+            }
+            
+            if (isOpen) {
+                statusEl.innerHTML = '<div class="w-3 h-3 bg-green-500 rounded-full mr-2 animate-pulse"></div>We\'re currently open!';
+                statusEl.parentElement.className = 'flex items-center';
+            } else {
+                statusEl.innerHTML = '<div class="w-3 h-3 bg-red-500 rounded-full mr-2"></div>We\'re currently closed';
+                statusEl.parentElement.className = 'flex items-center';
+            }
+        }
+
+        function animateElements() {
+            const observerOptions = {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            };
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateY(0)';
+                    }
+                });
+            }, observerOptions);
+
+            document.querySelectorAll('.fade-in-up').forEach(el => {
+                observer.observe(el);
+            });
+        }
+
+        // Close modals when clicking outside
+        document.addEventListener('click', (e) => {
+            const chatModal = document.getElementById('chatModal');
+            const successModal = document.getElementById('successModal');
+            const quickMenu = document.getElementById('quickMenu');
+            
+            if (e.target === chatModal) {
+                closeChat();
+            }
+            if (e.target === successModal) {
+                closeModal();
+            }
+            if (!e.target.closest('.quick-contact')) {
+                quickMenu.classList.remove('active');
+            }
+        });
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                closeModal();
+                closeChat();
+                document.getElementById('quickMenu').classList.remove('active');
+            }
+        });
+
+        // Smart form suggestions
+        const commonQuestions = [
+            "How do I enroll in a course?",
+            "What are your course prices?",
+            "Do you offer certificates?",
+            "Can I get a refund?",
+            "How do I reset my password?"
+        ];
+
+        // Auto-suggest functionality
+        document.getElementById('message').addEventListener('input', function(e) {
+            const value = e.target.value.toLowerCase();
+            
+            if (value.includes('course') && value.includes('price')) {
+                showToast('💡 Tip: Check our pricing page for detailed course costs!', 'info');
+            } else if (value.includes('certificate')) {
+                showToast('💡 Tip: All our courses include completion certificates!', 'info');
+            }
+        });
+
+        // Enhanced animations
+        function createFloatingIcons() {
+            const icons = ['📚', '💡', '🎓', '📧', '📞', '🌟'];
+            const container = document.querySelector('.hero-gradient');
+            
+            setInterval(() => {
+                const icon = document.createElement('div');
+                icon.textContent = icons[Math.floor(Math.random() * icons.length)];
+                icon.style.cssText = `
+                    position: absolute;
+                    font-size: 2rem;
+                    opacity: 0.6;
+                    left: ${Math.random() * 100}%;
+                    top: 100%;
+                    animation: floatUp 4s linear forwards;
+                    pointer-events: none;
+                `;
+                container.appendChild(icon);
+                
+                setTimeout(() => {
+                    icon.remove();
+                }, 4000);
+            }, 3000);
+        }
+
+        // Add CSS for floating icons
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes floatUp {
+                to {
+                    transform: translateY(-100vh) rotate(360deg);
+                    opacity: 0;
+                }
+            }
+            
+            .toast-info {
+                background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+            }
+        `;
+        document.head.appendChild(style);
+
+        // Start floating icons
+        createFloatingIcons();
+
+        // Real-time form progress
+        let formProgress = 0;
+        function updateFormProgress() {
+            const form = document.getElementById('contactForm');
+            const requiredFields = form.querySelectorAll('input[required], textarea[required], select[required]');
+            let filledFields = 0;
+            
+            requiredFields.forEach(field => {
+                if (field.value.trim() && validateField(field)) {
+                    filledFields++;
+                }
+            });
+            
+            formProgress = (filledFields / requiredFields.length) * 100;
+            
+            // Update submit button based on progress
+            const submitBtn = document.getElementById('submitBtn');
+            if (formProgress === 100) {
+                submitBtn.classList.add('bg-green-600', 'hover:bg-green-700');
+                submitBtn.classList.remove('bg-gradient-to-r', 'from-blue-600', 'to-purple-600');
+            } else {
+                submitBtn.classList.remove('bg-green-600', 'hover:bg-green-700');
+                submitBtn.classList.add('bg-gradient-to-r', 'from-blue-600', 'to-purple-600');
+            }
+        }
+
+        // Monitor form progress
+        document.addEventListener('input', updateFormProgress);
+
+        // Enhanced toast with different types
+        function showToast(message, type = 'success') {
+            const toast = document.getElementById('toast');
+            const messageEl = document.getElementById('toastMessage');
+            
+            const colors = {
+                success: 'bg-green-500',
+                error: 'bg-red-500',
+                info: 'toast-info',
+                warning: 'bg-yellow-500'
+            };
+            
+            toast.className = `fixed top-4 right-4 px-6 py-3 rounded-lg shadow-lg transform transition-transform duration-300 z-50 ${colors[type]} text-white`;
+            
+            messageEl.textContent = message;
+            toast.classList.remove('translate-x-full');
+            toast.classList.add('translate-x-0');
+            
+            setTimeout(() => {
+                toast.classList.add('translate-x-full');
+                toast.classList.remove('translate-x-0');
+            }, 3000);
+        }
+    </script>
+</body>
+</html>

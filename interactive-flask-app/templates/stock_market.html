@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stock Market</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</head>
+<body>
+    {% include 'base.html' %}
+
+    <div class="container">
+        <h1>Stock Market Overview</h1>
+        <div id="stock-data">
+            <h2>Current Stock Prices</h2>
+            <table id="stock-table">
+                <thead>
+                    <tr>
+                        <th>Company</th>
+                        <th>Price</th>
+                        <th>Change</th>
+                        <th>Volume</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Stock data will be populated here -->
+                </tbody>
+            </table>
+        </div>
+
+        <div id="stock-chart">
+            <h2>Stock Price Chart</h2>
+            <canvas id="priceChart"></canvas>
+        </div>
+
+        <div id="stock-search">
+            <h2>Search for a Stock</h2>
+            <input type="text" id="search-input" placeholder="Enter stock symbol">
+            <button id="search-button">Search</button>
+            <div id="search-result"></div>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/stock_market.js') }}"></script>
+</body>
+</html>

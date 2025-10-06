@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+    <title>User Profile</title>
+</head>
+<body>
+    {% include 'base.html' %}
+    <div class="container">
+        <h1>User Profile</h1>
+        <div class="profile-info">
+            <h2>Welcome, {{ user['name'] }}!</h2>
+            <p>Email: {{ user_email }}</p>
+            <h3>Your Courses:</h3>
+            <ul>
+                <!-- Example of dynamically generated courses -->
+                {% for course in user.get('courses', []) %}
+                    <li>{{ course }}</li>
+                {% else %}
+                    <li>No courses enrolled.</li>
+                {% endfor %}
+            </ul>
+            <a href="{{ url_for('logout') }}" id="logout-button">Logout</a>
+        </div>
+    </div>
+    <script src="{{ url_for('static', filename='js/auth.js') }}"></script>
+</body>
+</html>

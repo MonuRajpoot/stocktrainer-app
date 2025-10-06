@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Technical Topics</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+    <script src="{{ url_for('static', filename='js/main.js') }}" defer></script>
+</head>
+<body>
+    {% include 'base.html' %}
+
+    <div class="container">
+        <h1>Technical Topics</h1>
+        <p>Welcome to the technical topics section. Here you will find various resources and articles on technical subjects.</p>
+
+        <div id="technical-content">
+            <h2>Featured Articles</h2>
+            <ul>
+                <li><a href="#">Understanding APIs</a></li>
+                <li><a href="#">Introduction to Machine Learning</a></li>
+                <li><a href="#">Web Development Best Practices</a></li>
+                <li><a href="#">Cloud Computing Basics</a></li>
+            </ul>
+        </div>
+
+        <div id="technical-resources">
+            <h2>Resources</h2>
+            <p>Explore our curated list of resources:</p>
+            <ul>
+                <li><a href="#">Documentation</a></li>
+                <li><a href="#">Tutorials</a></li>
+                <li><a href="#">Webinars</a></li>
+                <li><a href="#">Community Forums</a></li>
+            </ul>
+        </div>
+
+        <div id="technical-quiz">
+            <h2>Test Your Knowledge</h2>
+            <button id="start-quiz">Start Quiz</button>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('start-quiz').addEventListener('click', function() {
+            window.location.href = "{{ url_for('quiz') }}";
+        });
+    </script>
+
+    {% include 'footer.html' %}
+</body>
+</html>
