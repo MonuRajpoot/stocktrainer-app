@@ -7,68 +7,9 @@
   <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-  <!-- <style>
-    body { font-family: 'Inter', sans-serif; }
-    
-    .gradient-bg {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    }
-    
-    .glass-effect {
-      background: rgba(255, 255, 255, 0.1);
-      backdrop-filter: blur(10px);
-      border: 1px solid rgba(255, 255, 255, 0.2);
-    }
-    
-    .animate-float {
-      animation: float 6s ease-in-out infinite;
-    }
-    
-    .animate-pulse-slow {
-      animation: pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-    }
-    
-    @keyframes float {
-      0%, 100% { transform: translateY(0px); }
-      50% { transform: translateY(-20px); }
-    }
-    
-    @keyframes glow {
-      0%, 100% { box-shadow: 0 0 20px rgba(102, 126, 234, 0.5); }
-      50% { box-shadow: 0 0 40px rgba(102, 126, 234, 0.8); }
-    }
-    
-    .glow-on-hover:hover {
-      animation: glow 2s ease-in-out infinite;
-    }
-    
-    .stock-ticker {
-      animation: ticker 20s linear infinite;
-    }
-    
-    @keyframes ticker {
-      0% { transform: translateX(100%); }
-      100% { transform: translateX(-100%); }
-    }
-    
-    .parallax-bg {
-      background-attachment: fixed;
-      background-position: center;
-      background-repeat: no-repeat;
-      background-size: cover;
-    }
-    
-    #particles-canvas {
-      position: absolute;
-      top: 0;
-      left: 0;
-      z-index: 0;
-    }
-  </style> -->
-
-  <!-- ...existing code... -->
   <style>
-    body { font-family: 'Inter', sans-serif; }
+     html,body { font-family: 'Inter', sans-serif;overflow-x: hidden; }
+  
     
     .gradient-bg {
       background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -123,35 +64,11 @@
       top: 0;
       left: 0;
       z-index: 0;
-    }
-
-    /* --- NEW: improve hero title contrast for "Master the Markets" --- */
-    .hero-title {
-      color: #ffffff;
-      line-height: 1.02;
-      font-weight: 900;
-      display: inline-block;
-      text-shadow: 0 8px 28px rgba(0,0,0,0.65), 0 2px 0 rgba(255,255,255,0.02);
-    }
-
-    .gradient-text {
-      /* high-contrast bright gradient for text */
-      background: linear-gradient(90deg, #ffffff 0%, #fff7b2 30%, #ffd6a5 60%, #ffaf7b 100%);
-      -webkit-background-clip: text;
-      background-clip: text;
-      -webkit-text-fill-color: transparent;
-      /* subtle dark stroke to separate from busy backgrounds */
-      -webkit-text-stroke: 0.8px rgba(0,0,0,0.2);
-      text-shadow: 0 8px 28px rgba(0,0,0,0.6);
-      display: inline-block;
-    }
-
-    /* Ensure responsive sizing */
-    @media (max-width: 640px) {
-      .hero-title { font-size: 2.25rem; }
-      .gradient-text { -webkit-text-stroke: 0.6px rgba(0,0,0,0.18); }
     }
   </style>
+
+  <!-- ...existing code... -->
+ 
 <!-- ...existing code... -->
 </head>
 <body class="bg-gray-900 text-white overflow-x-hidden">
